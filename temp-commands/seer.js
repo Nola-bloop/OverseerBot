@@ -21,23 +21,23 @@ export default {
 		const guild = message.guild
 		const channel = message.channel
 
-		let campaign = caller.GetGuildCampaign(guild.id)
-		if (campaign.response){ console.log(campaign.response); caller.Reply(message, "Could not create the chapter: "+campaign.response) }
+		let campaign = await caller.GetGuildCampaign(guild.id)
+		if (campaign.response){ console.log(campaign.response); await caller.Reply(message, "Could not create the chapter: "+campaign.response) }
 
-		await CreateChapter(channel.name, true, channel.id, campaign.id, 0)
-		caller.Reply(message, "Success.")
+		await caller.CreateChapter(channel.name, true, channel.id, campaign.id, 0)
+		await caller.Reply(message, "Success.")
 	},
 	["set-group"] : async (message) => {
 		const user = message.author
 		const guild = message.guild
 		const channel = message.channel
 
-		let campaign = caller.GetGuildCampaign(guild.id)
-		if (campaign.response){ console.log(campaign.response); caller.Reply(message, "Could not create the chapter group: "+campaign.response) }
+		let campaign = await caller.GetGuildCampaign(guild.id)
+		if (campaign.response){ console.log(campaign.response); await caller.Reply(message, "Could not create the chapter group: "+campaign.response) }
 		let name = extractArgument(message.content)
 		let chapter = await caller.GetChapterFromChannelAndGuild(campaign.id, channel.id)
 
-		if (chapter.response) { console.log(chapter.response); caller.Reply(message, "Could not create the chapter group: "+chapter.response) }
+		if (chapter.response) { console.log(chapter.response); await caller.Reply(message, "Could not create the chapter group: "+chapter.response) }
 
 		await caller.CreateChapterGroup(name, campaign.id)
 
