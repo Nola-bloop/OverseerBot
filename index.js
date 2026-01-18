@@ -9,6 +9,7 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+import seerTempCommands from './temp-commands/seer.js'
 
 // Create a new Discord client with message intent 
 const client = new Client({ 
@@ -69,6 +70,20 @@ function periodic(f) {
         setTimeout(loop, delay);
     })();
 }
+
+function extractCommandName(input) {
+    const match = input.trim().match(/^&(\S+)/);
+    return match ? match[1] : null;
+}
+
+
+client.on('messageCreate', message => {
+  if (message.content[0] === '&'){
+    let command = extractCommandName(message.content)
+    console.log(command)
+    seerTempCommands[command](message)
+  }
+})
 
 // gotta update messages that change
 client.on('messageUpdate', (oldMessage, newMessage) => {
