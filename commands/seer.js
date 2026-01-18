@@ -40,9 +40,12 @@ export default {
 			let name = interaction.options.getString("n")
 			let chapter = await GetChapterFromChannelAndGuild(campaign.id, channel.id)
 
+			if (chapter.response) { console.log(chapter.response); caller.Reply(interaction, "Could not create the chapter group: "+chapter.response) }
+
 			await caller.CreateChapterGroup(name, campaign.id)
 
 			let chapterGroup = await GetChapterGroupFromGuildAndName(campaign.id, name)
+			//chapter group should exist, provided the API works.
 
 			await caller.UpdateChapterToGroupRelation(chapterGroup.id, chapter.id)
 		}
