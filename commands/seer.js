@@ -16,8 +16,8 @@ export default {
 	        )
 	).addSubcommand(subCommand =>
 		subCommand
-		.setName('create-chapter-group')
-		.setDescription('Create a chapter-group.')
+		.setName('set-group')
+		.setDescription('Set the group of the channel the command is executed in.')
 		.addStringOption(option =>
         	option
         		.setName('n')
@@ -26,19 +26,25 @@ export default {
         )
 	),
 	async execute (interaction) {
-		const userId = interaction.member.user.id;
-		const username = interaction.member.user.username
+		const user = interaction.member.user;
 		const sub = interaction.options.getSubcommand();
 		const guild = interaction.guild
+		const channel = interaction.channel
 
 		if (sub === "passwd"){
-			caller.UpdatePassword(userId, username, interaction.options.getString("p"))
+			caller.UpdatePassword(user.id, user.username, interaction.options.getString("p"))
 		}
-		else if (sub === "create-chapter-group") {
+		else if (sub === "set-group") {
 			let campaign = caller.GetGuildCampaign(guild.id)
 			if (campaign.response){ console.log(campaign.response); caller.Reply(interaction, "Could not create the chapter group: "+campaign.response) }
+			let name = interaction.options.getString("n")
+			let chapter = await GetChapterFromChannelAndGuild(campaign.id, channel.id)
 
-			await caller.CreateChapterGroup(interaction.options.getString("n"), campaign.id)
+			await caller.CreateChapterGroup(name, campaign.id)
+
+			let chapterGroup = await GetChapterGroupFromGuildAndName(campaign.id, name)
+
+			await caller.UpdateChapterToGroupRelation(chapterGroup.id, chapter.id)
 		}
 	}
 };

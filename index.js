@@ -54,6 +54,21 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
+function logNewMessages(){
+  //todo
+}
+
+function periodic(f) {
+    (function loop() {
+        let now = new Date();
+        if (now.getHours() === 4 && now.getMinutes() === 0) {
+            f();
+        }
+        now = new Date();                  // allow for time passing
+        let delay = 60000 - (now.getTime() % 60000); // exact ms to next minute interval
+        setTimeout(loop, delay);
+    })();
+}
 
 // gotta update messages that change
 client.on('messageUpdate', (oldMessage, newMessage) => {
