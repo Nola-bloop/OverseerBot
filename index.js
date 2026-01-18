@@ -57,6 +57,7 @@ client.on('interactionCreate', async interaction => {
 
 // gotta update messages that change
 client.on('messageUpdate', (oldMessage, newMessage) => {
+  /*
   if (oldMessage.message.partial) {
     try {
       await oldMessage.message.fetch();
@@ -126,16 +127,17 @@ client.on('threadUpdate', (oldThread, newThread) => {
   //safe to use 
 
   console.log("TODO - threadUpdate")
+  */
 });
 
 
 
 
-client.on(Events.Warn, info => {
+client.on("warn", info => {
   console.warn(`âš ï¸�  Warning: ${info}`);
 });
 
-client.on(Events.Error, error => {
+client.on("error", error => {
   console.log(`â�Œ Client Error: ${error.message}`);
   console.log(error.stack);
 
@@ -143,7 +145,7 @@ client.on(Events.Error, error => {
   // But don't use await or complex async operations here
 });
 
-client.on(Events.Invalidated, () => {
+client.on("invalidated", () => {
   console.log('â�Œ Bot session invalidated!');
   console.log('The bot will now need to reconnect...');
   
