@@ -41,6 +41,7 @@ export default {
 	CreateChapter : async (name, isCanon, dcChannelId, campaign, chapterGroup) => {
 		name = sanitize(name)
 		const fetchUrl = `${API_URL}/clusterInput/chapter?name=${name}&isCanon=${isCanon}&dcChannelId=${dcChannelId}&campaign=${campaign}&chapterGroup=${chapterGroup}`
+		console.log(fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET"
 		});
