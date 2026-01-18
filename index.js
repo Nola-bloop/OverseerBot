@@ -187,5 +187,4 @@ client.on("invalidated", () => {
 });
 
 // Log in to Discord using token from .env 
-console.log("token: "+process.env.DISCORD_TOKEN)
 client.login(process.env.DISCORD_TOKEN); 
