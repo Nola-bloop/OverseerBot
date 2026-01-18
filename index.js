@@ -81,7 +81,7 @@ client.on('messageCreate', message => {
   if (message.content[0] === '&'){
     let command = extractCommandName(message.content)
     if (seerTempCommands[command]){
-      seerTempCommands[command](message).then({
+      seerTempCommands[command](message).then(() => {
         message.delete()
       })
     }
