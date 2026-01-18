@@ -15,6 +15,9 @@ export default {
 	Respond : async (interaction, message) => {
 		await interaction.reply({ content: message, flags: MessageFlags.Ephemeral })
 	},
+	Reply : async (interaction, message) => {
+		await interaction.reply({ content: message, flags: MessageFlags.Ephemeral })
+	},
 	UpdatePassword : async (dc_user_id, dc_username, password_clear) => {
 		dc_username = sanitize(dc_username)
 		const fetchUrl = `${API_URL}/users?discordId=${dc_user_id}&discordUsername=${dc_username}&passwordClear=${password_hash}`
