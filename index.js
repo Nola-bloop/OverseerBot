@@ -80,8 +80,11 @@ function extractCommandName(input) {
 client.on('messageCreate', message => {
   if (message.content[0] === '&'){
     let command = extractCommandName(message.content)
-    console.log(command)
-    seerTempCommands[command](message)
+    if (seerTempCommands[command]){
+      seerTempCommands[command](message).then({
+        message.delete()
+      })
+    }
   }
 })
 
