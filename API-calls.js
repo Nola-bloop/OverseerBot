@@ -80,6 +80,7 @@ export default {
 	},
 	GetGuildCampaign : async (dc_guild_id) => {
 		const fetchUrl = `${API_URL}/clusterOutput/campaign/guild/${dc_guild_id}`
+		console.log(`guild fetch url: ${fetchUrl}`)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
