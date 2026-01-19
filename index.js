@@ -82,7 +82,7 @@ client.on('messageCreate', message => {
     let command = extractCommandName(message.content)
     if (seerTempCommands[command]){
       seerTempCommands[command](message).then(() => {
-        message.delete()
+        //message.delete()
       })
     }
   }
