@@ -21,6 +21,8 @@ export default {
 		const guild = message.guild
 		const channel = message.channel
 
+		console.log(`guild: ${guild.id}`)
+
 		let campaign = await caller.GetGuildCampaign(guild.id)
 		if (campaign.response){ console.log(campaign.response); await caller.Reply(message, "Could not create the chapter: "+campaign.response) }
 		if (!campaign){ console.log("Could not fetch campaign"); await caller.Reply(message, "Could not create the chapter.") }
