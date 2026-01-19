@@ -106,4 +106,13 @@ export default {
 		let data = await response.json()
 		return data
 	},
+	GetAllChaptersFromCampaign : async (campaignId) => {
+		const fetchUrl = `${API_URL}/clusterOutput/chapter/all/${campaignId}`
+		const response = await fetch(fetchUrl, {
+		  method: "GET",
+		});
+
+		let data = await response.json()
+		return data
+	},
 }

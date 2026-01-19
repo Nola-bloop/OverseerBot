@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+import caller from '../API-calls.js';
 
 import seerTempCommands from './temp-commands/seer.js'
 
@@ -55,13 +56,14 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-function logNewMessages(){
-  //todo
+async function logNewMessages(){
+  let chapters = await caller.GetAllChaptersFromCampaign()
 }
 
 function periodic(f) {
     (function loop() {
         let now = new Date();
+        //every 4:00 in the morning
         if (now.getHours() === 4 && now.getMinutes() === 0) {
             f();
         }
@@ -69,6 +71,55 @@ function periodic(f) {
         let delay = 60000 - (now.getTime() % 60000); // exact ms to next minute interval
         setTimeout(loop, delay);
     })();
+}
+
+async function fetchAllMessagesAfter(client, channelId, afterDate) {
+    const channel = await client.channels.fetch(channelId);
+    if (!channel || !channel.isTextBased()) {
+        throw new Error("Channel not found or not a text-based channel");
+    }
+
+    const cutoff = new Date(afterDate);
+    const collected = [];
+
+    // Helper to fetch messages from a single channel or thread
+    async function fetchFromTextChannel(textChannel) {
+        let lastId = null;
+
+        while (true) {
+            const options = { limit: 100 };
+            if (lastId) options.after = lastId;
+
+            const messages = await textChannel.messages.fetch(options);
+            if (messages.size === 0) break;
+
+            for (const msg of messages.values()) {
+                if (msg.createdAt > cutoff) {
+                    collected.push(msg);
+                }
+            }
+
+            lastId = messages.last().id;
+        }
+    }
+
+    // Fetch from the main channel
+    await fetchFromTextChannel(channel);
+
+    // Fetch from all threads inside the channel
+    const threadList = await channel.threads.fetchActive();
+    const archivedList = await channel.threads.fetchArchived();
+
+    const allThreads = [
+        ...threadList.threads.values(),
+        ...archivedList.threads.values()
+    ];
+
+    for (const thread of allThreads) {
+        await fetchFromTextChannel(thread);
+    }
+
+    return collected;
 }
 
 function extractCommandName(input) {
