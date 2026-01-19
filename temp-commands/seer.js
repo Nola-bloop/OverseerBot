@@ -23,6 +23,7 @@ export default {
 
 		let campaign = await caller.GetGuildCampaign(guild.id)
 		if (campaign.response){ console.log(campaign.response); await caller.Reply(message, "Could not create the chapter: "+campaign.response) }
+		if (!campaign){ console.log("Could not fetch campaign"); await caller.Reply(message, "Could not create the chapter.") }
 
 		await caller.CreateChapter(channel.name, 1, channel.id, campaign.id, 0)
 		await caller.Reply(message, "Success.")
