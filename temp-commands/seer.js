@@ -24,7 +24,7 @@ export default {
 		let campaign = await caller.GetGuildCampaign(guild.id)
 		if (campaign.response){ console.log(campaign.response); await caller.Reply(message, "Could not create the chapter: "+campaign.response) }
 
-		await caller.CreateChapter(channel.name, true, channel.id, campaign.id, 0)
+		await caller.CreateChapter(channel.name, 1, channel.id, campaign.id, 0)
 		await caller.Reply(message, "Success.")
 	},
 	["set-group"] : async (message) => {
