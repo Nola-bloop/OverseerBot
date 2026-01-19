@@ -33,7 +33,7 @@ for (const file of commandFiles) {
 
 
 // Bot is ready 
-client.once('ready', () => { 
+client.once('clientReady', () => { 
   console.log(`Logged in as ${client.user.tag}`); 
 });
 
