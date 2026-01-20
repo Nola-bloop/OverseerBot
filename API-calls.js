@@ -283,7 +283,7 @@ export default {
 		return data
 	},
 	GetThreadFromPair : async (threadDiscordId, name) => {
-		const fetchUrl = `${API_URL}/thread/pair/${threadDiscordId}/${name}`
+		const fetchUrl = `${API_URL}/clusterOutput/thread/pair/${threadDiscordId}/${name}`
 		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
