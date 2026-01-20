@@ -36,10 +36,21 @@ async function fetchMessagesAfterFromTextChannelCopilot(textChannel, afterDate) 
 }
 async function fetchAllThreads(channel) {
     // Get active threads from cache
-    const activeThreads = Array.from(channel.threads.cache.values());
+    let activeThreads = Array.from(channel.threads.cache.values());
+    if (!activeThreads || typeof activeThreads !== "array"){
+    	activeThreads = []
+    	console.log("could not read active threads:")
+    	console.log(activeThreads)
+    }
 
     // Fetch archived threads
-    const archivedThreads = await channel.threads.fetchArchived();
+    let archivedThreads = await channel.threads.fetchArchived();
+    if (!archivedThreads || typeof archivedThreads !== "array"){
+    	archivedThreads = []
+    	console.log("could not read archived threads:")
+    	console.log(archivedThreads)
+    }
+
 
     // Combine both active and archived threads
     const allThreads = [...activeThreads, ...archivedThreads];
