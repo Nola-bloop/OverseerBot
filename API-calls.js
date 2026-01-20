@@ -163,7 +163,7 @@ export default {
 		  			chapter: ch.id,
 		  			speaker: speaker.id,
 		  			date_sent: m.createdAt,
-		  			thread: m.channel.isThread() ? await this.GetThreadFromPair(m.channel.id, m.channel.name) : 0
+		  			thread: m.channel.isThread() ? (await this.GetThreadFromPair(m.channel.id, m.channel.name)).id : 0
 		  		})
 		  	}
 		  	console.log("exitted m loop")
@@ -317,7 +317,7 @@ export default {
 		return data
 	},
 	GetThreadFromId : async (threadId) => {
-		const fetchUrl = `${API_URL}/thread/id/${threadId}`
+		const fetchUrl = `${API_URL}/clusterOutput/thread/id/${threadId}`
 		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
