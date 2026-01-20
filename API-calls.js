@@ -98,11 +98,6 @@ export default {
 			  const channel = await client.channels.fetch(ch.dc_channel_id);
 			  const activeThreads = channel.threads.cache.values();
 
-			  //console.log("channel:")
-			  //console.log(channel)
-			  //console.log("activeThreads:")
-			  //console.log(activeThreads)
-
 			  for (const t of activeThreads) {
 			    const dbThread = await this.GetThreadFromPair(t.id, t.name);
 			    latestMessages.push({
@@ -111,15 +106,8 @@ export default {
 			    });
 			  }
 		  }
-		  console.log("latestMessages2:")
-		  console.log(latestMessages)
 		  for (const lm of latestMessages){
 		  	let sourceChannel
-
-		  	console.log("lm2:")
-		  	console.log(lm)
-		  	console.log("lm.thread.id:")
-		  	console.log(lm.thread.id)
 
 		  	if (lm.thread.id === 0) {
 				    sourceChannel = await client.channels.fetch(ch.dc_channel_id);
@@ -137,7 +125,7 @@ export default {
 		  	console.log("messages:" + messages?.length ?? "none")
 
 		  	for (const m of messages){
-		  		let speaker = await this.GetCharacterFromCampaignAndName(ch.campaign, m.author.globalName)
+		  		let speaker = await this.GetCharacterFromCampaignAndName(ch.campaign, m.author.globalName ?? m.author.username ?? "Unnamed")
 		  		let res = await this.CreateMessage({
 		  			message: m.content,
 		  			dc_message_id: m.id,
