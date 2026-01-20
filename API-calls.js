@@ -46,12 +46,13 @@ async function fetchAllThreads(channel) {
     // Fetch archived threads
     let archivedThreads = await channel.threads.fetchArchived();
     archivedThreads = archivedThreads.threads
-    if (!archivedThreads || typeof archivedThreads !== "array"){
+    if (!archivedThreads){
     	console.log("could not read archived threads:")
     	console.log(archivedThreads)
     	archivedThreads = []
     }
 
+    console.log("threads of "+channel.name)
     console.log([...activeThreads, ...archivedThreads])
 
 
