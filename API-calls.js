@@ -34,6 +34,18 @@ async function fetchMessagesAfterFromTextChannelCopilot(textChannel, afterDate) 
 
     return collected;
 }
+async function fetchAllThreads(channel) {
+    // Get active threads from cache
+    const activeThreads = Array.from(channel.threads.cache.values());
+
+    // Fetch archived threads
+    const archivedThreads = await channel.threads.fetchArchived();
+
+    // Combine both active and archived threads
+    const allThreads = [...activeThreads, ...archivedThreads];
+
+    return allThreads;
+}
 async function fetchMessagesAfterFromTextChannel(channel, afterDate) {
   const cutoff = new Date(afterDate);
   const collected = [];
@@ -97,6 +109,7 @@ export default {
 			  console.log(latestMessages)
 			  const channel = await client.channels.fetch(ch.dc_channel_id);
 			  const activeThreads = channel.threads.cache.values();
+			  const allThreads = fetchAllThreads(channel);
 
 			  for (const t of activeThreads) {
 			    const dbThread = await this.GetThreadFromPair(t.id, t.name);

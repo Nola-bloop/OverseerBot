@@ -58,7 +58,8 @@ export default {
 		const guild = message.guild
 		const channel = message.channel
 
-		caller.LogNewMessages(client)
+		await caller.LogNewMessages(client)
+		return await caller.Respond(message, "success")
 	},
 	["url"] : async (message, client) => {
 		const user = message.author
