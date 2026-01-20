@@ -57,5 +57,12 @@ export default {
 		const channel = message.channel
 
 		caller.LogNewMessages(client)
+	},
+	["url"] : async (message, client) => {
+		const user = message.author
+		const guild = message.guild
+		const channel = message.channel
+
+		caller.Respond(message, "[nolar-eclipse.ca](https://nolar-eclipse.ca/?guild="+guild.id+")")
 	}
 }
