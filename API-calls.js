@@ -83,8 +83,36 @@ export default {
 		const chapterMap = new Map()
 		chapters.forEach(c => chapterMap.set(c.id, c))
 
+		//good up to here
+
 		for (const ch of chapters) {
-		  const latestMessages = await this.GetLatestMessageFromChapter(ch.id)
+		  let latestMessages = await this.GetLatestMessageFromChapter(ch.id)
+		  if (!latestMessages || latestMessages.length === 0){
+		  	latestMessages = [{
+			    thread: 0,
+			    date_sent: "1970-01-01T00:00:00"
+			  }];
+
+			  console.log("lm:")
+			  console.log(latestMessages)
+			  const channel = await client.channels.fetch(ch.dc_channel_id);
+			  const activeThreads = channel.threads.cache.values();
+
+			  //console.log("channel:")
+			  //console.log(channel)
+			  //console.log("activeThreads:")
+			  //console.log(activeThreads)
+
+			  for (const t of activeThreads) {
+			    const dbThread = await this.GetThreadFromPair(t.id, t.name);
+			    latestMessages.push({
+			      thread: dbThread.id,
+			      date_sent: "1970-01-01T00:00:00"
+			    });
+			  }
+			  console.log("latestMessages2:")
+			  console.log(latestMessages)
+		  }
 		  for (const lm of latestMessages){
 		  	let sourceChannel
 
@@ -97,10 +125,18 @@ export default {
 				    sourceChannel = await client.channels.fetch(threadInfo.dc_thread_id);
 				}
 
+				console.log("sourceChan:" + sourceChannel?.name ?? "none")
+
 		  	let messages = await fetchMessagesAfterFromTextChannel(sourceChannel, new Date(lm.date_sent))
 
+		  	console.log("messages:" + messages?.length ?? "none")
+
 		  	for (const m of messages){
-		  		let speaker = await this.GetCharacterFromCampaignAndName(ch.campaign, m.author.username)
+		  		console.log("campaign:" + ch?.campaign ?? "none")
+		  		console.log("m.author.username:" + m?.author?.globalName ?? "none")
+		  		console.log("m.content:" + m?.content ?? "none")
+		  		let speaker = await this.GetCharacterFromCampaignAndName(ch.campaign, m.author.globalName)
+		  		console.log("speaker:" + speaker.name ?? "none")
 		  		await this.CreateMessage({
 		  			message: m.content,
 		  			dc_message_id: m.id,
@@ -172,7 +208,7 @@ export default {
 		return data
 	},
 	GetLatestMessageFromChapter : async (chapterId) => {
-		const fetchUrl = `${API_URL}/clusterInput/message/latest/${chapterId}`
+		const fetchUrl = `${API_URL}/clusterOutput/message/latest/${chapterId}`
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -227,12 +263,14 @@ export default {
 		return data
 	},
 	GetCharacterFromCampaignAndName : async (campaignId, name) => {
-		const fetchUrl = `${API_URL}/character/pair/${campaignId}/${name}`
+		const fetchUrl = `${API_URL}/clusterOutput/character/pair/${campaignId}/${name}`
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
 
 		let data = await response.json()
+		console.log("fetch results:")
+		console.log(data)
 		return data
 	},
 	GetThreadFromPair : async (threadDiscordId, name) => {
