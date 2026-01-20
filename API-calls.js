@@ -110,9 +110,9 @@ export default {
 			      date_sent: "1970-01-01T00:00:00"
 			    });
 			  }
-			  console.log("latestMessages2:")
-			  console.log(latestMessages)
 		  }
+		  console.log("latestMessages2:")
+		  console.log(latestMessages)
 		  for (const lm of latestMessages){
 		  	let sourceChannel
 
@@ -132,12 +132,8 @@ export default {
 		  	console.log("messages:" + messages?.length ?? "none")
 
 		  	for (const m of messages){
-		  		console.log("campaign:" + ch?.campaign ?? "none")
-		  		console.log("m.author.username:" + m?.author?.globalName ?? "none")
-		  		console.log("m.content:" + m?.content ?? "none")
 		  		let speaker = await this.GetCharacterFromCampaignAndName(ch.campaign, m.author.globalName)
-		  		console.log("speaker:" + speaker.name ?? "none")
-		  		await this.CreateMessage({
+		  		let res = await this.CreateMessage({
 		  			message: m.content,
 		  			dc_message_id: m.id,
 		  			chapter: ch.id,
@@ -146,8 +142,11 @@ export default {
 		  			thread: m.channel.isThread() ? await this.GetThreadFromPair(m.channel.id, m.channel.name) : 0
 		  		})
 		  	}
+		  	console.log("exitted m loop")
 		  }
+		  console.log("exitted lm loop")
 		}
+		console.log("exitted ch loop")
 	},
 	UpdatePassword : async (dc_user_id, dc_username, password_clear) => {
 		const fetchUrl = `${API_URL}/users?discordId=${dc_user_id}&discordUsername=${dc_username}&passwordClear=${password_clear}`
@@ -178,7 +177,6 @@ export default {
 		return data
 	},
 	CreateMessage : async (messageJson) => {
-		messageJson.message = sanitize(messageJson.message)
 		const fetchUrl = `${API_URL}/clusterInput/message`
 		const response = await fetch(fetchUrl, {
 		  method: "POST",
