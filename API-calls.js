@@ -106,7 +106,7 @@ export default {
 			  for (const t of activeThreads) {
 			    const dbThread = await this.GetThreadFromPair(t.id, t.name);
 			    latestMessages.push({
-			      thread: dbThread.id,
+			      thread: {id:dbThread.id},
 			      date_sent: "1970-01-01T00:00:00"
 			    });
 			  }
