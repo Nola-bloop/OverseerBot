@@ -35,6 +35,9 @@ export default {
 		const guild = message.guild
 		const channel = message.channel
 
+		caller.Reply(message, "Command not implemented yet.")
+		return
+
 		let campaign = await caller.GetGuildCampaign(guild.id)
 		if (campaign.response){ console.log(campaign.response); await caller.Reply(message, "Could not create the chapter group: "+campaign.response) }
 		let name = extractArgument(message.content)
@@ -49,7 +52,6 @@ export default {
 
 		await caller.UpdateChapterToGroupRelation(chapterGroup.id, chapter.id)
 
-		caller.Reply(message, "Success.")
 	},
 	["hard-reload"] : async (message, client) => {
 		const user = message.author
