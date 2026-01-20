@@ -150,6 +150,7 @@ export default {
 	},
 	UpdatePassword : async (dc_user_id, dc_username, password_clear) => {
 		const fetchUrl = `${API_URL}/users?discordId=${dc_user_id}&discordUsername=${dc_username}&passwordClear=${password_clear}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "POST"
 		});
@@ -159,6 +160,7 @@ export default {
 	},
 	CreateChapterGroup : async (name, campaign) => {
 		const fetchUrl = `${API_URL}/clusterInput/chapterGroup?name=${name}&campaign=${campaign}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET"
 		});
@@ -168,7 +170,7 @@ export default {
 	},
 	CreateChapter : async (name, isCanon, dcChannelId, campaign, chapterGroup) => {
 		const fetchUrl = `${API_URL}/clusterInput/chapter?name=${name}&isCanon=${isCanon}&dcChannelId=${dcChannelId}&campaign=${campaign}&chapterGroup=${chapterGroup}`
-		console.log(fetchUrl)
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET"
 		});
@@ -178,6 +180,7 @@ export default {
 	},
 	CreateMessage : async (messageJson) => {
 		const fetchUrl = `${API_URL}/clusterInput/message`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "POST",
 		  headers: { "Content-Type": "application/json" },
@@ -189,6 +192,7 @@ export default {
 	},
 	CreateThread : async (name, dc_thread_id) => {
 		const fetchUrl = `${API_URL}/clusterInput/thread?name=${name}&dc_thread_id=${dc_thread_id}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -198,6 +202,7 @@ export default {
 	},
 	UpdateChapterToGroupRelation : async (chapterGroupId, chapterId) => {
 		const fetchUrl = `${API_URL}/clusterInput/chapter?chapterGroup=${chapterGroupId}&chapterId=${chapterId}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "PUT",
 		});
@@ -207,6 +212,7 @@ export default {
 	},
 	GetLatestMessageFromChapter : async (chapterId) => {
 		const fetchUrl = `${API_URL}/clusterOutput/message/latest/${chapterId}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -216,7 +222,7 @@ export default {
 	},
 	GetGuildCampaign : async (dc_guild_id) => {
 		const fetchUrl = `${API_URL}/clusterOutput/campaign/guild/${dc_guild_id}`
-		console.log(`guild fetch url: ${fetchUrl}`)
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -226,6 +232,7 @@ export default {
 	},
 	GetChapterFromChannelAndGuild : async (campaignId, channelId) => {
 		const fetchUrl = `${API_URL}/clusterOutput/chapter/campchanid/${campaignId}/${channelId}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -235,6 +242,7 @@ export default {
 	},
 	GetChapterGroupFromGuildAndName : async (campaignId, name) => {
 		const fetchUrl = `${API_URL}/clusterOutput/chapterGroup/pair/${campaignId}/${name}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -244,6 +252,7 @@ export default {
 	},
 	GetAllChaptersFromCampaign : async (campaignId) => {
 		const fetchUrl = `${API_URL}/clusterOutput/chapter/all/${campaignId}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -253,6 +262,7 @@ export default {
 	},
 	GetAllCampaigns : async (campaignId) => {
 		const fetchUrl = `${API_URL}/clusterOutput/campaign/all`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -262,6 +272,7 @@ export default {
 	},
 	GetCharacterFromCampaignAndName : async (campaignId, name) => {
 		const fetchUrl = `${API_URL}/clusterOutput/character/pair/${campaignId}/${name}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -273,6 +284,7 @@ export default {
 	},
 	GetThreadFromPair : async (threadDiscordId, name) => {
 		const fetchUrl = `${API_URL}/thread/pair/${threadDiscordId}/${name}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
@@ -282,6 +294,7 @@ export default {
 	},
 	GetThreadFromId : async (threadId) => {
 		const fetchUrl = `${API_URL}/thread/id/${threadId}`
+		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
 		  method: "GET",
 		});
