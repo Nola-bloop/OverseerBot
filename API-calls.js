@@ -111,7 +111,10 @@ export default {
 			  const activeThreads = channel.threads.cache.values();
 			  const allThreads = fetchAllThreads(channel);
 
-			  for (const t of activeThreads) {
+			  console.log("all threads")
+			  console.log(allThreads)
+
+			  for (const t of allThreads) {
 			    const dbThread = await this.GetThreadFromPair(t.id, t.name);
 			    latestMessages.push({
 			      thread: {id:dbThread.id},
