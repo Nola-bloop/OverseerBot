@@ -122,6 +122,7 @@ export default {
 			    date_sent: "1970-01-01T00:00:00"
 			  }];
 		  }
+		  console.log("threads comparaison: " + `${allThreads.length} > ${latestMessages.length}`)
 		  if (allThreads.length >= latestMessages.length){
 			  console.log("all threads")
 			  console.log(allThreads)
