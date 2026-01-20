@@ -99,18 +99,15 @@ export default {
 
 		for (const ch of chapters) {
 		  let latestMessages = await this.GetLatestMessageFromChapter(ch.id)
+		  const channel = await client.channels.fetch(ch.dc_channel_id);
+		  const allThreads = fetchAllThreads(channel);
 		  if (!latestMessages || latestMessages.length === 0){
 		  	latestMessages = [{
 			    thread: {id:0},
 			    date_sent: "1970-01-01T00:00:00"
 			  }];
-
-			  console.log("lm:")
-			  console.log(latestMessages)
-			  const channel = await client.channels.fetch(ch.dc_channel_id);
-			  const activeThreads = channel.threads.cache.values();
-			  const allThreads = fetchAllThreads(channel);
-
+		  }
+		  if (allThreads.length >= latestMessages.length){
 			  console.log("all threads")
 			  console.log(allThreads)
 
@@ -122,6 +119,8 @@ export default {
 			    });
 			  }
 		  }
+		  console.log("lm:")
+			console.log(latestMessages)
 		  for (const lm of latestMessages){
 		  	let sourceChannel
 
