@@ -116,12 +116,15 @@ export default {
 		  for (const lm of latestMessages){
 		  	let sourceChannel
 
-		  	if (lm.thread.id === 0) {
+		  	console.log("lm2:")
+		  	console.log(lm)
+
+		  	if (lm.thread === 0) {
 				    sourceChannel = await client.channels.fetch(ch.dc_channel_id);
 				}
 
-				if (lm.thread.id !== 0) {
-				    const threadInfo = await this.GetThreadFromId(lm.thread.id);
+				if (lm.thread !== 0) {
+				    const threadInfo = await this.GetThreadFromId(lm.thread);
 				    sourceChannel = await client.channels.fetch(threadInfo.dc_thread_id);
 				}
 
