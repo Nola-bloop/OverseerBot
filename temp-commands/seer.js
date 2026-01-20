@@ -44,7 +44,7 @@ export default {
 
 		await caller.CreateChapterGroup(name, campaign.id)
 
-		let chapterGroup = await GetChapterGroupFromGuildAndName(campaign.id, name)
+		let chapterGroup = await caller.GetChapterGroupFromGuildAndName(campaign.id, name)
 		//chapter group should exist, provided the API works.
 
 		await caller.UpdateChapterToGroupRelation(chapterGroup.id, chapter.id)
