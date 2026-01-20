@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-import caller from '../API-calls.js';
+import caller from './API-calls.js';
 
 import seerTempCommands from './temp-commands/seer.js'
 
@@ -56,9 +56,7 @@ client.on('interactionCreate', async interaction => {
   }
 });
 
-async function logNewMessages(){
-  let chapters = await caller.GetAllChaptersFromCampaign()
-}
+
 
 function periodic(f) {
     (function loop() {
@@ -73,55 +71,6 @@ function periodic(f) {
     })();
 }
 
-async function fetchAllMessagesAfter(client, channelId, afterDate) {
-    const channel = await client.channels.fetch(channelId);
-    if (!channel || !channel.isTextBased()) {
-        throw new Error("Channel not found or not a text-based channel");
-    }
-
-    const cutoff = new Date(afterDate);
-    const collected = [];
-
-    // Helper to fetch messages from a single channel or thread
-    async function fetchFromTextChannel(textChannel) {
-        let lastId = null;
-
-        while (true) {
-            const options = { limit: 100 };
-            if (lastId) options.after = lastId;
-
-            const messages = await textChannel.messages.fetch(options);
-            if (messages.size === 0) break;
-
-            for (const msg of messages.values()) {
-                if (msg.createdAt > cutoff) {
-                    collected.push(msg);
-                }
-            }
-
-            lastId = messages.last().id;
-        }
-    }
-
-    // Fetch from the main channel
-    await fetchFromTextChannel(channel);
-
-    // Fetch from all threads inside the channel
-    const threadList = await channel.threads.fetchActive();
-    const archivedList = await channel.threads.fetchArchived();
-
-    const allThreads = [
-        ...threadList.threads.values(),
-        ...archivedList.threads.values()
-    ];
-
-    for (const thread of allThreads) {
-        await fetchFromTextChannel(thread);
-    }
-
-    return collected;
-}
-
 function extractCommandName(input) {
     const match = input.trim().match(/^&(\S+)/);
     return match ? match[1] : null;
@@ -132,7 +81,7 @@ client.on('messageCreate', message => {
   if (message.content[0] === '&'){
     let command = extractCommandName(message.content)
     if (seerTempCommands[command]){
-      seerTempCommands[command](message).then(() => {
+      seerTempCommands[command](message, client).then(() => {
         //message.delete()
       })
     }

@@ -16,7 +16,7 @@ function extractArgument(input) {
 }
 
 export default {
-	["track-channel"] : async (message) => {
+	["track-channel"] : async (message, client) => {
 		const user = message.author
 		const guild = message.guild
 		const channel = message.channel
@@ -30,7 +30,7 @@ export default {
 		await caller.CreateChapter(channel.name, 1, channel.id, campaign.id, 0)
 		await caller.Reply(message, "Success.")
 	},
-	["set-group"] : async (message) => {
+	["set-group"] : async (message, client) => {
 		const user = message.author
 		const guild = message.guild
 		const channel = message.channel
@@ -50,5 +50,12 @@ export default {
 		await caller.UpdateChapterToGroupRelation(chapterGroup.id, chapter.id)
 
 		caller.Reply(message, "Success.")
+	},
+	["hard-reload"] : async (message, client) => {
+		const user = message.author
+		const guild = message.guild
+		const channel = message.channel
+
+		caller.LogNewMessages(client)
 	}
 }
