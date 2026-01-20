@@ -89,7 +89,7 @@ export default {
 		  let latestMessages = await this.GetLatestMessageFromChapter(ch.id)
 		  if (!latestMessages || latestMessages.length === 0){
 		  	latestMessages = [{
-			    thread: 0,
+			    thread: {id:0},
 			    date_sent: "1970-01-01T00:00:00"
 			  }];
 
