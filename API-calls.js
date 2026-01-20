@@ -52,7 +52,7 @@ async function fetchAllThreads(channel) {
     	archivedThreads = []
     }
 
-    console.log("threads of "+channel.name)
+    console.log("threads of "+channel.name+" ; " + [...activeThreads, ...archivedThreads].length)
     console.log([...activeThreads, ...archivedThreads])
 
 
