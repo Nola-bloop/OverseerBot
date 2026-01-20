@@ -115,7 +115,7 @@ export default {
 		for (const ch of chapters) {
 		  let latestMessages = await this.GetLatestMessageFromChapter(ch.id)
 		  const channel = await client.channels.fetch(ch.dc_channel_id);
-		  const allThreads = fetchAllThreads(channel);
+		  const allThreads = await fetchAllThreads(channel);
 		  if (!latestMessages || latestMessages.length === 0){
 		  	latestMessages = [{
 			    thread: {id:0},
