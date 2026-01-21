@@ -315,7 +315,7 @@ export default {
 		const fetchUrl = `${API_URL}/clusterOutput/thread/pair/`
 		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
-		  method: "GET",
+		  method: "POST",
 		  headers: { "Content-Type": "application/json" },
 		  body: JSON.stringify({
 		  	name:name,
