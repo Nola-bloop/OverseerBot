@@ -124,10 +124,12 @@ export default {
 		  }
 		  console.log("threads comparaison: " + `${allThreads.length} > ${latestMessages.length}`)
 		  if (allThreads.length >= latestMessages.length){
-			  console.log("all threads")
-			  console.log(allThreads)
+			  //console.log("all threads")
+			  //console.log(allThreads)
 
 			  for (const t of allThreads) {
+			  	console.log("t:")
+			  	console.log(t)
 			    const dbThread = await this.GetThreadFromPair(t.id, t.name);
 			    latestMessages.push({
 			      thread: {id:dbThread.id},
