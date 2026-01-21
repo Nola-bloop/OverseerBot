@@ -1,4 +1,4 @@
-const API_URL = "http://107.152.41.172:8889"
+const API_URL = "https://nolar-eclipse.ca:8443"
 import { MessageFlags } from 'discord.js';
 
 function sanitize(str) {
