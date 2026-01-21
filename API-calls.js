@@ -52,8 +52,8 @@ async function fetchAllThreads(channel) {
     	archivedThreads = []
     }
 
-    console.log("threads of "+channel.name+" ; " + [...activeThreads, ...archivedThreads].length)
-    console.log([...activeThreads, ...archivedThreads])
+    //console.log("threads of "+channel.name+" ; " + [...activeThreads, ...archivedThreads].length)
+    //console.log([...activeThreads, ...archivedThreads])
 
 
     // Combine both active and archived threads
@@ -136,20 +136,22 @@ export default {
 			  }
 		  }
 		  console.log("lm:")
-			console.log(latestMessages)
+		  console.log(latestMessages)
 		  for (const lm of latestMessages){
 		  	let sourceChannel
 
+
+
 		  	if (lm.thread.id === 0) {
-				    sourceChannel = await client.channels.fetch(ch.dc_channel_id);
-				}
+			    sourceChannel = await client.channels.fetch(ch.dc_channel_id);
+			}
 
-				if (lm.thread.id !== 0) {
-				    const threadInfo = await this.GetThreadFromId(lm.thread.id);
-				    sourceChannel = await client.channels.fetch(threadInfo.dc_thread_id);
-				}
+			if (lm.thread.id !== 0) {
+			    const threadInfo = await this.GetThreadFromId(lm.thread.id);
+			    sourceChannel = await client.channels.fetch(threadInfo.dc_thread_id);
+			}
 
-				console.log("sourceChan:" + sourceChannel?.name ?? "none")
+			console.log("sourceChan:" + sourceChannel?.name ?? "none")
 
 		  	let messages = await fetchMessagesAfterFromTextChannel(sourceChannel, new Date(lm.date_sent))
 
@@ -307,8 +309,6 @@ export default {
 		});
 
 		let data = await response.json()
-		console.log("fetch results:")
-		console.log(data)
 		return data
 	},
 	GetThreadFromPair : async (threadDiscordId, name) => {
