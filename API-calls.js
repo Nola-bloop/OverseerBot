@@ -215,10 +215,15 @@ export default {
 		return data
 	},
 	CreateThread : async (name, dc_thread_id) => {
-		const fetchUrl = `${API_URL}/clusterInput/thread?name=${name}&dc_thread_id=${dc_thread_id}`
+		const fetchUrl = `${API_URL}/clusterInput/thread`
 		console.log("Fetching : "+fetchUrl)
 		const response = await fetch(fetchUrl, {
-		  method: "GET",
+		  method: "POST",
+		  headers: { "Content-Type": "application/json" },
+		  body: JSON.stringify({
+		  	name:name,
+		  	dc_thread_id:dc_thread_id
+		  })
 		});
 
 		let data = await response.json()
