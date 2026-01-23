@@ -54,12 +54,17 @@ async function fetchAllThreads(channel) {
     	archivedThreads = []
     }
 
-    //console.log("threads of "+channel.name+" ; " + [...activeThreads, ...archivedThreads].length)
-    //console.log([...activeThreads, ...archivedThreads])
-
 
     // Combine both active and archived threads
     const allThreads = [...activeThreads, ...archivedThreads];
+
+    for (let i = 0; i < allThreads.length; i++){
+    	if (!allThreads[i].name){
+    		for (let j = 0; j < allThreads[i].length; j++){
+    			if (allThreads[i][j].name) allThreads[i] = allThreads[i][j]
+    		}
+    	}
+    }
 
     return allThreads;
 }
