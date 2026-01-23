@@ -132,7 +132,7 @@ export default {
 			  for (const t of allThreads) {
 			  	console.log("t:")
 			  	console.log(t.name)
-			  	if (!t.name) console.log(t)
+			  	if (!t.name) console.log(t[0])
 			    const dbThread = await this.GetThreadFromPair(t.id, t.name);
 			    latestMessages.push({
 			      thread: {id:dbThread.id},
@@ -163,7 +163,7 @@ export default {
 		  	console.log("messages:" + messages?.length ?? "none")
 
 		  	for (const m of messages){
-		  		if (message.type === 18) continue //skip thread initiators
+		  		if (m.type === 18) continue //skip thread initiators
 		  		let speaker = await this.GetCharacterFromCampaignAndName(ch.campaign, m.member?.displayName ?? m.author.globalName ?? m.author.username ?? "Unnamed")
 		  		let res = await this.CreateMessage({
 		  			message: m.content,
