@@ -131,7 +131,7 @@ export default {
 
 			  for (const t of allThreads) {
 			  	console.log("t:")
-			  	console.log(t)
+			  	console.log(t.name)
 			    const dbThread = await this.GetThreadFromPair(t.id, t.name);
 			    latestMessages.push({
 			      thread: {id:dbThread.id},
