@@ -1,6 +1,8 @@
 const API_URL = "https://nolar-eclipse.ca:8443"
 import { MessageFlags } from 'discord.js';
 
+const TUPPERBOTID = "431544605209788416"
+
 function sanitize(str) {
     return str.replace(/&/g, '&amp;')
               .replace(/</g, '&lt;')
@@ -160,7 +162,8 @@ export default {
 		  	console.log("messages:" + messages?.length ?? "none")
 
 		  	for (const m of messages){
-		  		let speaker = await this.GetCharacterFromCampaignAndName(ch.campaign, m.author.globalName ?? m.author.username ?? "Unnamed")
+		  		if (message.type === 18) continue //skip thread initiators
+		  		let speaker = await this.GetCharacterFromCampaignAndName(ch.campaign, m.member?.displayName ?? m.author.globalName ?? m.author.username ?? "Unnamed")
 		  		let res = await this.CreateMessage({
 		  			message: m.content,
 		  			dc_message_id: m.id,
