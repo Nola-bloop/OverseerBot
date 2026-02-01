@@ -79,11 +79,11 @@ export default {
 			}
 
 			let campaign = await caller.GetGuildCampaign(guild.id)
-			if (campaign.response){ console.log(campaign.response); return await caller.Reply(message, "Could not create the chapter: "+campaign.response) }
-			if (!campaign){ console.log("Could not fetch campaign"); return await caller.Reply(message, "Could not create the chapter.") }
+			if (campaign.response){ console.log(campaign.response); return await caller.Reply(interaction, "Could not create the chapter: "+campaign.response) }
+			if (!campaign){ console.log("Could not fetch campaign"); return await caller.Reply(interaction, "Could not create the chapter.") }
 
 			await caller.CreateChapter(channel.name, 1, channel.id, campaign.id, 0)
-			await caller.Reply(message, "Success.")
+			await caller.Reply(interaction, "Success.")
 
 		}
 		else if (sub === "forced-refresh"){
@@ -92,10 +92,10 @@ export default {
 			}
 
 			await caller.LogNewMessages(client)
-			return await caller.Respond(message, "success")
+			return await caller.Respond(interaction, "success")
 		}
 		else if (sub === "url"){
-			return await caller.Respond(message, "[nolar-eclipse.ca](https://nolar-eclipse.ca/?guild="+guild.id+")")
+			return await caller.Respond(interaction, "[nolar-eclipse.ca](https://nolar-eclipse.ca/?guild="+guild.id+")")
 		}
 	}
 };
