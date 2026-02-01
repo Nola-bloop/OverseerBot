@@ -32,17 +32,17 @@ export default {
         )
 	)
 	.addSubcommand(subCommand =>
-		addSubcommand
+		subCommand
 		.setName('track-channel')
 		.setDescription('Add this channel to the tracked channel list.')
 	)
 	.addSubcommand(subCommand =>
-		addSubcommand
+		subCommand
 		.setName('forced-refresh')
 		.setDescription('Make the bot scan the channels ahead of schedule.')
 	)
 	.addSubcommand(subCommand =>
-		addSubcommand
+		subCommand
 		.setName('url')
 		.setDescription("Get a link to the guild's campaign.")
 	),
