@@ -227,7 +227,7 @@ export default {
 		});
 
 		let data = await response.json()
-		console.log("message res: "+data)
+		console.log("message res: "+data.response)
 		return data
 	},
 	CreateThread : async (name, dc_thread_id) => {
