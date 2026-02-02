@@ -91,7 +91,7 @@ export default {
 				return await caller.Reply(interaction, "You are not authorized to use this command.")
 			}
 
-			await caller.LogNewMessages(client)
+			await caller.LogNewMessages(interaction.client)
 			return await caller.Respond(interaction, "success")
 		}
 		else if (sub === "url"){
