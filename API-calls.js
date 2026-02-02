@@ -214,9 +214,7 @@ export default {
 		const response = await fetch(fetchUrl, {
 		  method: "GET"
 		});
-
 		let data = await response.json()
-		console.log("message res: "+data)
 		return data
 	},
 	CreateMessage : async (messageJson) => {
@@ -229,6 +227,7 @@ export default {
 		});
 
 		let data = await response.json()
+		console.log("message res: "+data)
 		return data
 	},
 	CreateThread : async (name, dc_thread_id) => {
