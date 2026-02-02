@@ -98,11 +98,14 @@ async function fetchMessagesAfterFromTextChannel(channel, afterDate) {
 }
 
 export default {
-	Respond : async (interaction, message) => {
-		await interaction.reply({ content: message, flags: MessageFlags.Ephemeral })
+	deferReply : async (interaction, message) => {
+		await interaction.deferReply({ flags: [MessageFlags.Ephemeral] })
 	},
 	Reply : async (interaction, message) => {
 		await interaction.reply({ content: message, flags: MessageFlags.Ephemeral })
+	},
+	editDeferReply : async (interaction, message) => {
+		await interaction.editReply({ content: message })
 	},
 	LogNewMessages: async function (client) {
 	  let campaigns = await this.GetAllCampaigns()
@@ -217,7 +220,7 @@ export default {
 	},
 	CreateMessage : async (messageJson) => {
 		const fetchUrl = `${API_URL}/clusterInput/message`
-		console.log("Fetching : "+fetchUrl)
+		console.log("Fetching : "+fetchUrl+" ; "+messageJson.message)
 		const response = await fetch(fetchUrl, {
 		  method: "POST",
 		  headers: { "Content-Type": "application/json" },
