@@ -90,6 +90,7 @@ export default {
 			if (!AUTHORIZED_USERS.includes(user.id)){
 				return await caller.Reply(interaction, "You are not authorized to use this command.")
 			}
+			await caller.Respond(interaction, "Logging...")
 
 			await caller.LogNewMessages(interaction.client)
 			return await caller.Respond(interaction, "success")
