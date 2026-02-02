@@ -17,6 +17,7 @@ function extractArgument(input) {
 
 export default {
 	["track-channel"] : async (message, client) => {
+		return await caller.Respond(message, "Command disabled.")
 		const user = message.author
 		const guild = message.guild
 		const channel = message.channel
@@ -31,6 +32,7 @@ export default {
 		await caller.Reply(message, "Success.")
 	},
 	["set-group"] : async (message, client) => {
+		return await caller.Respond(message, "Command disabled.")
 		const user = message.author
 		const guild = message.guild
 		const channel = message.channel
@@ -54,6 +56,7 @@ export default {
 
 	},
 	["hard-reload"] : async (message, client) => {
+		return await caller.Respond(message, "Command disabled.")
 		const user = message.author
 		const guild = message.guild
 		const channel = message.channel
@@ -62,6 +65,7 @@ export default {
 		return await caller.Respond(message, "success")
 	},
 	["url"] : async (message, client) => {
+		return await caller.Respond(message, "Command disabled.")
 		const user = message.author
 		const guild = message.guild
 		const channel = message.channel

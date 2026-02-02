@@ -74,7 +74,7 @@ export default {
 			await caller.UpdateChapterToGroupRelation(chapterGroup.id, chapter.id)
 		}
 		else if (sub === "track-channel"){
-			if (!AUTHORIZED_USERS.contains(user.id)){
+			if (!AUTHORIZED_USERS.includes(user.id)){
 				return await caller.Reply(interaction, "You are not authorized to use this command.")
 			}
 
@@ -87,7 +87,7 @@ export default {
 
 		}
 		else if (sub === "forced-refresh"){
-			if (!AUTHORIZED_USERS.contains(user.id)){
+			if (!AUTHORIZED_USERS.includes(user.id)){
 				return await caller.Reply(interaction, "You are not authorized to use this command.")
 			}
 
