@@ -220,7 +220,7 @@ export default {
 	},
 	CreateMessage : async (messageJson) => {
 		const fetchUrl = `${API_URL}/clusterInput/message`
-		console.log("Fetching : "+fetchUrl+" ; "+messageJson.message)
+		console.log("Fetching : "+fetchUrl+" ; "+messageJson.message.substring(0, 15)+"...")
 		const response = await fetch(fetchUrl, {
 		  method: "POST",
 		  headers: { "Content-Type": "application/json" },
