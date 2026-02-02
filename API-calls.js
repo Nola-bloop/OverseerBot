@@ -216,6 +216,7 @@ export default {
 		});
 
 		let data = await response.json()
+		console.log("message res: "+data)
 		return data
 	},
 	CreateMessage : async (messageJson) => {
