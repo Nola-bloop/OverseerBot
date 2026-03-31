@@ -165,8 +165,12 @@ const AUTHORIZED_USERS = [
 	"1290040130622591038",
 ]
 
-function getRandomElement(array, pullCount){
+function getRandomElement(array, pullCount = 1, omit = []){
     let selection = []
+
+    for (let i = 0; i < omit.length; i++){
+        array = array.filter(item => item !== omit[i])
+    }
 
     for (let i = 0; i < pullCount; i++){
         let element = array[Math.floor(Math.random() * array.length)]
@@ -299,7 +303,8 @@ export default {
 
             if (addNPCs) charaPool.push(...NPC_POOL)
 
-            let characters = getRandomElement(charaPool, pickCount)
+            let characters = getRandomElement(charaPool, pickCount, CHARACTER_RELATIONS[user.id] ?? [])
+
 
 
 
