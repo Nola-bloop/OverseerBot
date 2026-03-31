@@ -323,7 +323,7 @@ export default {
             if (includeOwnPc) {
                 let pc = getRandomElement(CHARACTER_RELATIONS[user.id], 1)[0]
 
-                pcLine += "\n Your PC: `" + pc + "`"
+                pcLine += "\n Your character: `" + pc + "`"
             }
 
 
@@ -331,7 +331,7 @@ export default {
 
             msg += '> "'+prompt+'"\n\n'
 
-            if (characters.length == 1) msg += 'Selected character: ' + characters[0]
+            if (characters.length == 1) msg += 'Selected character: `' + characters[0] + '`'
             else if(characters.length < 1) {/* nothing */}
             else{
                 msg += 'Selected characters:\n'
