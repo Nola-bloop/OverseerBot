@@ -52,12 +52,12 @@ const AUTHORIZED_USERS = [
 ]
 
 function getRandomElement(array, pullCount){
-
     let selection = []
 
     for (let i = 0; i < pullCount; i++){
-        selection.push(array[Math.floor(Math.random() * array.length)])
-        array = array.filter(item => item !== selection[selection.length])
+        let element = array[Math.floor(Math.random() * array.length)]
+        selection.push(element)
+        array = array.filter(item => item !== element)
     }
 
     return selection;
