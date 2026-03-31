@@ -198,7 +198,7 @@ export default {
 
             msg += 'Selected characters:\n'
 
-            msg += '`\n'
+            msg += '`'
 
             for (let i = 0; i < characters.length; i++){
                 msg += characters[i]+'\n'
