@@ -229,7 +229,7 @@ export default {
         .addBooleanOption(option =>
             option
             .setName("add-npcs")
-            .setDescription("(True: Add characters like Samira, Kaz, etc to the selection pool.")
+            .setDescription("True: Add characters like Samira, Kaz, etc to the selection pool.")
             .setRequired(false)
         )
         .addBooleanOption(option =>
