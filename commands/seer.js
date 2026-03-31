@@ -229,13 +229,20 @@ export default {
         .addBooleanOption(option =>
             option
             .setName("add-npcs")
-            .setDescription("Add characters like Samira, Kaz, etc to the selection pool.")
+            .setDescription("(True: Add characters like Samira, Kaz, etc to the selection pool.")
+            .setRequired(false)
+        )
+        .addBooleanOption(option =>
+            option
+            .setName("include-own-pc")
+            .setDescription("True: additionally draw one of your own characters. (not in character count)")
             .setRequired(false)
         )
         .addIntegerOption(option =>
             option
             .setName('character-count')
             .setDescription("Select <this many> characters for the cast.")
+            .setRequired(false)
         )
 
     ),
@@ -293,6 +300,7 @@ export default {
 		}
         else if (sub === "get-prompt"){
             const addNPCs = interaction.options.getBoolean('add-npcs') ?? false
+            const includeOwnPc = interaction.options.getBoolean('include-own-pc') ?? false
             const pickCount = interaction.options.getInteger('character-count') ?? 1
 
 
@@ -310,6 +318,13 @@ export default {
 
             let prompt = getRandomElement(PROMPT_POOL, 1)[0]
 
+
+            let pcLine = ""
+            if (includeOwnPc) {
+                let pc = getRandomElement(CHARACTER_RELATIONS[user.id], 1)[0]
+
+                pcLine += "\n Your PC: `" + pc + "`"
+            }
 
 
             let msg = `## Your prompt:\n\n`
