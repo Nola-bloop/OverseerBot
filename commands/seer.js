@@ -340,6 +340,7 @@ export default {
                 }
             }
 
+            msg += pcLine
 
             return await caller.Reply(interaction, msg)
         }
