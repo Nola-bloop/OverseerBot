@@ -31,6 +31,52 @@ const NPC_POOL = [
 
 ]
 
+const CHARACTER_RELATIONS = {
+    //Sy
+    "1290040130622591038": [
+        "Arya",
+        "Laucian",
+        "Kazmir",
+        "Samira",
+        "Valen"
+    ],
+
+    //Cat
+    "337426564121755649":[
+        "Onyx",
+        "Emeril",
+        "Kaelus",
+        "Leonidas",
+        "Stellan",
+    ],
+
+    //Cam
+    "323516007023116289":[
+        "Éponine"
+    ],
+
+    //Nola
+    "300012833016512514":[
+        "Gabrielle",
+        "Evander",
+    ],
+
+    //Jill
+    "107285545180270592":[
+        "Guinevere",
+        "Pragma",
+    ],
+
+    //Jaz
+    "422206294158475284":[
+        "Atrel",
+        "Ranona",
+        "Vesper",
+        "Terathi'in",
+        "The foreteller",
+    ],
+}
+
 const PROMPT_POOL = [
     //prompts written by Sy
     `That wasn't supposed to happen`,
@@ -265,14 +311,15 @@ export default {
 
             msg += '> "'+prompt+'"\n\n'
 
-            msg += 'Selected characters:\n'
-
-            msg += '`'
-
-            for (let i = 0; i < characters.length; i++){
-                msg += characters[i]+'\n'
+            if (characters.length == 1) msg += 'Selected character: ' + characters[0]
+            else if(characters.length < 1) {/* nothing */}
+            else{
+                msg += 'Selected characters:\n'
+                for (let i = 0; i < characters.length; i++){
+                    msg += '`'+characters[i]+'``\n'
+                }
             }
-            msg += '`'
+
 
             return await caller.Reply(interaction, msg)
         }
