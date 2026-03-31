@@ -316,7 +316,7 @@ export default {
             else{
                 msg += 'Selected characters:\n'
                 for (let i = 0; i < characters.length; i++){
-                    msg += '`'+characters[i]+'``\n'
+                    msg += '`'+characters[i]+'`\n'
                 }
             }
 
