@@ -56,6 +56,7 @@ function getRandomElement(array, pullCount){
 
     for (let i = 0; i < pullCount; i++){
         let element = array[Math.floor(Math.random() * array.length)]
+        if (element === undefined) continue
         selection.push(element)
         array = array.filter(item => item !== element)
     }
