@@ -9,7 +9,7 @@ const PC_POOL = [
     "Guinevere",
     "Pragma",
     "Atrel",
-    "Winnie"
+    "Winnie",
     "Ranona",
 ]
 
@@ -40,7 +40,7 @@ const PROMPT_POOL = [
     `Stay. Just for a minute.`,
     `I made this for you.`,
     `Do you hate me for it?`,
-    `I can't fix this`
+    `I can't fix this`,
     `I thought of you`,
     `I'll stay up with you.`,
     `You're terrible at this.`
