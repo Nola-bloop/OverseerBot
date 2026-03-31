@@ -1,10 +1,67 @@
 import { SlashCommandBuilder, MessageFlags } from 'discord.js';
 import caller from '../API-calls.js';
 
+const PC_POOL = [
+    "Arya",
+    "Onyx",
+    "Éponine",
+    "Gabrielle",
+    "Guinevere",
+    "Pragma",
+    "Atrel",
+    "Winnie"
+    "Ranona",
+]
+
+const NPC_POOL = [
+    "Laucian",
+    "Kazmir",
+    "Samira",
+    "Valen",
+    "Vesper",
+    "Emeril",
+    "Kaelus"
+
+    //the ones below will be added later once we know more about them
+    //"Terathi'in",
+    //"The foreteller",
+    //"Leonidas",
+    //"Stellan",
+    //"Evander",
+
+]
+
+const PROMPT_POOL = [
+    `That wasn't supposed to happen`,
+    `I didn't think it would hurt this much`,
+    `Say it again. slowly`,
+    `That's not what you told me last time.`,
+    `You promised.`,
+    `Stay. Just for a minute.`,
+    `I made this for you.`,
+    `Do you hate me for it?`,
+    `I can't fix this`
+    `I thought of you`,
+    `I'll stay up with you.`,
+    `You're terrible at this.`
+]
+
 const AUTHORIZED_USERS = [
 	"300012833016512514", //Nola
 	"1290040130622591038",
 ]
+
+function getRandomElement(array, pullCount){
+
+    let selection = []
+
+    for (let i = 0; i < pullCount; i++){
+        selection.push(array[Math.floor(Math.random() * array.length)])
+        array = array.filter(item => item !== selection[selection.length])
+    }
+
+    return selection;
+}
 
 export default {
 	data: new SlashCommandBuilder()
@@ -45,7 +102,24 @@ export default {
 		subCommand
 		.setName('url')
 		.setDescription("Get a link to the guild's campaign.")
-	),
+	)
+    .addSubcommand(subCommand =>
+        subCommand
+        .setName('get-prompt')
+        .setDescription("Get a prompt, along with characters to use.")
+        .addBooleanOption(option =>
+            option
+            .setName("add-npcs")
+            .setDescription("Add characters like Samira, Kaz, etc to the selection pool.")
+            .setRequired(false)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName('character-count')
+            .setDescription("Select <this many> characters for the cast.")
+        )
+
+    ),
 	async execute (interaction) {
 		const user = interaction.member.user;
 		const sub = interaction.options.getSubcommand();
@@ -98,5 +172,40 @@ export default {
 		else if (sub === "url"){
 			return await caller.Reply(interaction, "[nolar-eclipse.ca](https://nolar-eclipse.ca/?guild="+guild.id+")")
 		}
+        else if (sub === "get-prompt"){
+            const addNPCs = interaction.options.getBoolean('add-npcs') ?? false
+            const pickCount = interaction.options.getInteger('character-count') ?? 1
+
+
+
+            if (pickCount < 0) pickCount = 0
+
+            let charaPool = [...PC_POOL]
+
+            if (addNPCs) charaPool.push(...NPC_POOL)
+
+            let characters = getRandomElement(charaPool, pickCount)
+
+
+
+            let prompt = getRandomElement(PROMPT_POOL, 1)[0]
+
+
+
+            let msg = `## Your prompt:\n\n`
+
+            msg += '> "'+prompt+'"\n\n'
+
+            msg += 'Selected characters:\n'
+
+            msg += '`\n'
+
+            for (let i = 0; i < characters.length; i++){
+                msg += characters[i]+'\n'
+            }
+            msg += '`'
+
+            return await caller.Reply(interaction, msg)
+        }
 	}
 };
