@@ -36,7 +36,8 @@ for (const file of commandFiles) {
 
 // Bot is ready 
 client.once('clientReady', () => { 
-  console.log(`Logged in as ${client.user.tag}`); 
+  console.log(`Logged in as ${client.user.tag}`);
+  periodic(caller.LogNewMessages, client)
 });
 
 let connection;
@@ -59,12 +60,12 @@ client.on('interactionCreate', async interaction => {
 
 
 
-function periodic(f) {
+function periodic(f, arg) {
     (function loop() {
         let now = new Date();
         //every 4:00 in the morning
         if (now.getHours() === 4 && now.getMinutes() === 0) {
-            f();
+            f(arg);
         }
         now = new Date();                  // allow for time passing
         let delay = 60000 - (now.getTime() % 60000); // exact ms to next minute interval
