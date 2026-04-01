@@ -101,8 +101,11 @@ export default {
 	deferReply : async (interaction, message) => {
 		await interaction.deferReply({ flags: [MessageFlags.Ephemeral] })
 	},
-	Reply : async (interaction, message) => {
-		await interaction.reply({ content: message, flags: MessageFlags.Ephemeral })
+	Reply : async (interaction, message, ephemeral = true) => {
+        if (ephemeral)
+		    await interaction.reply({ content: message, flags: MessageFlags.Ephemeral })
+        else
+            await interaction.reply({ content: message })
 	},
 	editDeferReply : async (interaction, message) => {
 		await interaction.editReply({ content: message })

@@ -346,7 +346,12 @@ export default {
             .setDescription("Select <this many> characters for the cast.")
             .setRequired(false)
         )
-
+        .addBooleanOption(option =>
+            option
+            .setName("disable-ephemeral")
+            .setDescription("True: Send the message for everyone, so that anyone can see the prompt.")
+            .setRequired(false)
+        )
     ),
 	async execute (interaction) {
 		const user = interaction.member.user;
@@ -404,6 +409,7 @@ export default {
             const addNPCs = interaction.options.getBoolean('add-npcs') ?? false
             const includeOwnPc = interaction.options.getBoolean('include-own-pc') ?? false
             const pickCount = interaction.options.getInteger('character-count') ?? 1
+            const disableEphemeral = interaction.options.getBoolean('disable-ephemeral') ?? false
 
 
 
@@ -444,7 +450,7 @@ export default {
 
             msg += pcLine
 
-            return await caller.Reply(interaction, msg)
+            return await caller.Reply(interaction, msg, !disableEphemeral)
         }
 	}
 };
