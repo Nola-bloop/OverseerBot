@@ -354,7 +354,7 @@ export function buildPage(list, page) {
             new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
                 .setCustomId('info_entry_'+currentEntries[i])
-                .setLabel(currenEntries[i])
+                .setLabel(currentEntries[i])
                 .setStyle(ButtonStyle.Primary)
             )
         )
