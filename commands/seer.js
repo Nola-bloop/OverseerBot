@@ -552,7 +552,7 @@ export default {
             }
             */
             
-            await interaction.reply(buildBestiaryPage(0));
+            await interaction.reply(buildPage(0));
         }
 	}
 };
