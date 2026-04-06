@@ -56,6 +56,8 @@ client.on('interactionCreate', async interaction => {
                 ephemeral: true
             });
         }
+        
+        return
     }
     
     // When user presses page buttons
@@ -70,6 +72,8 @@ client.on('interactionCreate', async interaction => {
             const currentPage = parseInt(interaction.customId.split('_')[2]);
             await interaction.update(buildBestiaryPage(currentPage + 1));
         }
+        
+        return
     }
     
     
@@ -81,10 +85,10 @@ client.on('interactionCreate', async interaction => {
     if (!command) return;
     
     try {
-    await command.execute(interaction);
+        await command.execute(interaction);
     } catch (error) {
-    console.error(error);
-    await interaction.reply({ content: 'There was an error: \n```'+error+'```', flags: MessageFlags.Ephemeral });
+        console.error(error);
+        await interaction.reply({ content: 'There was an error: \n```'+error+'```', flags: MessageFlags.Ephemeral });
     }
 });
 
