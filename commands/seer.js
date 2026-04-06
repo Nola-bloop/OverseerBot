@@ -561,7 +561,7 @@ export default {
             }
             */
             
-            await interaction.reply(buildPage(0));
+            await interaction.reply(buildPage(entries, 0));
         }
 	}
 };
