@@ -47,12 +47,11 @@ client.on('interactionCreate', async interaction => {
     // When user clicks an entry
     if (interaction.isStringSelectMenu()) {
         if (interaction.customId.startsWith('info_select_')) {
-            const selected = interaction.values[0];
-    
-            const entry = entries.find(e => e.id === selected);
+            const key = interaction.values[0];
+            const entry = entries[key];
     
             await interaction.reply({
-                content: `You clicked ${entry.name}`,
+                content: `You clicked ${key}`,
                 ephemeral: true
             });
         }
