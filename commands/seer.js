@@ -1,4 +1,12 @@
-import { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from 'discord.js';
+import { 
+    SlashCommandBuilder, 
+    ActionRowBuilder, 
+    StringSelectMenuBuilder, 
+    StringSelectMenuOptionBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder
+} from 'discord.js';
 import caller from '../API-calls.js';
 import entries from '../entries.js'
 
@@ -269,6 +277,8 @@ const AUTHORIZED_USERS = [
 	"1290040130622591038",
 ]
 
+const PAGE_SIZE = 10;
+
 function getRandomElement(array, pullCount = 1, omit = []){
     let selection = []
 
@@ -289,6 +299,58 @@ function getRandomElement(array, pullCount = 1, omit = []){
 function formatName(string) {
     string = string.toLowerCase()
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function buildPage(list, page) {
+    let keys = Object.keys(list)
+    const maxPage = Math.ceil(keys.length / PAGE_SIZE) - 1;
+
+    page = Math.max(0, Math.min(page, maxPage));
+
+    const start = page * PAGE_SIZE;
+    const currentEntries = keys.slice(start, start + PAGE_SIZE);
+
+    const embed = new EmbedBuilder()
+        .setTitle('Bestiary')
+        .setDescription(
+            currentEntries
+                .map((entry, i) => `${start + i + 1}. ${entry.name}`)
+                .join('\n')
+        )
+        .setFooter({ text: `Page ${page + 1}/${maxPage + 1}` });
+
+    const menu = new StringSelectMenuBuilder()
+        .setCustomId(`info_select_${page}`)
+        .setPlaceholder('Choose an entry')
+        .addOptions(
+            currentEntries.map(entry =>
+                new StringSelectMenuOptionBuilder()
+                    .setLabel(entry.name)
+                    .setValue(entry.id)
+            )
+        );
+
+    const buttons = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId(`info_prev_${page}`)
+            .setLabel('◀')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(page === 0),
+
+        new ButtonBuilder()
+            .setCustomId(`info_next_${page}`)
+            .setLabel('▶')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(page === maxPage)
+    );
+
+    return {
+        embeds: [embed],
+        components: [
+            new ActionRowBuilder().addComponents(menu),
+            buttons
+        ]
+    };
 }
 
 export default {
@@ -489,32 +551,7 @@ export default {
             }
             */
             
-            const menu = new StringSelectMenuBuilder()
-                .setCustomId('fruit_menu')
-                .setPlaceholder('Choose a fruit')
-                .addOptions(
-                    new StringSelectMenuOptionBuilder()
-                        .setLabel('Apple')
-                        .setDescription('Pick apple')
-                        .setValue('apple'),
-    
-                    new StringSelectMenuOptionBuilder()
-                        .setLabel('Banana')
-                        .setDescription('Pick banana')
-                        .setValue('banana'),
-    
-                    new StringSelectMenuOptionBuilder()
-                        .setLabel('Orange')
-                        .setDescription('Pick orange')
-                        .setValue('orange')
-                );
-    
-            const row = new ActionRowBuilder().addComponents(menu);
-    
-            await interaction.reply({
-                content: 'Select something:',
-                components: [row]
-            });
+            await interaction.reply(buildBestiaryPage(0));
         }
 	}
 };

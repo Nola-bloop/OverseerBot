@@ -79,6 +79,36 @@ function extractCommandName(input) {
 }
 
 
+client.on('interactionCreate', async interaction =>{
+    // When user clicks an entry
+    if (interaction.isStringSelectMenu()) {
+        if (interaction.customId.startsWith('info_select_')) {
+            const selected = interaction.values[0];
+
+            const entry = entries.find(e => e.id === selected);
+
+            await interaction.reply({
+                content: `You clicked ${entry.name}`,
+                ephemeral: true
+            });
+        }
+    }
+
+    // When user presses page buttons
+    if (interaction.isButton()) {
+
+        if (interaction.customId.startsWith('info_prev_')) {
+            const currentPage = parseInt(interaction.customId.split('_')[2]);
+            await interaction.update(buildBestiaryPage(currentPage - 1));
+        }
+
+        if (interaction.customId.startsWith('info_next_')) {
+            const currentPage = parseInt(interaction.customId.split('_')[2]);
+            await interaction.update(buildBestiaryPage(currentPage + 1));
+        }
+    }
+})
+
 client.on('messageCreate', message => {
   if (message.content[0] === '&'){
     let command = extractCommandName(message.content)
