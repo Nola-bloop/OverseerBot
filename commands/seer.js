@@ -278,7 +278,7 @@ const AUTHORIZED_USERS = [
 	"1290040130622591038",
 ]
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 4;
 
 function getRandomElement(array, pullCount = 1, omit = []){
     let selection = []
@@ -348,7 +348,18 @@ export function buildPage(list, page) {
     );
 
     const components = [];
-
+    
+    for (let i = 0; i < currentEntries.length; i++){
+        components.push(
+            new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                .setCustomId('info_entry_'+currentEntries[i])
+                .setLabel(currenEntries[i])
+                .setStyle(ButtonStyle.Primary)
+            )
+        )
+    }
+    
     if (currentEntries.length > 0) {
         components.push(
             new ActionRowBuilder().addComponents(menu)
