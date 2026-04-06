@@ -1,5 +1,7 @@
 import { SlashCommandBuilder, MessageFlags } from 'discord.js';
 import caller from '../API-calls.js';
+import entries from '../entries.js'
+
 
 const PC_POOL = [
     "Arya",
@@ -284,6 +286,11 @@ function getRandomElement(array, pullCount = 1, omit = []){
     return selection;
 }
 
+function formatName(string) {
+    string = string.toLowerCase()
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 export default {
 	data: new SlashCommandBuilder()
 	.setName('dnd')
@@ -350,6 +357,17 @@ export default {
             option
             .setName("disable-ephemeral")
             .setDescription("True: Send the message for everyone, so that anyone can see the prompt.")
+            .setRequired(false)
+        )
+    )
+    .addSubcommand(subCommand =>
+        subCommand
+        .setName('bestiary')
+        .setDescription('Browse Valmora\'s bestiary.')
+        .addStringOption( option => 
+            option
+            .setName('query')
+            .setDescription('Search for a specific beast. leave empty to show a list of all the beasts.')
             .setRequired(false)
         )
     ),
@@ -451,6 +469,23 @@ export default {
             msg += pcLine
 
             return await caller.Reply(interaction, msg, !disableEphemeral)
+        }
+        else if (sub === "bestiary"){
+            let query = interaction.options.getString("query") ?? ""
+            if (query == "") {
+                let keys = Object.keys(entries.bestiary)
+                keys.sort()
+                let concatenatedString = "## The beasts of Valmora:\n\n"
+                for (let i = 0; i < keys.length; i++){
+                    concatenatedString += "`"+keys[i]+"`\n"
+                }
+                return await caller.Reply(interaction, concatenatedString)
+            }
+            else{
+                let entry = entries.bestiary[formatName(query)] ?? `## No creature with name '`+query+`' found.\ntry using \`/dnd bestiary\` for a list of all the beasts.`
+                
+                return await caller.Reply(interaction, entry)
+            }
         }
 	}
 };
