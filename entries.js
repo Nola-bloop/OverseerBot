@@ -1,13 +1,13 @@
 export default {
-    bestiary : {
+    Bestiary : {
         "Zombie" : `test entry`,
         "Skeleton": `test entry`,
     },
-    cast : {
+    Cast : {
         "Laucian Caerwyn": `TODO`,
         "Samira Suleiman": `TODO`,
     },
-    map : {
+    Map : {
         "Valcrest" : {
             partOf: ["Valmora"], //this will hold the name of cities and regions this place is a part of
             text: ``,

@@ -5,7 +5,8 @@ import {
     StringSelectMenuOptionBuilder,
     ButtonBuilder,
     ButtonStyle,
-    EmbedBuilder
+    EmbedBuilder,
+    MessageFlags
 } from 'discord.js';
 import caller from '../API-calls.js';
 import entries from '../entries.js'
