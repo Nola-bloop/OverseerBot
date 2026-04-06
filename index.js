@@ -44,18 +44,48 @@ let connection;
 
 //commands
 client.on('interactionCreate', async interaction => {
-  if (!interaction.isChatInputCommand()) return;
-
-  const command = client.commands.get(interaction.commandName);
-
-  if (!command) return;
-
-  try {
+    // When user clicks an entry
+    if (interaction.isStringSelectMenu()) {
+        if (interaction.customId.startsWith('info_select_')) {
+            const selected = interaction.values[0];
+    
+            const entry = entries.find(e => e.id === selected);
+    
+            await interaction.reply({
+                content: `You clicked ${entry.name}`,
+                ephemeral: true
+            });
+        }
+    }
+    
+    // When user presses page buttons
+    if (interaction.isButton()) {
+    
+        if (interaction.customId.startsWith('info_prev_')) {
+            const currentPage = parseInt(interaction.customId.split('_')[2]);
+            await interaction.update(buildBestiaryPage(currentPage - 1));
+        }
+    
+        if (interaction.customId.startsWith('info_next_')) {
+            const currentPage = parseInt(interaction.customId.split('_')[2]);
+            await interaction.update(buildBestiaryPage(currentPage + 1));
+        }
+    }
+    
+    
+    //handle commands from here
+    if (!interaction.isChatInputCommand()) return;
+    
+    const command = client.commands.get(interaction.commandName);
+    
+    if (!command) return;
+    
+    try {
     await command.execute(interaction);
-  } catch (error) {
+    } catch (error) {
     console.error(error);
     await interaction.reply({ content: 'There was an error: \n```'+error+'```', flags: MessageFlags.Ephemeral });
-  }
+    }
 });
 
 
@@ -77,37 +107,6 @@ function extractCommandName(input) {
     const match = input.trim().match(/^&(\S+)/);
     return match ? match[1] : null;
 }
-
-
-client.on('interactionCreate', async interaction =>{
-    // When user clicks an entry
-    if (interaction.isStringSelectMenu()) {
-        if (interaction.customId.startsWith('info_select_')) {
-            const selected = interaction.values[0];
-
-            const entry = entries.find(e => e.id === selected);
-
-            await interaction.reply({
-                content: `You clicked ${entry.name}`,
-                ephemeral: true
-            });
-        }
-    }
-
-    // When user presses page buttons
-    if (interaction.isButton()) {
-
-        if (interaction.customId.startsWith('info_prev_')) {
-            const currentPage = parseInt(interaction.customId.split('_')[2]);
-            await interaction.update(buildBestiaryPage(currentPage - 1));
-        }
-
-        if (interaction.customId.startsWith('info_next_')) {
-            const currentPage = parseInt(interaction.customId.split('_')[2]);
-            await interaction.update(buildBestiaryPage(currentPage + 1));
-        }
-    }
-})
 
 client.on('messageCreate', message => {
   if (message.content[0] === '&'){
