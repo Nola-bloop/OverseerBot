@@ -302,7 +302,7 @@ function formatName(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export buildPage = (list, page) {
+export function buildPage(list, page) {
     let keys = Object.keys(list)
     const maxPage = Math.max(0, Math.ceil(keys.length / PAGE_SIZE) - 1);
 
