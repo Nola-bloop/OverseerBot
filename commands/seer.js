@@ -347,12 +347,19 @@ export function buildPage(list, page) {
             .setDisabled(page === maxPage)
     );
 
+    const components = [];
+
+    if (currentEntries.length > 0) {
+        components.push(
+            new ActionRowBuilder().addComponents(menu)
+        );
+    }
+    
+    components.push(buttons);
+    
     return {
         embeds: [embed],
-        components: [
-            new ActionRowBuilder().addComponents(menu),
-            buttons
-        ]
+        components
     };
 }
 
