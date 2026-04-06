@@ -11,6 +11,7 @@ const __dirname = dirname(__filename);
 import caller from './API-calls.js';
 
 import seerTempCommands from './temp-commands/seer.js'
+import buildPage from './commands/seer.js'
 
 // Create a new Discord client with message intent 
 const client = new Client({ 
@@ -64,12 +65,12 @@ client.on('interactionCreate', async interaction => {
     
         if (interaction.customId.startsWith('info_prev_')) {
             const currentPage = parseInt(interaction.customId.split('_')[2]);
-            await interaction.update(buildBestiaryPage(currentPage - 1));
+            await interaction.update(buildPage(currentPage - 1));
         }
     
         if (interaction.customId.startsWith('info_next_')) {
             const currentPage = parseInt(interaction.customId.split('_')[2]);
-            await interaction.update(buildBestiaryPage(currentPage + 1));
+            await interaction.update(buildPage(currentPage + 1));
         }
         
         return
