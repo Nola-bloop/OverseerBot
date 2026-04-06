@@ -54,7 +54,7 @@ client.on('interactionCreate', async interaction => {
     await command.execute(interaction);
   } catch (error) {
     console.error(error);
-    await interaction.reply({ content: 'There was an error!', flags: MessageFlags.Ephemeral });
+    await interaction.reply({ content: 'There was an error: '+error, flags: MessageFlags.Ephemeral });
   }
 });
 
