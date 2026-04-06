@@ -315,7 +315,7 @@ function buildPage(list, page) {
         .setTitle('Bestiary')
         .setDescription(
             currentEntries
-                .map((entry, i) => `${start + i + 1}. ${entry.name}`)
+                .map((entry, i) => `${start + i + 1}. ${entry}`)
                 .join('\n')
         )
         .setFooter({ text: `Page ${page + 1}/${maxPage + 1}` });
@@ -326,8 +326,8 @@ function buildPage(list, page) {
         .addOptions(
             currentEntries.map(entry =>
                 new StringSelectMenuOptionBuilder()
-                    .setLabel(entry.name)
-                    .setValue(entry.id)
+                    .setLabel(entry)
+                    .setValue(entry)
             )
         );
 
