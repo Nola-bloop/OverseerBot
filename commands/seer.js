@@ -304,20 +304,22 @@ function formatName(string) {
 
 function buildPage(list, page) {
     let keys = Object.keys(list)
-    const maxPage = Math.ceil(keys.length / PAGE_SIZE) - 1;
+    const maxPage = Math.max(0, Math.ceil(keys.length / PAGE_SIZE) - 1);
 
     page = Math.max(0, Math.min(page, maxPage));
 
     const start = page * PAGE_SIZE;
     const currentEntries = keys.slice(start, start + PAGE_SIZE);
-
+    const description = currentEntries.length
+        ? currentEntries
+            .map((entry, i) => `${start + i + 1}. ${entry}`)
+            .join('\n')
+        : 'No entries found.';
+    
+    
     const embed = new EmbedBuilder()
         .setTitle('Bestiary')
-        .setDescription(
-            currentEntries
-                .map((entry, i) => `${start + i + 1}. ${entry}`)
-                .join('\n')
-        )
+        .setDescription(description)
         .setFooter({ text: `Page ${page + 1}/${maxPage + 1}` });
 
     const menu = new StringSelectMenuBuilder()
