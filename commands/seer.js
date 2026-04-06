@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, MessageFlags } from 'discord.js';
+import { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from 'discord.js';
 import caller from '../API-calls.js';
 import entries from '../entries.js'
 
@@ -472,6 +472,7 @@ export default {
         }
         else if (sub === "bestiary"){
             let query = interaction.options.getString("query") ?? ""
+            /*
             if (query == "") {
                 let keys = Object.keys(entries.bestiary)
                 keys.sort()
@@ -486,6 +487,34 @@ export default {
                 
                 return await caller.Reply(interaction, entry)
             }
+            */
+            
+            const menu = new StringSelectMenuBuilder()
+                .setCustomId('fruit_menu')
+                .setPlaceholder('Choose a fruit')
+                .addOptions(
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel('Apple')
+                        .setDescription('Pick apple')
+                        .setValue('apple'),
+    
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel('Banana')
+                        .setDescription('Pick banana')
+                        .setValue('banana'),
+    
+                    new StringSelectMenuOptionBuilder()
+                        .setLabel('Orange')
+                        .setDescription('Pick orange')
+                        .setValue('orange')
+                );
+    
+            const row = new ActionRowBuilder().addComponents(menu);
+    
+            await interaction.reply({
+                content: 'Select something:',
+                components: [row]
+            });
         }
 	}
 };
