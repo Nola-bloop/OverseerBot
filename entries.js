@@ -3,9 +3,8 @@ export default {
         "☆ Undeads ☆" : {
             "Zombie" : {
                 type:"entry",
-                relations:[]
-                text:
-`
+                relations:[],
+                text:`
 # Zombies
 test entry.
 Entries will contain a brief description of the enemy, possibly special encounters as well.
@@ -28,8 +27,7 @@ stuff like that.
             "Skeleton": {
                 type:"entry",
                 relations:[],
-                text:
-`
+                text:`
 # Skeletons
 test entry
 `
@@ -52,8 +50,7 @@ test entry
         "Laucian Caerwyn": {
             type:"entry",
             relations:[],
-            text:
-`
+            text:`
 # Laucian Caerwyn
 -# *mag  ‧  3      str  ‧  3      def  ‧  2      int  ‧  2      hp  ‧  64*
 
@@ -62,8 +59,12 @@ dark colors, ashy grey, muddled brown. pops of red, and deep sapphire blue. rust
 
 ## Backstory
 born in the woods to his mother odille, laucian grew up far removed from his royal heritage. nineteen years later, the king caught wind of the existence of his bastard son, though by then lauc’s mother had already passed. with nothing left to tether himself to the traveller clan of elves he was raised by, lauc accepted the king’s offer to return to court. when he arrived at the palace in valcrest, it was decided lauc would be placed under the care of his uncle, head commander of the knights of valmora. they travelled together for the remainder of his youth. when he grew of age, he was given his own troupe of knights, a small group that oversees “special operatives”, often stationed at remote edges of the kingdom.
-        `,
-        "Samira Suleiman": `
+`
+        },
+        "Samira Suleiman": {
+            type:"entry",
+            relations:[],
+            text:`
 # Samira "Mira" Suleiman
 -# *mag  ‧  5      dex  ‧  1      cha  ‧  2      int  ‧  2      hp  ‧  64*
 
@@ -74,8 +75,12 @@ gold, silver, smoky greys, and a deep, sunset orange. rubies, sapphires, emerald
 samira was born for one purpose alone: to someday advise the king as the suleiman family had for several suns. she was trained for this role in the ancient city of zahira, deep in the dunes of the outer reaches of the high desert. raised in solitude aside from her sisters, under sloped sandstone walls, samira’s divination of sun magic culminated at a young age. she was revered, and worshipped: a prodigy. what her family didn’t account for, was the sliver of snake blood leftover in her mother’s lineage passing on to samira. “the palace has no place for a serpent.”
 
 the role she had been coveting was transitioned over to her younger sister, sumaiya. determined to leave valmora for good, samira’s plans were interrupted by prince lauc, who offered her a position as his counsel. he remarked how she blended into the night, the shine of her scales revealing her in the moonlight.
-        `,
-        "Kazmir Naivros" : `
+`
+        },
+        "Kazmir Naivros" : {
+            type:"entry",
+            relations:[],
+            text:`
 # Kazmir “Kaz” Naivros
 -# *int  ‧  1      str  ‧  4      def  ‧  2      cha  ‧  1      hp  ‧  70*
 
