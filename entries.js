@@ -259,9 +259,9 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
 export function queryEntries(query, entries) {
     let queue = [entries];
 
-    console.log(`looking for '${query}' in '${Object.keys(searchObjs[0]).map(item => ` ${item} `).join('')}'`)
     while (queue.length > 0) {
         let current = queue.shift();
+        console.log(`looking for '${query}' in '${Object.keys(queue[0]).map(item => ` ${item} `).join('')}'`)
 
         // 1. Check if the current level is an object and has the key
         if (current !== null && typeof current === 'object') {
