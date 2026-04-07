@@ -66,7 +66,7 @@ test entry
             type:"entry",
             relations:[],
             text:`
-# Laucian Caerwyn
+# Laucian Caerwyn [Sy]
 -# *mag  ‧  3      str  ‧  3      def  ‧  2      int  ‧  2      hp  ‧  64*
 
 ## Physique
@@ -80,7 +80,7 @@ born in the woods to his mother odille, laucian grew up far removed from his roy
             type:"entry",
             relations:[],
             text:`
-# Samira "Mira" Suleiman
+# Samira "Mira" Suleiman [Sy]
 -# *mag  ‧  5      dex  ‧  1      cha  ‧  2      int  ‧  2      hp  ‧  64*
 
 ## Physique
@@ -96,7 +96,7 @@ the role she had been coveting was transitioned over to her younger sister, suma
             type:"entry",
             relations:[],
             text:`
-# Kazmir “Kaz” Naivros
+# Kazmir “Kaz” Naivros [Sy]
 -# *int  ‧  1      str  ‧  4      def  ‧  2      cha  ‧  1      hp  ‧  70*
 
 ## Physique
