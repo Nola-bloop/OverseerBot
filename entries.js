@@ -1,7 +1,21 @@
 export default {
     Bestiary : {
-        "Zombie" : `test entry`,
-        "Skeleton": `test entry`,
+        "Undeads" : {
+            "Zombie" : `test entry`,
+            "Skeleton": `test entry`,
+        },
+        "Aberrations" : {
+            
+        },
+        "Celestials" : {
+            
+        },
+        "Demons" : {
+            
+        },
+        "Fauna" : {
+            
+        },
     },
     Cast : {
         "Laucian Caerwyn": `TODO`,

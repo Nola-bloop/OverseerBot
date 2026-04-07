@@ -302,7 +302,7 @@ function formatName(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function buildPage(list, page) {
+export function buildPage(list, page, pathPrefix = "") {
     let keys = Object.keys(list)
     const maxPage = Math.max(0, Math.ceil(keys.length / PAGE_SIZE) - 1);
 
@@ -310,38 +310,22 @@ export function buildPage(list, page) {
 
     const start = page * PAGE_SIZE;
     const currentEntries = keys.slice(start, start + PAGE_SIZE);
-    const description = currentEntries.length
-        ? currentEntries
-            .map((entry, i) => `${start + i + 1}. ${entry}`)
-            .join('\n')
-        : 'No entries found.';
     
     
     const embed = new EmbedBuilder()
         .setTitle('Bestiary')
-        .setDescription(description)
+        .setDescription('Browse the beasts of Valmora\'s wildlands!')
         .setFooter({ text: `Page ${page + 1}/${maxPage + 1}` });
-
-    const menu = new StringSelectMenuBuilder()
-        .setCustomId(`info_select_${page}`)
-        .setPlaceholder('Choose an entry')
-        .addOptions(
-            currentEntries.map(entry =>
-                new StringSelectMenuOptionBuilder()
-                    .setLabel(entry)
-                    .setValue(entry)
-            )
-        );
 
     const buttons = new ActionRowBuilder().addComponents(
         new ButtonBuilder()
-            .setCustomId(`info_prev_${page}`)
+            .setCustomId(`info_prev${pathPrefix}_${page}`)
             .setLabel('◀')
             .setStyle(ButtonStyle.Secondary)
             .setDisabled(page === 0),
 
         new ButtonBuilder()
-            .setCustomId(`info_next_${page}`)
+            .setCustomId(`info_next${pathPrefix}_${page}`)
             .setLabel('▶')
             .setStyle(ButtonStyle.Secondary)
             .setDisabled(page === maxPage)
@@ -353,17 +337,11 @@ export function buildPage(list, page) {
         components.push(
             new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
-                .setCustomId('info_entry_'+currentEntries[i])
-                .setLabel(currentEntries[i])
+                .setCustomId('info_entry'+pathPrefix+'_'+currentEntries[i])
+                .setLabel("☆ "+currentEntries[i])
                 .setStyle(ButtonStyle.Primary)
             )
         )
-    }
-    
-    if (currentEntries.length > 0) {
-        components.push(
-            new ActionRowBuilder().addComponents(menu)
-        );
     }
     
     components.push(buttons);
@@ -572,7 +550,7 @@ export default {
             }
             */
             
-            await interaction.reply(buildPage(entries, 0));
+            await interaction.reply(buildPage(entries.Bestiary, 0, "_Bestiary"));
         }
 	}
 };

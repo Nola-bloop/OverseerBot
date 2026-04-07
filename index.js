@@ -45,31 +45,37 @@ let connection;
 
 //commands
 client.on('interactionCreate', async interaction => {
-    // When user clicks an entry
-    if (interaction.isStringSelectMenu()) {
-        if (interaction.customId.startsWith('info_select_')) {
-            const key = interaction.values[0];
-            const entry = entries[key];
-    
-            await interaction.reply({
-                content: `You clicked ${key}`,
-                ephemeral: true
-            });
-        }
-        
-        return
-    }
     
     // When user presses page buttons
     if (interaction.isButton()) {
-    
-        if (interaction.customId.startsWith('info_prev_')) {
-            const currentPage = parseInt(interaction.customId.split('_')[2]);
+        let options = interaction.customId.split('_')
+        if (interaction.customId.startsWith('info_entry_')) {
+            let entry = entries
+            for (let i = 2; i < options.length; i++){
+                entry = entry[options[i]]
+            }
+            
+            if (typeof entry == "string"){
+                await interaction.update({content:entry});
+            }else if (typeof entry == "object"){
+                await interaction.update(buildPage())
+            }
+        }
+        else if (interaction.customId.startsWith('info_prev_')) {
+            const currentPage = parseInt(options[2]);
+            let entry = entries
+            for (let i = 2; i < options.length-1; i++){
+                entry = entry[options[i]]
+            }
             await interaction.update(buildPage(currentPage - 1));
         }
     
-        if (interaction.customId.startsWith('info_next_')) {
-            const currentPage = parseInt(interaction.customId.split('_')[2]);
+        else if (interaction.customId.startsWith('info_next_')) {
+            const currentPage = parseInt(options[2]);
+            let entry = entries
+            for (let i = 2; i < options.length-1; i++){
+                entry = entry[options[i]]
+            }
             await interaction.update(buildPage(currentPage + 1));
         }
         
