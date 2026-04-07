@@ -345,7 +345,7 @@ export function buildPage(list, page, pathPrefix = "") {
         )
         
         
-        if (i%4 == 3 || i == currentEntries.length) components.push(row)
+        if (i%4 == 3 || i == currentEntries.length-1) components.push(row)
     }
     
     components.push(buttons);
