@@ -69,7 +69,7 @@ client.on('interactionCreate', async interaction => {
                 for (var k in searchObjs[0]){
                     if (searchObjs[0][k].length ?? 0 > 0) searchObjs.push(searchObjs[0][k])
                 }
-                searchArrays.shift()
+                searchObjs.shift()
             }
 
         }
