@@ -43,7 +43,6 @@ client.once('clientReady', () => {
 let connection;
 
 
-console.log(queryEntries('Laucian Caerwyn'))
 
 //commands
 client.on('interactionCreate', async interaction => {

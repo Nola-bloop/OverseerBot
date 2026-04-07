@@ -256,29 +256,31 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
     }
 }*/
 
-export function queryEntries(query, entries) {
+export function queryEntries(query) {
     let queue = [entries];
 
     while (queue.length > 0) {
         let current = queue.shift();
 
-        if (current === null || typeof current !== 'object') continue;
+        if (current === null || typeof current !== 'object') {
+            console.log("current is of invalid type: "+ typeof current +" continuing...")
+            continue;
+        }
 
         if (Object.prototype.hasOwnProperty.call(current, query)) {
+            console.log("found object.")
             return current[query];
         }
 
-        console.log(`looking for '${query}' in ...`)
-        console.log(current)
 
         // 3. DIG DEEPER: Only if this isn't an "entry" leaf node
         // If current.type === "entry", we don't want to search inside its 'text' or 'relations'
-        if (current.type !== "entry") {
+        if (current.type !== "entry" && !Array.isArray(current)) {
             for (let key in current) {
                 let value = current[key];
-                if (value !== null && typeof value === 'object') {
-                    // Only push if it's not a primitive or an array of strings
-                    // (Unless you specifically want to search inside arrays)
+
+                // IMPORTANT: Ensure we are only queuing actual sub-objects/categories
+                if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
                     queue.push(value);
                 }
             }
