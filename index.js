@@ -13,15 +13,15 @@ import seerTempCommands from './temp-commands/seer.js'
 import { buildPage } from './commands/seer.js'
 import entries from './entries.js'
 
-// Create a new Discord client with message intent 
-const client = new Client({ 
-  intents: [ 
-      GatewayIntentBits.Guilds,  
-      GatewayIntentBits.GuildMessages,  
+// Create a new Discord client with message intent
+const client = new Client({
+  intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMessages,
       GatewayIntentBits.MessageContent,
       GatewayIntentBits.GuildModeration
-    ] 
-}); 
+    ]
+});
 
 //load commands
 client.commands = new Collection();
@@ -35,8 +35,8 @@ for (const file of commandFiles) {
 }
 
 
-// Bot is ready 
-client.once('clientReady', () => { 
+// Bot is ready
+client.once('clientReady', () => {
   console.log(`Logged in as ${client.user.tag}`);
   periodic(caller.LogNewMessages, client)
 });
@@ -45,23 +45,19 @@ let connection;
 
 //commands
 client.on('interactionCreate', async interaction => {
-    
+
     // When user presses page buttons
     if (interaction.isButton()) {
-        console.log("interaction detected")
         let options = interaction.customId.split('_')
         if (interaction.customId.startsWith('info_entry_')) {
-            console.log("entry button pressed")
             let entry = entries
             for (let i = 2; i < options.length; i++){
                 entry = entry[options[i]]
             }
-            
-            if (typeof entry == "string"){
-                console.log("entry is text. sending...")
+
+            if (entry.type === "entry"){
                 await interaction.update({content:entry});
             }else if (typeof entry == "object"){
-                console.log("entry is array. building page...")
                 let prefix = options.slice(2).map(item => `_${item}`).join('');
                 await interaction.update(buildPage(entry, 0, prefix))
             }
@@ -74,7 +70,7 @@ client.on('interactionCreate', async interaction => {
             }
             await interaction.update(buildPage(entry, currentPage - 1));
         }
-    
+
         else if (interaction.customId.startsWith('info_next_')) {
             const currentPage = parseInt(options[2]);
             let entry = entries
@@ -92,18 +88,18 @@ client.on('interactionCreate', async interaction => {
             console.log("prfx:"+prefix)
             await interaction.update(buildPage(entry, 0, prefix));
         }
-        
+
         return
     }
-    
-    
+
+
     //handle commands from here
     if (!interaction.isChatInputCommand()) return;
-    
+
     const command = client.commands.get(interaction.commandName);
-    
+
     if (!command) return;
-    
+
     try {
         await command.execute(interaction);
     } catch (error) {
@@ -176,7 +172,7 @@ client.on('threadCreate', (thread) => {
       return;
     }
   }
-  //safe to use 
+  //safe to use
 
   console.log("TODO - threadCreate")
 });
@@ -190,7 +186,7 @@ client.on('threadDelete', (thread) => {
       return;
     }
   }
-  //safe to use 
+  //safe to use
 
   console.log("TODO - threadDelete")
 });
@@ -212,7 +208,7 @@ client.on('threadUpdate', (oldThread, newThread) => {
       return;
     }
   }
-  //safe to use 
+  //safe to use
 
   console.log("TODO - threadUpdate")
   */
@@ -236,10 +232,10 @@ client.on("error", error => {
 client.on("invalidated", () => {
   console.log('â�Œ Bot session invalidated!');
   console.log('The bot will now need to reconnect...');
-  
+
   // Perform cleanup before process exit
   // Don't use this to restart - let process manager handle it
 });
 
-// Log in to Discord using token from .env 
-client.login(process.env.DISCORD_TOKEN); 
+// Log in to Discord using token from .env
+client.login(process.env.DISCORD_TOKEN);
