@@ -9,7 +9,7 @@ import {
     MessageFlags
 } from 'discord.js';
 import caller from '../API-calls.js';
-import { entries } from '../entries.js'
+import { entries, buildPage } from '../entries.js'
 
 
 const PC_POOL = [
