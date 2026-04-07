@@ -335,7 +335,7 @@ export function buildPage(list, page, pathPrefix = "") {
     
     let row = null
     for (let i = 0; i < currentEntries.length; i++){
-        if (i % 4 == 0) row = new ActionBuilder()
+        if (i % 4 == 0) row = new ActionRowBuilder()
         
         row.addComponents(
             new ButtonBuilder()
