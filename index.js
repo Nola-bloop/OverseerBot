@@ -54,10 +54,10 @@ client.on('interactionCreate', async interaction => {
                 entry = entry[options[i]]
             }
 
+            let prefix = options.slice(2).map(item => `_${item}`).join('');
             if (entry.type === "entry"){
                 await interaction.update(buildEntry(entry, options[options.length-1], prefix))
             }else if (typeof entry == "object"){
-                let prefix = options.slice(2).map(item => `_${item}`).join('');
                 await interaction.update(buildPage(entry, 0, prefix))
             }
         }
