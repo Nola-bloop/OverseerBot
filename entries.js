@@ -16,7 +16,7 @@ export const entries = {
         "☆ Undeads ☆" : {
             "Zombie" : {
                 type:"entry",
-                relations:["Laucian Caerwwyn"],
+                relations:["Laucian Caerwyn"],
                 text:`
 # Zombies
 test entry.
