@@ -187,14 +187,17 @@ export function buildPage(list, page, pathPrefix = "") {
     };
 }
 
-export function buildEntry(entry, key, pathPrefix = ""){
+export function buildEntry(entry, key, pathPrefix = "", page = 1){
     if (entry.type !== "entry") return {
         content: "Invalid operation. **Tell Nola!!** (with how you got there if possible)"
     }
 
+    if (typeof entry.text == "string") entry.text = [entry.text]
+
+
     const embed = new EmbedBuilder()
         .setTitle("You are consulting the entry for "+key)
-        .setDescription('Buttons below will take you to related entries.')
+        .setDescription(`Page: ${page}/${entry.text.length}.`)
         .setFooter({ text: `See also...` });
 
     const components = [];
@@ -226,6 +229,7 @@ export function buildEntry(entry, key, pathPrefix = ""){
     components.push(buttons);
 
     return {
+        content: entry.text[page],
         embeds: [embed],
         components,
         flags: [MessageFlags.Ephemeral]
