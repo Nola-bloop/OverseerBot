@@ -9,9 +9,9 @@ import { dirname, join } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import caller from './API-calls.js';
-
 import seerTempCommands from './temp-commands/seer.js'
 import buildPage from './commands/seer.js'
+import entries from './entries.js'
 
 // Create a new Discord client with message intent 
 const client = new Client({ 
