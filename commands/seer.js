@@ -368,7 +368,8 @@ export function buildPage(list, page, pathPrefix = "") {
     
     return {
         embeds: [embed],
-        components
+        components,
+        flags: [MessageFlags.Ephemeral]
     };
 }
 
