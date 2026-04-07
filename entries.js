@@ -240,14 +240,14 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
     };
 }
 
-export function queryEntries(query){
+/*export function queryEntries(query){
     let searchObjs = [entries]
     while (searchObjs.length !== 0){
-        console.log(`looking for ''${query}' in '${Object.keys(searchObjs[0]).map(item => ` ${item} `).join('')}'`)
+        console.log(`looking for '${query}' in '${Object.keys(searchObjs[0]).map(item => ` ${item} `).join('')}'`)
 
         if (searchObjs[0][query] !== undefined) return searchObjs[0][query]
-        for (var k in searchObjs[0]){
-            if (searchObjs[0][k].length ?? 0 > 0) searchObjs.push(searchObjs[0][k])
+        for (let k in searchObjs[0]){
+            if (searchObjs[0][k].length > 0) searchObjs.push(searchObjs[0][k])
         }
         searchObjs.shift()
     }
@@ -255,4 +255,31 @@ export function queryEntries(query){
         type:"error",
         text:"Could not find key '"+query+"'."
     }
+}*/
+
+export function queryEntries(query, entries) {
+    let queue = [entries];
+
+    while (queue.length > 0) {
+        let current = queue.shift();
+
+        // 1. Check if the current level is an object and has the key
+        if (current !== null && typeof current === 'object') {
+            if (Object.prototype.hasOwnProperty.call(current, query)) {
+                return current[query];
+            }
+
+            // 2. Push children into the queue for the next 'layer' of search
+            for (let key in current) {
+                if (typeof current[key] === 'object' && current[key] !== null) {
+                    queue.push(current[key]);
+                }
+            }
+        }
+    }
+
+    return {
+        type: "error",
+        text: `Could not find key '${query}'.`
+    };
 }
