@@ -62,7 +62,8 @@ client.on('interactionCreate', async interaction => {
                 await interaction.update({content:entry});
             }else if (typeof entry == "object"){
                 console.log("entry is array. building page...")
-                await interaction.update(buildPage())
+                let prefix = options.slice(2).map(item => `_${item}`).join('');
+                await interaction.update(buildPage(entry, 0, prefix))
             }
         }
         else if (interaction.customId.startsWith('info_prev_')) {
@@ -71,7 +72,7 @@ client.on('interactionCreate', async interaction => {
             for (let i = 2; i < options.length-1; i++){
                 entry = entry[options[i]]
             }
-            await interaction.update(buildPage(currentPage - 1));
+            await interaction.update(buildPage(entry, currentPage - 1));
         }
     
         else if (interaction.customId.startsWith('info_next_')) {
@@ -80,7 +81,16 @@ client.on('interactionCreate', async interaction => {
             for (let i = 2; i < options.length-1; i++){
                 entry = entry[options[i]]
             }
-            await interaction.update(buildPage(currentPage + 1));
+            await interaction.update(buildPage(entry, currentPage + 1));
+        }
+        else if (interaction.customId.startsWith('info_back_')) {
+            let entry = entries
+            for (let i = 2; i < options.length-1; i++){
+                entry = entry[options[i]]
+            }
+            let prefix = options.slice(2, options.length-1).map(item => `_${item}`).join('');
+            console.log("prfx:"+prefix)
+            await interaction.update(buildPage(entry, 0, prefix));
         }
         
         return

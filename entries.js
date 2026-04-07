@@ -1,8 +1,14 @@
 export default {
     Bestiary : {
         "☆ Undeads ☆" : {
-            "Zombie" : `test entry`,
-            "Skeleton": `test entry`,
+            "Zombie" : `
+# Zombies
+test entry
+            `,
+            "Skeleton": `
+# Skeletons
+test entry
+            `,
         },
         "☆ Aberrations ☆" : {
             

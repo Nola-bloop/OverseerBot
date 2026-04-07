@@ -311,9 +311,19 @@ export function buildPage(list, page, pathPrefix = "") {
     const start = page * PAGE_SIZE;
     const currentEntries = keys.slice(start, start + PAGE_SIZE);
     
+    const path = pathPrefix.split('_')
+    let title = ""
+    for (let i = 0; i < path.length; i++){
+        if (path[i] !== "") {
+            title += path[i]
+            if (i !== path.length-1) title += " → "
+        }
+    }
+    if (title === "") title = "Categories"
+    
     
     const embed = new EmbedBuilder()
-        .setTitle('Bestiary')
+        .setTitle(title)
         .setDescription('Browse the beasts of Valmora\'s wildlands!')
         .setFooter({ text: `Page ${page + 1}/${maxPage + 1}` });
 
@@ -328,7 +338,13 @@ export function buildPage(list, page, pathPrefix = "") {
             .setCustomId(`info_next${pathPrefix}_${page}`)
             .setLabel('▶')
             .setStyle(ButtonStyle.Secondary)
-            .setDisabled(page === maxPage)
+            .setDisabled(page === maxPage),
+        
+        new ButtonBuilder()
+            .setCustomId(`info_back${pathPrefix}`)
+            .setLabel('Go back')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(pathPrefix == ""),
     );
 
     const components = [];
