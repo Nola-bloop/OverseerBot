@@ -62,16 +62,17 @@ client.on('interactionCreate', async interaction => {
             }
         }
         if (interaction.customId.startsWith('info_query_')){
+            let prefix = options.slice(2).map(item => `_${item}`).join('');
             let entry = {}
             let searchObjs = [entries]
             while (searchObjs.length !== 0){
-                if (searchObjs[0][options[2]] !== undefined) return searchObjs[0][options[2]]
+                if (searchObjs[0][options[2]] !== undefined) {entry = searchObjs[0][options[2]]; return}
                 for (var k in searchObjs[0]){
                     if (searchObjs[0][k].length ?? 0 > 0) searchObjs.push(searchObjs[0][k])
                 }
                 searchObjs.shift()
             }
-
+            await interaction.update(buildEntry(entry, options[options.length-1], prefix))
         }
         else if (interaction.customId.startsWith('info_prev_')) {
             const currentPage = parseInt(options[2]);
