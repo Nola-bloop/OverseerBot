@@ -56,7 +56,7 @@ client.on('interactionCreate', async interaction => {
             }
 
             if (entry.type === "entry"){
-                await interaction.update({content:entry});
+                await interaction.update({content:entry.text});
             }else if (typeof entry == "object"){
                 let prefix = options.slice(2).map(item => `_${item}`).join('');
                 await interaction.update(buildPage(entry, 0, prefix))
