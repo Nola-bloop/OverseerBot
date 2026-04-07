@@ -65,9 +65,9 @@ client.on('interactionCreate', async interaction => {
             let entry = {}
             let searchObjs = [entries]
             while (searchObjs.length !== 0){
-                if (searchObjs[i][options[2]] !== undefined) return searchObjs[i][options[2]]
-                for (var k in searchObjs[i]){
-                    if (searchObjs[i][k].length ?? 0 > 0) searchObjs.push(searchObjs[i][k])
+                if (searchObjs[0][options[2]] !== undefined) return searchObjs[0][options[2]]
+                for (var k in searchObjs[0]){
+                    if (searchObjs[0][k].length ?? 0 > 0) searchObjs.push(searchObjs[0][k])
                 }
                 searchArrays.shift()
             }
