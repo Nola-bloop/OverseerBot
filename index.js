@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import caller from './API-calls.js';
 import seerTempCommands from './temp-commands/seer.js'
-import { entries, buildPage } from './entries.js'
+import { entries, buildPage, buildEntry } from './entries.js'
 
 // Create a new Discord client with message intent
 const client = new Client({
@@ -55,7 +55,7 @@ client.on('interactionCreate', async interaction => {
             }
 
             if (entry.type === "entry"){
-                await interaction.update({content:entry.text});
+                await interaction.update(buildEntry(entry, options[options.length-1], prefix))
             }else if (typeof entry == "object"){
                 let prefix = options.slice(2).map(item => `_${item}`).join('');
                 await interaction.update(buildPage(entry, 0, prefix))
