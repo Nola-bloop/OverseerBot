@@ -1,7 +1,7 @@
-import { 
-    SlashCommandBuilder, 
-    ActionRowBuilder, 
-    StringSelectMenuBuilder, 
+import {
+    SlashCommandBuilder,
+    ActionRowBuilder,
+    StringSelectMenuBuilder,
     StringSelectMenuOptionBuilder,
     ButtonBuilder,
     ButtonStyle,
@@ -9,7 +9,7 @@ import {
     MessageFlags
 } from 'discord.js';
 import caller from '../API-calls.js';
-import entries from '../entries.js'
+import { entries } from '../entries.js'
 
 
 const PC_POOL = [
@@ -278,7 +278,7 @@ const AUTHORIZED_USERS = [
 	"1290040130622591038",
 ]
 
-const PAGE_SIZE = 20;
+
 
 function getRandomElement(array, pullCount = 1, omit = []){
     let selection = []
@@ -300,77 +300,6 @@ function getRandomElement(array, pullCount = 1, omit = []){
 function formatName(string) {
     string = string.toLowerCase()
     return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-export function buildPage(list, page, pathPrefix = "") {
-    let keys = Object.keys(list).sort()
-    const maxPage = Math.max(0, Math.ceil(keys.length / PAGE_SIZE) - 1);
-
-    page = Math.max(0, Math.min(page, maxPage));
-
-    const start = page * PAGE_SIZE;
-    const currentEntries = keys.slice(start, start + PAGE_SIZE);
-    
-    const path = pathPrefix.split('_')
-    let title = ""
-    for (let i = 0; i < path.length; i++){
-        if (path[i] !== "") {
-            title += path[i]
-            if (i !== path.length-1) title += " → "
-        }
-    }
-    if (title === "") title = "Categories"
-    
-    
-    const embed = new EmbedBuilder()
-        .setTitle(title)
-        .setDescription('Browse the records of the Valmora campaign!')
-        .setFooter({ text: `Page ${page + 1}/${maxPage + 1}` });
-
-    const buttons = new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-            .setCustomId(`info_prev${pathPrefix}_${page}`)
-            .setLabel('◀')
-            .setStyle(ButtonStyle.Secondary)
-            .setDisabled(page === 0),
-
-        new ButtonBuilder()
-            .setCustomId(`info_next${pathPrefix}_${page}`)
-            .setLabel('▶')
-            .setStyle(ButtonStyle.Secondary)
-            .setDisabled(page === maxPage),
-        
-        new ButtonBuilder()
-            .setCustomId(`info_back${pathPrefix}`)
-            .setLabel('Go back')
-            .setStyle(ButtonStyle.Secondary)
-            .setDisabled(pathPrefix == ""),
-    );
-
-    const components = [];
-    
-    let row = null
-    for (let i = 0; i < currentEntries.length; i++){
-        if (i % 4 == 0) row = new ActionRowBuilder()
-        
-        row.addComponents(
-            new ButtonBuilder()
-            .setCustomId('info_entry'+pathPrefix+'_'+currentEntries[i])
-            .setLabel(""+currentEntries[i])
-            .setStyle(ButtonStyle.Primary)
-        )
-        
-        
-        if (i%4 == 3 || i == currentEntries.length-1) components.push(row)
-    }
-    
-    components.push(buttons);
-    
-    return {
-        embeds: [embed],
-        components,
-        flags: [MessageFlags.Ephemeral]
-    };
 }
 
 export default {
@@ -446,7 +375,7 @@ export default {
         subCommand
         .setName('bestiary')
         .setDescription('Browse Valmora\'s bestiary.')
-        .addStringOption( option => 
+        .addStringOption( option =>
             option
             .setName('query')
             .setDescription('Search for a specific beast. leave empty to show a list of all the beasts.')
@@ -566,11 +495,11 @@ export default {
             }
             else{
                 let entry = entries.bestiary[formatName(query)] ?? `## No creature with name '`+query+`' found.\ntry using \`/dnd bestiary\` for a list of all the beasts.`
-                
+
                 return await caller.Reply(interaction, entry)
             }
             */
-            
+
             await interaction.reply(buildPage(entries.Bestiary, 0, "_Bestiary"));
         }
 	}

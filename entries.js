@@ -1,4 +1,17 @@
-export default {
+import {
+    SlashCommandBuilder,
+    ActionRowBuilder,
+    StringSelectMenuBuilder,
+    StringSelectMenuOptionBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    EmbedBuilder,
+    MessageFlags
+} from 'discord.js';
+
+const PAGE_SIZE = 20;
+
+export const entries = {
     Bestiary : {
         "☆ Undeads ☆" : {
             "Zombie" : {
@@ -101,4 +114,79 @@ kaz encountered the prince spontaneously, offering assistance as a guide through
             text: ``,
         }
     }
+}
+
+export function buildPage(list, page, pathPrefix = "") {
+    let keys = Object.keys(list).sort()
+    const maxPage = Math.max(0, Math.ceil(keys.length / PAGE_SIZE) - 1);
+
+    page = Math.max(0, Math.min(page, maxPage));
+
+    const start = page * PAGE_SIZE;
+    const currentEntries = keys.slice(start, start + PAGE_SIZE);
+
+    const path = pathPrefix.split('_')
+    let title = ""
+    for (let i = 0; i < path.length; i++){
+        if (path[i] !== "") {
+            title += path[i]
+            if (i !== path.length-1) title += " → "
+        }
+    }
+    if (title === "") title = "Categories"
+
+
+    const embed = new EmbedBuilder()
+        .setTitle(title)
+        .setDescription('Browse the records of the Valmora campaign!')
+        .setFooter({ text: `Page ${page + 1}/${maxPage + 1}` });
+
+    const buttons = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId(`info_prev${pathPrefix}_${page}`)
+            .setLabel('◀')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(page === 0),
+
+        new ButtonBuilder()
+            .setCustomId(`info_next${pathPrefix}_${page}`)
+            .setLabel('▶')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(page === maxPage),
+
+        new ButtonBuilder()
+            .setCustomId(`info_back${pathPrefix}`)
+            .setLabel('Go back')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(pathPrefix == ""),
+    );
+
+    const components = [];
+
+    let row = null
+    for (let i = 0; i < currentEntries.length; i++){
+        if (i % 4 == 0) row = new ActionRowBuilder()
+
+        row.addComponents(
+            new ButtonBuilder()
+            .setCustomId('info_entry'+pathPrefix+'_'+currentEntries[i])
+            .setLabel(""+currentEntries[i])
+            .setStyle(ButtonStyle.Primary)
+        )
+
+
+        if (i%4 == 3 || i == currentEntries.length-1) components.push(row)
+    }
+
+    components.push(buttons);
+
+    return {
+        embeds: [embed],
+        components,
+        flags: [MessageFlags.Ephemeral]
+    };
+}
+
+export function buildEntry(){
+
 }
