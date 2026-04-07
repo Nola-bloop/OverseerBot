@@ -260,7 +260,6 @@ export function queryEntries(query, entries) {
     let queue = [entries];
 
     while (queue.length > 0) {
-        let current = queue.shift();
         console.log(`looking for '${query}' in ...`)
         console.log(queue[0])
 
@@ -277,6 +276,7 @@ export function queryEntries(query, entries) {
                 }
             }
         }
+        let current = queue.shift();
     }
 
     return {
