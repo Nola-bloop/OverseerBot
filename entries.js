@@ -188,6 +188,8 @@ export function buildPage(list, page, pathPrefix = "") {
 }
 
 export function buildEntry(entry, key, pathPrefix = "", page = 1){
+    page--
+
     if (entry.type !== "entry") return {
         content: "Invalid operation. **Tell Nola!!** (with how you got there if possible)"
     }
