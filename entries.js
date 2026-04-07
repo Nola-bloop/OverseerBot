@@ -187,7 +187,7 @@ export function buildPage(list, page, pathPrefix = "") {
     };
 }
 
-export function buildEntry(entry, key, prefix = ""){
+export function buildEntry(entry, key, pathPrefix = ""){
     if (entry.type !== "entry") return {
         content: "Invalid operation. **Tell Nola!!** (with how you got there if possible)"
     }
