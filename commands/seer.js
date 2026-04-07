@@ -324,7 +324,7 @@ export function buildPage(list, page, pathPrefix = "") {
     
     const embed = new EmbedBuilder()
         .setTitle(title)
-        .setDescription('Browse the beasts of Valmora\'s wildlands!')
+        .setDescription('Browse the records of the Valmora campaign!')
         .setFooter({ text: `Page ${page + 1}/${maxPage + 1}` });
 
     const buttons = new ActionRowBuilder().addComponents(
