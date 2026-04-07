@@ -48,16 +48,20 @@ client.on('interactionCreate', async interaction => {
     
     // When user presses page buttons
     if (interaction.isButton()) {
+        console.log("interaction detected")
         let options = interaction.customId.split('_')
         if (interaction.customId.startsWith('info_entry_')) {
+            console.log("entry button pressed")
             let entry = entries
             for (let i = 2; i < options.length; i++){
                 entry = entry[options[i]]
             }
             
             if (typeof entry == "string"){
+                console.log("entry is text. sending...")
                 await interaction.update({content:entry});
             }else if (typeof entry == "object"){
+                console.log("entry is array. building page...")
                 await interaction.update(buildPage())
             }
         }

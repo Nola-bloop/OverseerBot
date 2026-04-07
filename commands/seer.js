@@ -340,7 +340,7 @@ export function buildPage(list, page, pathPrefix = "") {
         row.addComponents(
             new ButtonBuilder()
             .setCustomId('info_entry'+pathPrefix+'_'+currentEntries[i])
-            .setLabel("☆ "+currentEntries[i])
+            .setLabel(""+currentEntries[i])
             .setStyle(ButtonStyle.Primary)
         )
         
