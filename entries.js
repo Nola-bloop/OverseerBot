@@ -188,7 +188,6 @@ export function buildPage(list, page, pathPrefix = "") {
 }
 
 export function buildEntry(entry, key, pathPrefix = "", page = 1){
-    page--
 
     if (entry.type !== "entry") return {
         content: "Invalid operation. **Tell Nola!!** (with how you got there if possible)"
@@ -196,7 +195,7 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
 
     if (typeof entry.text == "string") entry.text = [entry.text]
 
-    console.log(`type: ${typeof entry.text[page]}`)
+    console.log(`type: ${typeof entry.text[page-1]}`)
 
     const embed = new EmbedBuilder()
         .setTitle("You are consulting the entry for "+key)
@@ -232,7 +231,7 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
     components.push(buttons);
 
     return {
-        content: entry.text[page],
+        content: entry.text[page-1],
         embeds: [embed],
         components,
         flags: [MessageFlags.Ephemeral]
