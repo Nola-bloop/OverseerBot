@@ -261,19 +261,25 @@ export function queryEntries(query, entries) {
 
     while (queue.length > 0) {
         let current = queue.shift();
+
+        if (current === null || typeof current !== 'object') continue;
+
+        if (Object.prototype.hasOwnProperty.call(current, query)) {
+            return current[query];
+        }
+
         console.log(`looking for '${query}' in ...`)
         console.log(current)
 
-        // 1. Check if the current level is an object and has the key
-        if (current !== null && typeof current === 'object') {
-            if (Object.prototype.hasOwnProperty.call(current, query)) {
-                return current[query];
-            }
-
-            // 2. Push children into the queue for the next 'layer' of search
+        // 3. DIG DEEPER: Only if this isn't an "entry" leaf node
+        // If current.type === "entry", we don't want to search inside its 'text' or 'relations'
+        if (current.type !== "entry") {
             for (let key in current) {
-                if (typeof current[key] === 'object' && current[key] !== null) {
-                    queue.push(current[key]);
+                let value = current[key];
+                if (value !== null && typeof value === 'object') {
+                    // Only push if it's not a primitive or an array of strings
+                    // (Unless you specifically want to search inside arrays)
+                    queue.push(value);
                 }
             }
         }
