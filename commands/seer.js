@@ -278,7 +278,7 @@ const AUTHORIZED_USERS = [
 	"1290040130622591038",
 ]
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 5;
 
 function getRandomElement(array, pullCount = 1, omit = []){
     let selection = []
@@ -303,7 +303,7 @@ function formatName(string) {
 }
 
 export function buildPage(list, page, pathPrefix = "") {
-    let keys = Object.keys(list)
+    let keys = Object.keys(list).sort()
     const maxPage = Math.max(0, Math.ceil(keys.length / PAGE_SIZE) - 1);
 
     page = Math.max(0, Math.min(page, maxPage));
