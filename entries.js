@@ -261,7 +261,8 @@ export function queryEntries(query, entries) {
 
     while (queue.length > 0) {
         let current = queue.shift();
-        console.log(`looking for '${query}' in '${Object.keys(queue[0]).map(item => ` ${item} `).join('')}'`)
+        console.log(`looking for '${query}' in ...`)
+        console.log(queue[0])
 
         // 1. Check if the current level is an object and has the key
         if (current !== null && typeof current === 'object') {
