@@ -209,18 +209,18 @@ export function buildEntry(entry, key, pathPrefix = ""){
 
 
     let row = null
-    for (let i = 0; i < entry.relatedArticles.length; i++){
+    for (let i = 0; i < entry.relations?.length ?? 0; i++){
         if (i % 4 == 0) row = new ActionRowBuilder()
 
         row.addComponents(
             new ButtonBuilder()
-            .setCustomId('info_query_'+entry.relatedArticles[i])
-            .setLabel(""+entry.relatedArticles[i])
+            .setCustomId('info_query_'+entry.relations[i])
+            .setLabel(""+entry.relations[i])
             .setStyle(ButtonStyle.Primary)
         )
 
 
-        if (i%4 == 3 || i == entry.relatedArticles.length-1) components.push(row)
+        if (i%4 == 3 || i == entry.relations.length-1) components.push(row)
     }
 
     components.push(buttons);
