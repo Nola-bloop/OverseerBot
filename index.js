@@ -66,6 +66,7 @@ client.on('interactionCreate', async interaction => {
         if (interaction.customId.startsWith('info_query_')){
             let prefix = options.slice(2).map(item => `_${item}`).join('');
             let entry = queryEntries(options[options.length-1])
+            if (entry.type == "error") interaction.update({content:entry.text})
             await interaction.update(buildEntry(entry, options[options.length-1], prefix))
         }
         else if (interaction.customId.startsWith('info_prev_')) {
