@@ -187,6 +187,47 @@ export function buildPage(list, page, pathPrefix = "") {
     };
 }
 
-export function buildEntry(){
+export function buildEntry(entry, key, prefix = ""){
+    if (entry.type !== "entry") return {
+        content: "Invalid operation. **Tell Nola!!** (with how you got there if possible)"
+    }
 
+    const embed = new EmbedBuilder()
+        .setTitle("You are consulting the entry for "+key)
+        .setDescription('Buttons below will take you to related entries.')
+        .setFooter({ text: `See also...` });
+
+    const components = [];
+
+    const buttons = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+            .setCustomId(`info_back${pathPrefix}`)
+            .setLabel('Go back')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(pathPrefix == ""),
+    );
+
+
+    let row = null
+    for (let i = 0; i < entry.relatedArticles.length; i++){
+        if (i % 4 == 0) row = new ActionRowBuilder()
+
+        row.addComponents(
+            new ButtonBuilder()
+            .setCustomId('info_query_'+entry.relatedArticles[i])
+            .setLabel(""+entry.relatedArticles[i])
+            .setStyle(ButtonStyle.Primary)
+        )
+
+
+        if (i%4 == 3 || i == entry.relatedArticles.length-1) components.push(row)
+    }
+
+    components.push(buttons);
+
+    return {
+        embeds: [embed],
+        components,
+        flags: [MessageFlags.Ephemeral]
+    };
 }

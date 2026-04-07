@@ -61,6 +61,18 @@ client.on('interactionCreate', async interaction => {
                 await interaction.update(buildPage(entry, 0, prefix))
             }
         }
+        if (interaction.customId.startsWith('info_query_')){
+            let entry = {}
+            let searchObjs = [entries]
+            while (searchObjs.length !== 0){
+                if (searchObjs[i][options[2]] !== undefined) return searchObjs[i][options[2]]
+                for (var k in searchObjs[i]){
+                    if (searchObjs[i][k].length? > 0) searchObjs.push(searchObjs[i][k])
+                }
+                searchArrays.shift()
+            }
+
+        }
         else if (interaction.customId.startsWith('info_prev_')) {
             const currentPage = parseInt(options[2]);
             let entry = entries
