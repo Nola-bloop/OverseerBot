@@ -10,7 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 import caller from './API-calls.js';
 import seerTempCommands from './temp-commands/seer.js'
-import { entries, buildPage, buildEntry } from './entries.js'
+import { entries, buildPage, buildEntry, queryEntries } from './entries.js'
 
 // Create a new Discord client with message intent
 const client = new Client({
@@ -42,6 +42,8 @@ client.once('clientReady', () => {
 
 let connection;
 
+
+
 //commands
 client.on('interactionCreate', async interaction => {
 
@@ -63,15 +65,7 @@ client.on('interactionCreate', async interaction => {
         }
         if (interaction.customId.startsWith('info_query_')){
             let prefix = options.slice(2).map(item => `_${item}`).join('');
-            let entry = {}
-            let searchObjs = [entries]
-            while (searchObjs.length !== 0){
-                if (searchObjs[0][options[2]] !== undefined) {entry = searchObjs[0][options[2]]; return}
-                for (var k in searchObjs[0]){
-                    if (searchObjs[0][k].length ?? 0 > 0) searchObjs.push(searchObjs[0][k])
-                }
-                searchObjs.shift()
-            }
+            let entry = queryEntries(options[options.length-1])
             await interaction.update(buildEntry(entry, options[options.length-1], prefix))
         }
         else if (interaction.customId.startsWith('info_prev_')) {

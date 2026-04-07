@@ -239,3 +239,20 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
         flags: [MessageFlags.Ephemeral]
     };
 }
+
+export function queryEntries(query){
+    let searchObjs = [entries]
+    while (searchObjs.length !== 0){
+        if (searchObjs[0][query] !== undefined) return searchObjs[0][query]
+        for (var k in searchObjs[0]){
+            if (searchObjs[0][k].length ?? 0 > 0) searchObjs.push(searchObjs[0][k])
+        }
+        searchObjs.shift()
+    }
+    return {
+        key: "Invalid entry.",
+        type:"entry",
+        relations:[],
+        text:"Invalid entry."
+    }
+}
