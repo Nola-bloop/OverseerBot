@@ -194,7 +194,7 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
 
     if (typeof entry.text == "string") entry.text = [entry.text]
 
-    print(`type: ${typeof entry.text}`)
+    console.log(`type: ${typeof entry.text}`)
 
     const embed = new EmbedBuilder()
         .setTitle("You are consulting the entry for "+key)
