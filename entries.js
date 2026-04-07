@@ -16,7 +16,7 @@ export const entries = {
         "☆ Undeads ☆" : {
             "Zombie" : {
                 type:"entry",
-                relations:[],
+                relations:["Laucian Caerwwyn"],
                 text:`
 # Zombies
 test entry.
@@ -35,6 +35,8 @@ There can also be a record of usual stats for this creature, like
 *!! Inflicts necrosis on melee hit.*
 
 stuff like that.
+
+# also you may notice that this entry is related to Lauc, that's also a test :p
 `
             },
             "Skeleton": {
