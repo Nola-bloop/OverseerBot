@@ -204,7 +204,7 @@ export function buildEntry(entry, key, prefix = ""){
             .setCustomId(`info_back${pathPrefix}`)
             .setLabel('Go back')
             .setStyle(ButtonStyle.Secondary)
-            .setDisabled(pathPrefix == ""),
+            .setDisabled(false),
     );
 
 
