@@ -260,8 +260,9 @@ export function queryEntries(query, entries) {
     let queue = [entries];
 
     while (queue.length > 0) {
+        let current = queue.shift();
         console.log(`looking for '${query}' in ...`)
-        console.log(queue[0])
+        console.log(current)
 
         // 1. Check if the current level is an object and has the key
         if (current !== null && typeof current === 'object') {
@@ -276,7 +277,6 @@ export function queryEntries(query, entries) {
                 }
             }
         }
-        let current = queue.shift();
     }
 
     return {
