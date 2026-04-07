@@ -243,7 +243,6 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
 /*export function queryEntries(query){
     let searchObjs = [entries]
     while (searchObjs.length !== 0){
-        console.log(`looking for '${query}' in '${Object.keys(searchObjs[0]).map(item => ` ${item} `).join('')}'`)
 
         if (searchObjs[0][query] !== undefined) return searchObjs[0][query]
         for (let k in searchObjs[0]){
@@ -260,6 +259,7 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
 export function queryEntries(query, entries) {
     let queue = [entries];
 
+    console.log(`looking for '${query}' in '${Object.keys(searchObjs[0]).map(item => ` ${item} `).join('')}'`)
     while (queue.length > 0) {
         let current = queue.shift();
 
