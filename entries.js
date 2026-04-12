@@ -32,7 +32,11 @@ export const entries = {
 
         },
         "☆ Demons ☆" : {
-
+            "The Demon":{
+                type:"entry",
+                relations:["Eponine Snjordottir"],
+                text:`# The Demon\n\nKnown to sometimes take over Éponine's body. No other information.`
+            }
         },
         "☆ Fauna ☆" : {
 
@@ -57,8 +61,13 @@ export const entries = {
         "Arya Eunari" : {
             type:"entry",
             relations:[],
-            text:`# Arya Eunari [Sy]\n-# *int  ‧  2      str  ‧  1      dex  ‧  2      mag  ‧  3      hp  ‧  33*\n\n## Physique\nblack, & navy blue, crimson red, & oranges. velvet, and satin. silver, stone, & carnelian.\n\n## Backstory\nit seemed arya’s fate was written in the stars, ordained at birth by the high priestess to become her successor. like many women that belonged to her order, arya has retained zero contact with her birth parents, raised entirely by “the sisters of ilyune”. the only surviving symbol of her identity before induction are a set of daggers, twin dragonflies, strapped to her thighs for protection.\nafter years of dedication, and faith without question, arya failed the final ritual necessary to become a servant of ilyune. without hesitation, she was shunned by the temple and cast out. before arya left, she caught wind of some news: ilyune’s high priestess was under investigation for murder charges. desperate to regain favor, arya took the fall for her crimes, though there has been little word from her sisters, or the moon goddess, since.`
-        }
+            text:`# Arya Eunari [Sy]\n-# *int  ‧  2      str  ‧  1      dex  ‧  2      mag  ‧  3      hp  ‧  33*\n\n## Physique\nblack, & navy blue, crimson red, & oranges. velvet, and satin. silver, stone, & carnelian.\n\n## Backstory\nit seemed arya’s fate was written in the stars, ordained at birth by the high priestess to become her successor. like many women that belonged to her order, arya has retained zero contact with her birth parents, raised entirely by “the sisters of ilyune”. the only surviving symbol of her identity before induction are a set of daggers, twin dragonflies, strapped to her thighs for protection.\n\nafter years of dedication, and faith without question, arya failed the final ritual necessary to become a servant of ilyune. without hesitation, she was shunned by the temple and cast out. before arya left, she caught wind of some news: ilyune’s high priestess was under investigation for murder charges. desperate to regain favor, arya took the fall for her crimes, though there has been little word from her sisters, or the moon goddess, since.`
+        },
+        "Eponine Snjordottir" : {
+            type:"entry",
+            relations:["The Demon"],
+            text:`# Éponine Snjórdóttir [Cam]\n-# *int  ‧  2      str  ‧  1      def  ‧  1      mag  ‧  3      hp  ‧  49*\n\n## Physique\nNo information.\n\n## Backstory\nÉponine has always heard these voices, quite like a siren's song. She chased them for as long as she could remember, sang back even. She never knew their origin and thought maybe if she did, they would leave her alone. But she became quite used to them.\n\nEirdis,her sister  has been missing for two years now. By elvish standards, two years isn't that long but to Éponine it is far too long. The journey to Valcrest is long and the voices are getting stronger, she gives in to them. She makes a deal, an exchange for power. Little did she know that she wasn't making a deal with a friendly angel but rather a demon. Perhaps it was fitting it was a demon, only a demon would understand just how far she would go to see her sister safe again.\n\n## Personality\nGrowing up in the frost mountains meant that from a young age you had to be quick skinned and quick witted, yet somehow young Eponine retained much of her softness.\n\n-# "Snjórdóttir" - Daughter of Snow? / Snjór. Just a thought.`
+        },
     },
     Map : {
         "Valcrest" : {
@@ -191,22 +200,6 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
     };
 }
 
-/*export function queryEntries(query){
-    let searchObjs = [entries]
-    while (searchObjs.length !== 0){
-
-        if (searchObjs[0][query] !== undefined) return searchObjs[0][query]
-        for (let k in searchObjs[0]){
-            if (searchObjs[0][k].length > 0) searchObjs.push(searchObjs[0][k])
-        }
-        searchObjs.shift()
-    }
-    return {
-        type:"error",
-        text:"Could not find key '"+query+"'."
-    }
-}*/
-
 export function queryEntries(query) {
     let queue = [entries];
 
@@ -224,13 +217,11 @@ export function queryEntries(query) {
         }
 
 
-        // 3. DIG DEEPER: Only if this isn't an "entry" leaf node
-        // If current.type === "entry", we don't want to search inside its 'text' or 'relations'
+        
         if (current.type !== "entry" && !Array.isArray(current)) {
             for (let key in current) {
                 let value = current[key];
 
-                // IMPORTANT: Ensure we are only queuing actual sub-objects/categories
                 if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
                     queue.push(value);
                 }
