@@ -17,35 +17,12 @@ export const entries = {
             "Zombie" : {
                 type:"entry",
                 relations:["Laucian Caerwyn"],
-                text:`
-# Zombies
-test entry.
-Entries will contain a brief description of the enemy, possibly special encounters as well.
-
-There can also be a record of usual stats for this creature, like
-
-> hp : 20-25
-> str: 1
-> dex: -2
-> con: 1
-> int: -5
-> wis: -5
-> cha: -5
-
-*!! Inflicts necrosis on melee hit.*
-
-stuff like that.
-
-# also you may notice that this entry is related to Lauc, that's also a test :p
-`
+                text:`# Zombies\ntest entry.\nEntries will contain a brief description of the enemy, possibly special encounters as well.\n\nThere can also be a record of usual stats for this creature, like\n\n> hp : 20-25\n> str: 1\n> dex: -2\n> con: 1\n> int: -5\n> wis: -5\n> cha: -5\n\n*!! Inflicts necrosis on melee hit.*\n\nstuff like that.\n\n# also you may notice that this entry is related to Lauc, that's also a test :p`
             },
             "Skeleton": {
                 type:"entry",
                 relations:[],
-                text:`
-# Skeletons
-test entry
-`
+                text:`# Skeletons\ntest entry`
             },
         },
         "☆ Aberrations ☆" : {
@@ -64,50 +41,24 @@ test entry
     Cast : {
         "Laucian Caerwyn": {
             type:"entry",
-            relations:[],
-            text:`
-# Laucian Caerwyn [Sy]
--# *mag  ‧  3      str  ‧  3      def  ‧  2      int  ‧  2      hp  ‧  64*
-
-## Physique
-dark colors, ashy grey, muddled brown. pops of red, and deep sapphire blue. rusted metal, shiny gemstones. a freshly sharpened sword. an assortment of animal skins: leather, fur, snakeskin boots. smells of oak, cedar, musk, & lavender.
-
-## Backstory
-born in the woods to his mother odille, laucian grew up far removed from his royal heritage. nineteen years later, the king caught wind of the existence of his bastard son, though by then lauc’s mother had already passed. with nothing left to tether himself to the traveller clan of elves he was raised by, lauc accepted the king’s offer to return to court. when he arrived at the palace in valcrest, it was decided lauc would be placed under the care of his uncle, head commander of the knights of valmora. they travelled together for the remainder of his youth. when he grew of age, he was given his own troupe of knights, a small group that oversees “special operatives”, often stationed at remote edges of the kingdom.
-`
+            relations:["Samira Suleiman","Kazmir Naivros"],
+            text:`# Laucian Caerwyn [Sy]\n-# *mag  ‧  3      str  ‧  3      def  ‧  2      int  ‧  2      hp  ‧  64*\n\n## Physique\ndark colors, ashy grey, muddled brown. pops of red, and deep sapphire blue. rusted metal, shiny gemstones. a freshly sharpened sword. an assortment of animal skins: leather, fur, snakeskin boots. smells of oak, cedar, musk, & lavender.\n\n## Backstory\nborn in the woods to his mother odille, laucian grew up far removed from his royal heritage. nineteen years later, the king caught wind of the existence of his bastard son, though by then lauc’s mother had already passed. with nothing left to tether himself to the traveller clan of elves he was raised by, lauc accepted the king’s offer to return to court. when he arrived at the palace in valcrest, it was decided lauc would be placed under the care of his uncle, head commander of the knights of valmora. they travelled together for the remainder of his youth. when he grew of age, he was given his own troupe of knights, a small group that oversees “special operatives”, often stationed at remote edges of the kingdom.`
         },
         "Samira Suleiman": {
             type:"entry",
-            relations:[],
-            text:`
-# Samira "Mira" Suleiman [Sy]
--# *mag  ‧  5      dex  ‧  1      cha  ‧  2      int  ‧  2      hp  ‧  64*
-
-## Physique
-gold, silver, smoky greys, and a deep, sunset orange. rubies, sapphires, emeralds. freshly dipped incense, and rose petals.
-
-## Backstory
-samira was born for one purpose alone: to someday advise the king as the suleiman family had for several suns. she was trained for this role in the ancient city of zahira, deep in the dunes of the outer reaches of the high desert. raised in solitude aside from her sisters, under sloped sandstone walls, samira’s divination of sun magic culminated at a young age. she was revered, and worshipped: a prodigy. what her family didn’t account for, was the sliver of snake blood leftover in her mother’s lineage passing on to samira. “the palace has no place for a serpent.”
-
-the role she had been coveting was transitioned over to her younger sister, sumaiya. determined to leave valmora for good, samira’s plans were interrupted by prince lauc, who offered her a position as his counsel. he remarked how she blended into the night, the shine of her scales revealing her in the moonlight.
-`
+            relations:["Laucian Caerwyn","Kazmir Naivros"],
+            text:`# Samira "Mira" Suleiman [Sy]\n-# *mag  ‧  5      dex  ‧  1      cha  ‧  2      int  ‧  2      hp  ‧  64*\n\n## Physique\ngold, silver, smoky greys, and a deep, sunset orange. rubies, sapphires, emeralds. freshly dipped incense, and rose petals.\n\n## Backstory\nsamira was born for one purpose alone: to someday advise the king as the suleiman family had for several suns. she was trained for this role in the ancient city of zahira, deep in the dunes of the outer reaches of the high desert. raised in solitude aside from her sisters, under sloped sandstone walls, samira’s divination of sun magic culminated at a young age. she was revered, and worshipped: a prodigy. what her family didn’t account for, was the sliver of snake blood leftover in her mother’s lineage passing on to samira. “the palace has no place for a serpent.”\n\nthe role she had been coveting was transitioned over to her younger sister, sumaiya. determined to leave valmora for good, samira’s plans were interrupted by prince lauc, who offered her a position as his counsel. he remarked how she blended into the night, the shine of her scales revealing her in the moonlight.`
         },
         "Kazmir Naivros" : {
             type:"entry",
-            relations:[],
-            text:`
-# Kazmir “Kaz” Naivros [Sy]
--# *int  ‧  1      str  ‧  4      def  ‧  2      cha  ‧  1      hp  ‧  70*
-
-## Physique
-lush greens, light and dark, and all shades in between. rich browns, reds, yellow. cinnamon, cardamon, evergreen, & honey.
-
-## Backstory
-whether the stranger from his childhood was a dream, or a mirage, kaz is uncertain, but one fact remains certain: the powers he was gifted are a curse. at any moment, against his will, a wild magic appears at his fingertips, threatening everything around him. after an accident in his youth, kaz fled to the ancient parts of the woodlands, isolated from civilization and his hometown in the river valley.
-
-kaz encountered the prince spontaneously, offering assistance as a guide through the outer edges of the forest. upon witnessing kaz’s fortitude, lauc extended an offer: serve as his guard on his journeys across the far reaches of the kingdom. the two quickly formed an unexpected and cherished companionship. together, they formed the start of the seventeenth oath, an offshoot of valmora’s royal knights.
-`
+            relations:["Laucian Caerwyn","Samira Suleiman"],
+            text:`# Kazmir “Kaz” Naivros [Sy]\n-# *int  ‧  1      str  ‧  4      def  ‧  2      cha  ‧  1      hp  ‧  70*\n\n## Physique\nlush greens, light and dark, and all shades in between. rich browns, reds, yellow. cinnamon, cardamon, evergreen, & honey.\n\n## Backstory\nwhether the stranger from his childhood was a dream, or a mirage, kaz is uncertain, but one fact remains certain: the powers he was gifted are a curse. at any moment, against his will, a wild magic appears at his fingertips, threatening everything around him. after an accident in his youth, kaz fled to the ancient parts of the woodlands, isolated from civilization and his hometown in the river valley.\n\nkaz encountered the prince spontaneously, offering assistance as a guide through the outer edges of the forest. upon witnessing kaz’s fortitude, lauc extended an offer: serve as his guard on his journeys across the far reaches of the kingdom. the two quickly formed an unexpected and cherished companionship. together, they formed the start of the seventeenth oath, an offshoot of valmora’s royal knights.`
         },
+        "Arya Eunari" : {
+            type:"entry",
+            relations:[],
+            text:`# Arya Eunari [Sy]\n-# *int  ‧  2      str  ‧  1      dex  ‧  2      mag  ‧  3      hp  ‧  33*\n\n## Physique\nblack, & navy blue, crimson red, & oranges. velvet, and satin. silver, stone, & carnelian.\n\n## Backstory\nit seemed arya’s fate was written in the stars, ordained at birth by the high priestess to become her successor. like many women that belonged to her order, arya has retained zero contact with her birth parents, raised entirely by “the sisters of ilyune”. the only surviving symbol of her identity before induction are a set of daggers, twin dragonflies, strapped to her thighs for protection.\nafter years of dedication, and faith without question, arya failed the final ritual necessary to become a servant of ilyune. without hesitation, she was shunned by the temple and cast out. before arya left, she caught wind of some news: ilyune’s high priestess was under investigation for murder charges. desperate to regain favor, arya took the fall for her crimes, though there has been little word from her sisters, or the moon goddess, since.`
+        }
     },
     Map : {
         "Valcrest" : {
