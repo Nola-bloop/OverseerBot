@@ -70,12 +70,12 @@ export const entries = {
         },
     },
     Map : {
-        " Valmora" : {
+        "  Valmora" : {
             type:"entry",
-            relations: ["Valcrest", "High Desert", "Frost Peaks", "River Valley", "Woodlands"],
+            relations: ["Valcrest", "High Desert", "Frost Peaks", "River Valley", "Woodlands", "Underground"],
             text: `# Valmora\nVast lands, composed of its capital, Valmora, the High Desert, the Frost Peaks, the River Valley, the Woodlands and the Underground.`
         },
-        "Valcrest" : {
+        " Valcrest" : {
             type:"entry",
             relations: ["Valmora"],
             text: `# Valcrest\nThe capital of Valmora, located at the center of the land.`
@@ -99,6 +99,26 @@ export const entries = {
             type:"entry",
             relations: ["High Desert"],
             text: `# Ninsth\nNo information at the moment.`
+        },
+        " Frost Peaks" : {
+            type:"entry",
+            relations: ["Valmora"],
+            text: `# The Frost Peaks\nNo information at the moment.`
+        },
+        " River Valley" : {
+            type:"entry",
+            relations: ["Valmora"],
+            text: `# The River Valley\nNo information at the moment.`
+        },
+        " Woodlands" : {
+            type:"entry",
+            relations: ["Valmora"],
+            text: `# The Woodlands\nNo information at the moment.`
+        },
+        " Underground" : {
+            type:"entry",
+            relations: ["Valmora"],
+            text: `# The River Valley\nNo information at the moment.`
         },
     }
 }
