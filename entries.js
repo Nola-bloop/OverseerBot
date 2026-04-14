@@ -45,36 +45,61 @@ export const entries = {
     Cast : {
         "Laucian Caerwyn": {
             type:"entry",
-            relations:["Samira Suleiman","Kazmir Naivros"],
+            relations:["Samira Suleiman","Kazmir Naivros","Valcrest"],
             text:`# Laucian Caerwyn [Sy]\n-# *mag  ‧  3      str  ‧  3      def  ‧  2      int  ‧  2      hp  ‧  64*\n-# half-elf\n-# unk. class, lv.?\n-# Chaotic good\n\n## Physique\ndark colors, ashy grey, muddled brown. pops of red, and deep sapphire blue. rusted metal, shiny gemstones. a freshly sharpened sword. an assortment of animal skins: leather, fur, snakeskin boots. smells of oak, cedar, musk, & lavender.\n\n## Backstory\nborn in the woods to his mother odille, laucian grew up far removed from his royal heritage. nineteen years later, the king caught wind of the existence of his bastard son, though by then lauc’s mother had already passed. with nothing left to tether himself to the traveller clan of elves he was raised by, lauc accepted the king’s offer to return to court. when he arrived at the palace in valcrest, it was decided lauc would be placed under the care of his uncle, head commander of the knights of valmora. they travelled together for the remainder of his youth. when he grew of age, he was given his own troupe of knights, a small group that oversees “special operatives”, often stationed at remote edges of the kingdom.`
         },
         "Samira Suleiman": {
             type:"entry",
-            relations:["Laucian Caerwyn","Kazmir Naivros"],
+            relations:["Laucian Caerwyn","Kazmir Naivros","Valcrest","Zahira"],
             text:`# Samira "Mira" Suleiman [Sy]\n-# *mag  ‧  5      dex  ‧  1      cha  ‧  2      int  ‧  2      hp  ‧  64*\n-# siren\n-# sorceress, lv.?\n-# Chaotic neutral\n\n## Physique\ngold, silver, smoky greys, and a deep, sunset orange. rubies, sapphires, emeralds. freshly dipped incense, and rose petals.\n\n## Backstory\nsamira was born for one purpose alone: to someday advise the king as the suleiman family had for several suns. she was trained for this role in the ancient city of zahira, deep in the dunes of the outer reaches of the high desert. raised in solitude aside from her sisters, under sloped sandstone walls, samira’s divination of sun magic culminated at a young age. she was revered, and worshipped: a prodigy. what her family didn’t account for, was the sliver of snake blood leftover in her mother’s lineage passing on to samira. “the palace has no place for a serpent.”\n\nthe role she had been coveting was transitioned over to her younger sister, sumaiya. determined to leave valmora for good, samira’s plans were interrupted by prince lauc, who offered her a position as his counsel. he remarked how she blended into the night, the shine of her scales revealing her in the moonlight.`
         },
         "Kazmir Naivros" : {
             type:"entry",
-            relations:["Laucian Caerwyn","Samira Suleiman"],
+            relations:["Laucian Caerwyn","Samira Suleiman","Valcrest"],
             text:`# Kazmir “Kaz” Naivros [Sy]\n-# *int  ‧  1      str  ‧  4      def  ‧  2      cha  ‧  1      hp  ‧  70*\n-# half-elf, fae-touched\n-# unk. class, lv.?\n-# Neutral Good\n\n## Physique\nlush greens, light and dark, and all shades in between. rich browns, reds, yellow. cinnamon, cardamon, evergreen, & honey.\n\n## Backstory\nwhether the stranger from his childhood was a dream, or a mirage, kaz is uncertain, but one fact remains certain: the powers he was gifted are a curse. at any moment, against his will, a wild magic appears at his fingertips, threatening everything around him. after an accident in his youth, kaz fled to the ancient parts of the woodlands, isolated from civilization and his hometown in the river valley.\n\nkaz encountered the prince spontaneously, offering assistance as a guide through the outer edges of the forest. upon witnessing kaz’s fortitude, lauc extended an offer: serve as his guard on his journeys across the far reaches of the kingdom. the two quickly formed an unexpected and cherished companionship. together, they formed the start of the seventeenth oath, an offshoot of valmora’s royal knights.`
         },
         "Arya Eunari" : {
             type:"entry",
-            relations:[],
+            relations:["Valcrest"],
             text:`# Arya Eunari [Sy]\n-# *int  ‧  2      str  ‧  1      dex  ‧  2      mag  ‧  3      hp  ‧  33*\n-# human\n-# cleric(?), lv.?\n-# Chaotic neutral\n\n## Physique\nblack, & navy blue, crimson red, & oranges. velvet, and satin. silver, stone, & carnelian.\n\n## Backstory\nit seemed arya’s fate was written in the stars, ordained at birth by the high priestess to become her successor. like many women that belonged to her order, arya has retained zero contact with her birth parents, raised entirely by “the sisters of ilyune”. the only surviving symbol of her identity before induction are a set of daggers, twin dragonflies, strapped to her thighs for protection.\n\nafter years of dedication, and faith without question, arya failed the final ritual necessary to become a servant of ilyune. without hesitation, she was shunned by the temple and cast out. before arya left, she caught wind of some news: ilyune’s high priestess was under investigation for murder charges. desperate to regain favor, arya took the fall for her crimes, though there has been little word from her sisters, or the moon goddess, since.`
         },
         "Eponine Snjordottir" : {
             type:"entry",
-            relations:["The Demon"],
+            relations:["The Demon","Valcrest"],
             text:`# Éponine Snjórdóttir [Cam]\n-# *int  ‧  2      str  ‧  1      def  ‧  1      mag  ‧  3      hp  ‧  49*\n-# half-elf\n-# warlock, lv.3\n-# Chaotic good\n\n## Physique\nNo information.\n\n## Backstory\nÉponine has always heard these voices, quite like a siren's song. She chased them for as long as she could remember, sang back even. She never knew their origin and thought maybe if she did, they would leave her alone. But she became quite used to them.\n\nEirdis,her sister  has been missing for two years now. By elvish standards, two years isn't that long but to Éponine it is far too long. The journey to Valcrest is long and the voices are getting stronger, she gives in to them. She makes a deal, an exchange for power. Little did she know that she wasn't making a deal with a friendly angel but rather a demon. Perhaps it was fitting it was a demon, only a demon would understand just how far she would go to see her sister safe again.\n\n## Personality\nGrowing up in the frost mountains meant that from a young age you had to be quick skinned and quick witted, yet somehow young Eponine retained much of her softness.\n\n-# "Snjórdóttir" - Daughter of Snow? / Snjór. Just a thought.`
         },
     },
     Map : {
+        "☆ Valmora ☆" : {
+            type:"entry",
+            relations: ["Valcrest", "High Desert", "Frost Peaks", "River Valley", "Woodlands"],
+            text: `# Valmora\nVast lands, composed of its capital, Valmora, the High Desert, the Frost Peaks, the River Valley, the Woodlands and the Underground.`
+        },
         "Valcrest" : {
             type:"entry",
             relations: ["Valmora"],
-            text: ``,
-        }
+            text: `# Valcrest\nThe capital of Valmora, located at the center of the land.`
+        },
+        "High Desert" : {
+            type:"entry",
+            relations: ["Valmora","Zahira","Munsburrow","Ninsth"],
+            text: `# The High Desert\n__!!subject to change!!__\nThis area is, as the name entails, a vast desert. Though it isn't without its charms. The architects from this area had to adapt to the materials available and the rough conditions, so the few cities populating this land all share a distinct energy of radiance that the other regions cannot mimic.\n\nThree major cities can be found:\n- Zahira - City of commerce,\n- Ninsth - Religious city,\n- Munsburrow - Middlepoint for travellers\nThe High Desert is an especially dangerous place when venturing the wilds. It is highly recommended to be accompanied of a local who knows the intricacies to navigating the sands.`
+        },
+        "Zahira" : {
+            type:"entry",
+            relations: ["High Desert"],
+            text: `# Zahira\nNo information at the moment.`
+        },
+        "Munsburrow" : {
+            type:"entry",
+            relations: ["High Desert"],
+            text: `# Munsburrow\nNo information at the moment.`
+        },
+        "Ninsth" : {
+            type:"entry",
+            relations: ["High Desert"],
+            text: `# Ninsth\nNo information at the moment.`
+        },
     }
 }
 
