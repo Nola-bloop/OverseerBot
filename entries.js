@@ -83,7 +83,7 @@ export const entries = {
         "High Desert" : {
             type:"entry",
             relations: ["Valmora","Zahira","Munsburrow","Ninsth"],
-            text: `# The High Desert\n__!!subject to change!!__\nThis area is, as the name entails, a vast desert. Though it isn't without its charms. The architects from this area had to adapt to the materials available and the rough conditions, so the few cities populating this land all share a distinct energy of radiance that the other regions cannot mimic.\n\nThree major cities can be found:\n- Zahira - City of commerce,\n- Ninsth - Religious city,\n- Munsburrow - Middlepoint for travellers\nThe High Desert is an especially dangerous place when venturing the wilds. It is highly recommended to be accompanied of a local who knows the intricacies to navigating the sands.`
+            text: `# The High Desert\n__!!subject to change!!__\nThis area is, as the name entails, a vast desert. Though it isn't without its charms. The architects from this area had to adapt to the materials available and the rough conditions, so the few cities populating this land all share a distinct energy of radiance that the other regions cannot mimic.\n\nThree major cities can be found:\n- Zahira - City of commerce\n- Ninsth - Religious city\n- Munsburrow - Middle point for travellers\nThe High Desert is an especially dangerous place when venturing the wilds. It is highly recommended to be accompanied of a local who knows the intricacies to navigating the sands.`
         },
         "Zahira" : {
             type:"entry",
@@ -262,7 +262,7 @@ export function queryEntries(query) {
         }
 
 
-        
+
         if (current.type !== "entry" && !Array.isArray(current)) {
             for (let key in current) {
                 let value = current[key];
