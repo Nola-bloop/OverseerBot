@@ -70,7 +70,7 @@ export const entries = {
         },
     },
     Map : {
-        "☆ Valmora ☆" : {
+        " Valmora" : {
             type:"entry",
             relations: ["Valcrest", "High Desert", "Frost Peaks", "River Valley", "Woodlands"],
             text: `# Valmora\nVast lands, composed of its capital, Valmora, the High Desert, the Frost Peaks, the River Valley, the Woodlands and the Underground.`
