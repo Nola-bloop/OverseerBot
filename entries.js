@@ -283,6 +283,10 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
     }
 
     if (typeof entry.text == "string") entry.text = [entry.text]
+    
+    let entryText = `${entry.title}`
+    if (entry.text.length > 1) entryText += ` (${page}/${entry.text.length})`
+    entryText += `\n${entry.text[page-1]}`
 
     console.log(`type: ${typeof entry.text[page-1]}`)
 
@@ -332,7 +336,7 @@ export function buildEntry(entry, key, pathPrefix = "", page = 1){
     components.push(buttons);
 
     return {
-        content: entry.text[page-1],
+        content: entryText,
         embeds: [embed],
         components,
         flags: [MessageFlags.Ephemeral]
