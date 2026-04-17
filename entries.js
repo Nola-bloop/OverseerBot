@@ -144,7 +144,7 @@ export const entries = {
             ype:"entry",
             relations: ["High Desert"],
             text: `# Ssyphsis\nNo information at the moment.`
-        }
+        },
         " Frost Peaks" : {
             type:"entry",
             relations: ["Valmora"],
