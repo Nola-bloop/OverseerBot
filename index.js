@@ -64,10 +64,15 @@ client.on('interactionCreate', async interaction => {
             }
         }
         if (interaction.customId.startsWith('info_query_')){
-            let prefix = options.slice(2).map(item => `_${item}`).join('');
-            let entry = queryEntries(options[options.length-1])
+            let data = queryEntries(options[2])
+            let entry = data.entry
+            let prefix = ""
+            for (let i = 0; i < data.path.length; i++){
+                prefix += "_"+data.path[i]
+            }
+            prefix += "_"+options[2]
             if (entry.type == "error") interaction.update({content:entry.text})
-            await interaction.update(buildEntry(entry, options[options.length-1], prefix))
+            await interaction.update(buildEntry(entry, options[2], prefix, parseInt(options[3])))
         }
         else if (interaction.customId.startsWith('info_prev_')) {
             const currentPage = parseInt(options[2]);
@@ -92,7 +97,6 @@ client.on('interactionCreate', async interaction => {
                 entry = entry[options[i]]
             }
             let prefix = options.slice(2, options.length-1).map(item => `_${item}`).join('');
-            console.log("prfx:"+prefix)
             await interaction.update(buildPage(entry, 0, prefix));
         }
 
