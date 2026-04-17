@@ -369,7 +369,7 @@ export function queryEntries(query) {
         if (Object.prototype.hasOwnProperty.call(current, query)) {
             return {
                 entry: current[query],
-                path: [...path, query] // full path to the found value
+                path: [...path]
             }
         }
 
