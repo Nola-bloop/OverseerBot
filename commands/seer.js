@@ -10,6 +10,14 @@ import {
 } from 'discord.js';
 import caller from '../API-calls.js';
 import { entries, buildPage } from '../entries.js'
+import { JsonDB, Config } from 'node-json-db';
+
+const rolls = new JsonDB(new Config(
+  "rolls", // file name (myDatabase.json)
+  true,         // save after each push
+  false,         // human-readable (pretty JSON)
+  '/'           // path separator
+));
 
 
 const PC_POOL = [
@@ -301,6 +309,17 @@ function formatName(string) {
     string = string.toLowerCase()
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
+function parseDice(input) {
+  const match = input.match(/^(\d+)d(\d+)([+-]\d+)?$/i);
+
+  if (!match) return null;
+
+  return {
+    count: match[1] ? parseInt(match[1], 10) : 1,
+    dsize: parseInt(match[2], 10),
+    mod: match[3] ? parseInt(match[3], 10) : 0
+  };
+}
 
 export default {
 	data: new SlashCommandBuilder()
@@ -379,6 +398,46 @@ export default {
             option
             .setName('query')
             .setDescription('Search for a specific beast. leave empty to show a list of all the beasts.')
+            .setRequired(false)
+        )
+    )
+    .addSubcommand(subCommand =>
+        subCommand
+        .setName('roll')
+        .setDescription('Use Nola\'s rolling system.')
+        .addStringOption( option =>
+            option
+            .setName('value')
+            .setDescription('ex: 1d20+2')
+            .setRequired(true)
+        )
+        .addStringOption( option =>
+            option
+            .setName('label')
+            .setDescription('This can be the character name.')
+            .setRequired(true)
+        )
+        .addStringOption( option =>
+            option
+            .setName('folder')
+            .setDescription('Put wtv Sy tells you to roll for in here, ex: \'manor-perception\'')
+            .setRequired(false)
+        )
+    )
+    .addSubcommand(subCommand =>
+        subCommand
+        .setName('show-rolls')
+        .setDescription('List roll results for a folder.')
+        .addStringOption( option =>
+            option
+            .setName('folder')
+            .setDescription('The folder to show.')
+            .setRequired(true)
+        )
+        .addBooleanOption(option =>
+            option
+            .setName("enable-ephemeral")
+            .setDescription("False: Send the message for everyone, so that anyone can see the prompt.")
             .setRequired(false)
         )
     ),
@@ -483,24 +542,63 @@ export default {
         }
         else if (sub === "bestiary"){
             let query = interaction.options.getString("query") ?? ""
-            /*
-            if (query == "") {
-                let keys = Object.keys(entries.bestiary)
-                keys.sort()
-                let concatenatedString = "## The beasts of Valmora:\n\n"
-                for (let i = 0; i < keys.length; i++){
-                    concatenatedString += "`"+keys[i]+"`\n"
-                }
-                return await caller.Reply(interaction, concatenatedString)
-            }
-            else{
-                let entry = entries.bestiary[formatName(query)] ?? `## No creature with name '`+query+`' found.\ntry using \`/dnd bestiary\` for a list of all the beasts.`
-
-                return await caller.Reply(interaction, entry)
-            }
-            */
 
             await interaction.reply(buildPage(entries.Bestiary, 0, "_Bestiary"));
+        }
+        else if (sub === "roll"){
+            let dicespecs = interaction.options.getString("value")
+            let label = interaction.options.getString("label")
+            let folder = interaction.options.getString("folder") ?? null
+            
+            
+            let opts = parseDice(dicespecs)
+            
+            if (opts == null) {
+                return await caller.Reply(interaction, "Invalid format: "+dicespecs);
+            }
+            
+            let msg = `||<@${user.id}>||\n## [${label}] Results :\n-# using "${dicespecs}"`
+            let total = 0
+            
+            msg += `\n-# individual results: `
+            
+            for (let i = 0; i < opts.count; i++){
+                let result = Math.floor(Math.random() * opts.dsize) + 1
+                msg += `[${result}] `
+                total += result
+            }
+            
+            total += opts.mod
+            
+            msg += `\n# total: ${total}`
+            
+            if (folder != null){
+                rolls.push(`/${folder}[]`, {
+                    label: label,
+                    value: total
+                })
+                msg +=`\n\n-# *added to folder '${folder}'*`
+            }
+            
+            return await caller.Reply(interaction, msg, false);
+        }
+        else if (sub === "show-rolls"){
+            let ephemeral = interaction.options.getBoolean("enble-ephemeral") ?? false
+            let folder = interaction.options.getString("folder")
+            
+            let values = await rolls.getData("/"+folder)
+            
+            if (values == null || values.length < 1) return await interaction.reply(interaction, "No rolls found.", true);
+            
+            let msg = "## Rolls (`"+folder+"`)"
+            
+            values.sort((a, b) => b.value - a.value);
+            
+            for (let i = 0; i < values.length; i++){
+                msg += `\n${values[i].label} : ${values[i].value}`
+            }
+            
+            await caller.Reply(interaction, msg, false);
         }
 	}
 };
