@@ -590,11 +590,13 @@ export default {
             msg += `\n# total: ${total}`
             
             if (folder != null){
-                const arr = await rolls.getData("/"+folder)
-                const newArr = arr.filter(roll => roll === label)
-                if (newArr.length > 0){
-                    return await caller.Reply(interaction, "This label already exists in this folder. Please remove it before overwriting it.", false)
-                }
+                try {
+                    let arr = await rolls.getData("/"+folder)
+                    const newArr = arr.filter(roll => roll.label === label)
+                    if (newArr.length > 0){
+                        return await caller.Reply(interaction, "This label already exists in this folder. Please remove it before overwriting it.")
+                    }
+                } catch (e){}
                 
                 rolls.push(`/${folder}[]`, {
                     label: label,
@@ -609,9 +611,10 @@ export default {
             let ephemeral = interaction.options.getBoolean("enable-ephemeral") ?? false
             let folder = interaction.options.getString("folder")
             
-            let values = await rolls.getData("/"+folder)
+            let values
+            try { values = await rolls.getData("/"+folder) } catch (e){}
             
-            if (values == null || values.length < 1) return await interaction.reply(interaction, "No rolls found.", true);
+            if (values == null || values.length < 1) return await caller.Reply(interaction, "No rolls found.", true);
             
             let msg = "## Rolls (`"+folder+"`)"
             
@@ -623,7 +626,7 @@ export default {
             
             await caller.Reply(interaction, msg, false);
         }
-        else if (sub === "clean-rolls"){
+        else if (sub === "clear-rolls"){
             let label = interaction.options.getString("label")
             let folder = interaction.options.getString("folder")
             
@@ -634,7 +637,7 @@ export default {
             
             let arr = await rolls.getData("/"+folder)
             
-            const newArr = arr.filter(roll => roll !== label)
+            const newArr = arr.filter(roll => roll.label !== label)
             
             rolls.push("/"+folder, newArr)
             
