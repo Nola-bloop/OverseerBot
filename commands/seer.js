@@ -421,7 +421,7 @@ export default {
             option
             .setName('folder')
             .setDescription('Put wtv Sy tells you to roll for in here, ex: \'manor-perception\'')
-            .setRequired(false)
+            .setRequired(true)
         )
     )
     .addSubcommand(subCommand =>
