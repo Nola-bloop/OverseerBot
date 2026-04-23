@@ -13,7 +13,7 @@ import { entries, buildPage } from '../entries.js'
 import { JsonDB, Config } from 'node-json-db';
 
 const rolls = new JsonDB(new Config(
-  "rolls.db", // file name (myDatabase.json)
+  "rolls.db.json", // file name (myDatabase.json)
   true,         // save after each push
   false,         // human-readable (pretty JSON)
   '/'           // path separator
