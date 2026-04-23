@@ -13,7 +13,7 @@ import { entries, buildPage } from '../entries.js'
 import { JsonDB, Config } from 'node-json-db';
 
 const rolls = new JsonDB(new Config(
-  "rolls", // file name (myDatabase.json)
+  "rolls.db", // file name (myDatabase.json)
   true,         // save after each push
   false,         // human-readable (pretty JSON)
   '/'           // path separator
@@ -440,6 +440,23 @@ export default {
             .setDescription("False: Send the message for everyone, so that anyone can see the prompt.")
             .setRequired(false)
         )
+    )
+    .addSubcommand(subCommand =>
+        subCommand
+        .setName('clear-rolls')
+        .setDescription('Remove the rolls of a folder.')
+        .addStringOption( option =>
+            option
+            .setName('folder')
+            .setDescription('The folder to destroy.')
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("label")
+            .setDescription("Use this to only remove one label from the folder.")
+            .setRequired(false)
+        )
     ),
 	async execute (interaction) {
 		const user = interaction.member.user;
@@ -599,6 +616,14 @@ export default {
             }
             
             await caller.Reply(interaction, msg, false);
+        }
+        else if (sub === "clean-rolls"){
+            let label = interaction.options.getString("label")
+            let folder = interaction.options.getString("folder")
+            
+            return await caller.Reply(interaction, "not implemented", true);
+            
+            await caller.Reply(interaction, "", false);
         }
 	}
 };
