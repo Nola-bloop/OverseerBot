@@ -336,7 +336,7 @@ function parseDice(input) {
 
 async function ensureUserExistence(user){
     let userData
-    try { userData = await users.getData("/"+user.id) } catch (e){}
+    try { userData = await characters.getData("/"+user.id) } catch (e){}
     
     if (userData == null){
         userData = {
@@ -610,6 +610,18 @@ export default {
             .setDescription("Default: false.")
             .setRequired(false)
         )
+    )
+    .addSubcommand(subCommand =>
+        subCommand
+        .setName('list-characters')
+        .setDescription('Get a list of all the characters.')
+        .addStringOption(option =>
+            option
+            .setName("character-name")
+            .setDescription("Use this to show info about a specific character instead of a list.")
+            .setRequired(false)
+            .setAutocomplete(true)
+        )
     ),
 	async execute (interaction) {
 		const user = interaction.member.user;
@@ -839,32 +851,130 @@ export default {
                 isNPC: _isNPC
             }
             
-            ensureUserExistence(user)
+            await ensureUserExistence(user)
             
             characters.push(`/${user.id}/characters[]`, newCharacter)
             
             return await caller.Reply(interaction, "Done.")
         }
         else if (sub === "list-characters"){
+            let query = interaction.options.getString("character-name")
+            
+            if (query == null){
+                let data
+                try { data = await characters.getData("/") } catch (e){
+                    return await caller.Reply(interaction, "There was an error: "+e+"\n There are probably just not any characters in the database at this moment.")
+                }
+                
+                let msg = "## List of characters:\n"
+                
+                let characterList = []
+                Object.values(data).forEach(userData => {
+                    userData.characters.forEach(char => {
+                        characterList.push({player: userData.username, name: char.name});
+                    });
+                });
+        
+                characterList.sort((a, b) => b.player - a.player || b.name - a.name);
+        
+                characterList.forEach(character =>{
+                    msg += `\`${character.name}\` (${character.player})\n`
+                })
+                
+                
+                return await caller.Reply(interaction, msg)
+            }
+            else{
+                await ensureUserExistence(user)
+                let data
+                try { data = await characters.getData("/") } catch (e){
+                    return await caller.Reply(interaction, "There was an error: "+e+"\n There are probably just not any characters in the database at this moment.")
+                }
+                
+                let matches = []
+                
+                for (const userData of Object.values(data)){
+                    let match = userData.characters.find(c => c.name === "Gab")
+                    if (match != undefined) {
+                        match.player = userData.username
+                        matches.push(match)
+                    }
+                }
+        
+                let msg = "Results:"
+                matches.sort((a, b) => b.player - a.player)
+                for (let i = 0; i < matches.length; i++){
+                    msg+="```\n"
+                    for (const k of Object.keys(matches[i])){
+                        if (k == "stats"){
+                            msg+= "stats:"
+                            for (const k2 of Object.keys(matches[i].stats)){
+                                let val = matches[i][k][k2]
+                                if (val > 0) msg+=`  ${k2}·${val}`
+                            }
+                            msg+="\n"
+                        }
+                        else msg += `${k} : ${matches[i][k]}\n`
+                    }
+                    msg+="```"
+                }
+                
+                return await caller.Reply(interaction, msg)
+            }
+        }
+	},
+    async autocomplete(interaction) {
+        const focused = interaction.options.getFocused(true);
+        const user = interaction.member.user;
+        const sub = interaction.options.getSubcommand();
+        
+        let type
+        
+        if (sub === "list-characters" && focused.name == "character-name") type = "owned-characters"
+        
+        
+        if (type == "owned-characters"){
             let data
             try { data = await characters.getData("/"+user.id) } catch (e){
-                return await caller.Reply(interaction, "There was an error: "+e+"\n There are probably just not any characters in the database at this moment.")
+                return await interaction.respond([{ name: "No characters found", value: "none" }])
             }
             
-            let msg = "## List of characters:\n"
-            
-            const characters = Object.values(data).reduce((acc, userData) => {
-                userData.characters.forEach(char => {
-                    acc.push({player: userData.username, name: char.name});
-                });
-                return acc;
-            }, {});
-    
-            characters.forEach(character =>{
-                msg += `\`${character.name}\` (${character.player})\n`
+            let suggestions = []
+            data.characters.forEach(character =>{
+                suggestions.push({name:character.name, value:character.name})
             })
-            
-            return await caller.Reply(interaction, msg)
+    
+            const filtered = suggestions.filter(c =>
+                !focused.value || c.name.toLowerCase().includes(focused.value.toLowerCase())
+            );
+    
+            return await interaction.respond(filtered)
         }
-	}
+        if (type == "any-character"){ 
+            let data
+            try { data = await characters.getData("/") } catch (e){
+                return await interaction.respond([{ name: "No characters found", value: "none" }])
+            }
+            
+            let suggestions = []
+            data.forEach(userData=>{
+                data.characters.forEach(character =>{
+                    suggestions.push({name:`${character.name} (${userData.username})`, value:character.name})
+                })
+            })
+    
+            const filtered = suggestions.filter(c =>
+                !focused.value || c.name.toLowerCase().includes(focused.value.toLowerCase())
+            );
+            
+            filtered.sort((a, b) => b.name - a.name)
+            
+    
+            return await interaction.respond(filtered)
+        }
+        
+        
+        
+        return await interaction.respond([])
+    }
 };

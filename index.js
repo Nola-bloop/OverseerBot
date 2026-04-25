@@ -46,7 +46,6 @@ let connection;
 
 //commands
 client.on('interactionCreate', async interaction => {
-
     // When user presses page buttons
     if (interaction.isButton()) {
         let options = interaction.customId.split('_')
@@ -100,6 +99,14 @@ client.on('interactionCreate', async interaction => {
             await interaction.update(buildPage(entry, 0, prefix));
         }
 
+        return
+    }
+    
+    if (interaction.isAutocomplete()) {
+        const command = client.commands.get(interaction.commandName);
+        if (command?.autocomplete) {
+            await command.autocomplete(interaction);
+        }
         return
     }
 
