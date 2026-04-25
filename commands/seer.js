@@ -947,7 +947,7 @@ export default {
                 let matches = []
                 
                 for (const userData of Object.values(data)){
-                    let match = userData.characters.find(c => c.name === "Gab")
+                    let match = userData.characters.find(c => c.name === query)
                     if (match != undefined) {
                         match.player = userData.username
                         matches.push(match)
