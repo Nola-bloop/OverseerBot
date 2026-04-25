@@ -606,7 +606,7 @@ export default {
                 .setName("boon")
                 .setDescription("Type a description of your boon.")
                 .setRequired(false)
-                .setMaxLength(100)
+                .setMaxLength(500)
             )
             .addBooleanOption(option =>
                 option
