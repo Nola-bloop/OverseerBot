@@ -652,6 +652,18 @@ export default {
                 .setRequired(true)
             )
         )
+        .addSubcommand(subCommand =>
+            subCommand
+            .setName('delete')
+            .setDescription('Delete a character.')
+            .addStringOption(option =>
+                option
+                .setName("character-name")
+                .setDescription("The character to delete.")
+                .setRequired(true)
+                .setAutocomplete(true)
+            )
+        )
     ),
 	async execute (interaction) {
 		const user = interaction.member.user
@@ -995,6 +1007,23 @@ export default {
             
             return await caller.Reply(interaction, "Done.")
         }
+        else if (group === "character" && sub == "delete"){
+            let query = interaction.options.getString("character-name")
+            
+            await ensureUserExistence(user)
+            
+            let data
+            try { data = await characters.getData("/"+user.id+"/characters") } catch (e){
+                return await caller.Reply(interaction, "You have no characters...? idk")
+            }
+            
+            let char = data.find(c => c.name === query)
+            data = data.filter(c => c.name !== query)
+            
+            characters.push("/"+user.id+"/characters", data)
+            
+            return await caller.Reply(interaction, "Done.")
+        }
 	},
     async autocomplete(interaction) {
         const focused = interaction.options.getFocused(true);
@@ -1008,6 +1037,7 @@ export default {
         if (group === "character" && sub === "list" && focused.name == "character-name") type = "any-character"
         if (group === "character" && sub === "edit" && focused.name == "character-name") type = "owned-characters"
         if (group === "character" && sub === "edit" && focused.name == "parameter-name") type = "character-field"
+        if (group === "character" && sub === "delete" && focused.name == "character-name") type = "owned-characters"
         
         
         if (type === "owned-characters"){
