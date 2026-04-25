@@ -629,7 +629,7 @@ export default {
         )
         .addSubcommand(subCommand =>
             subCommand
-            .setName('update')
+            .setName('edit')
             .setDescription('Change info on your character.')
             .addStringOption(option =>
                 option
@@ -963,7 +963,7 @@ export default {
                 return await caller.Reply(interaction, msg)
             }
         }
-        else if (group === "character" && sub == "update"){
+        else if (group === "character" && sub == "edit"){
             let query = interaction.options.getString("character-name")
             let parameterName = interaction.options.getString("paraneter-name")
             let newValue = interaction.options.getString("new-value")
@@ -1006,8 +1006,8 @@ export default {
         
         //type attribution
         if (group === "character" && sub === "list" && focused.name == "character-name") type = "any-character"
-        if (group === "character" && sub === "update" && focused.name == "character-name") type = "owned-characters"
-        if (group === "character" && sub === "update" && focused.name == "parameter-name") type = "character-field"
+        if (group === "character" && sub === "edit" && focused.name == "character-name") type = "owned-characters"
+        if (group === "character" && sub === "edit" && focused.name == "parameter-name") type = "character-field"
         
         
         if (type === "owned-characters"){
