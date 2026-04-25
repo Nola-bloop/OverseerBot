@@ -1032,10 +1032,12 @@ export default {
             try { data = await characters.getData("/") } catch (e){
                 return await interaction.respond([{ name: "No characters found", value: "none" }])
             }
+            if (data == null) return await interaction.respond([{ name: "No characters found", value: "none" }])
+            console.log(data)
             
             let suggestions = []
-            data.forEach(userData=>{
-                data.characters.forEach(character =>{
+            Object.values(data).forEach(userData=>{
+                Object.values(userData.characters).forEach(character =>{
                     suggestions.push({name:`${character.name} (${userData.username})`, value:character.name})
                 })
             })
