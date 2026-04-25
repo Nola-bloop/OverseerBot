@@ -19,6 +19,19 @@ const rolls = new JsonDB(new Config(
   '/'           // path separator
 ));
 
+const characters = new JsonDB(new Config(
+  "characters.db.json", // file name (myDatabase.json)
+  true,         // save after each push
+  false,         // human-readable (pretty JSON)
+  '/'           // path separator
+));
+
+const prompts = new JsonDB(new Config(
+  "prompts.db.json", // file name (myDatabase.json)
+  true,         // save after each push
+  false,         // human-readable (pretty JSON)
+  '/'           // path separator
+));
 
 const PC_POOL = [
     "Arya",
@@ -321,6 +334,20 @@ function parseDice(input) {
   };
 }
 
+async function ensureUserExistence(user){
+    let userData
+    try { userData = await users.getData("/"+user.id) } catch (e){}
+    
+    if (userData == null){
+        userData = {
+            id: user.id,
+            username: user.globalName,
+            characters:[]
+        }
+        characters.push("/"+user.id, userData)
+    }
+}
+
 export default {
 	data: new SlashCommandBuilder()
 	.setName('dnd')
@@ -455,6 +482,132 @@ export default {
             option
             .setName("label")
             .setDescription("Use this to only remove one label from the folder.")
+            .setRequired(false)
+        )
+    )
+    .addSubcommand(subCommand =>
+        subCommand
+        .setName('add-character')
+        .setDescription('Add a character to the character pool.')
+        .addStringOption( option =>
+            option
+            .setName('name')
+            .setDescription('ex: Chad Thunderco-')
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("race")
+            .setDescription("ex: Human.")
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("class")
+            .setDescription("ex: Rogue.")
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("rank")
+            .setDescription("ex: Veteran.")
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("alignment")
+            .setDescription("ex: chaotic good.")
+            .setRequired(true)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("level")
+            .setDescription("ex: 3.")
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("pronouns")
+            .setDescription("ex: She/her.")
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("gender")
+            .setDescription("ex: Female.")
+            .setRequired(true)
+            .addChoices(
+                {name:"Male", value: "Male"},
+                {name:"Female", value: "Female"},
+                {name:"Non-binary", value: "Non-binary"},
+                {name:"Other", value: "Other"}
+            )
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("age")
+            .setDescription("ex: 150.")
+            .setRequired(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("height")
+            .setDescription("ex: 5'10.")
+            .setRequired(true)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("hp")
+            .setDescription("Other stats are optional!")
+            .setRequired(true)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("strength")
+            .setDescription("ex: 2.")
+            .setRequired(false)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("dexterity")
+            .setDescription("ex: 2.")
+            .setRequired(false)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("defense")
+            .setDescription("ex: 2.")
+            .setRequired(false)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("intelligence")
+            .setDescription("ex: 2.")
+            .setRequired(false)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("magic")
+            .setDescription("ex: 2.")
+            .setRequired(false)
+        )
+        .addIntegerOption(option =>
+            option
+            .setName("charisma")
+            .setDescription("ex: 2.")
+            .setRequired(false)
+        )
+        .addStringOption(option =>
+            option
+            .setName("boon")
+            .setDescription("Type a description of your boon.")
+            .setRequired(false)
+            .setMaxLength(100)
+        )
+        .addBooleanOption(option =>
+            option
+            .setName("is-npc")
+            .setDescription("Default: false.")
             .setRequired(false)
         )
     ),
@@ -642,6 +795,76 @@ export default {
             rolls.push("/"+folder, newArr)
             
             return await caller.Reply(interaction, "Done.")
+        }
+        else if (sub === "add-character"){
+            let _name = interaction.options.getString("name")
+            let _race = interaction.options.getString("race")
+            let _class = interaction.options.getString("class")
+            let _rank = interaction.options.getString("rank")
+            let _alignment = interaction.options.getString("alignment")
+            let _pronouns = interaction.options.getString("pronouns")
+            let _gender = interaction.options.getString("gender")
+            let _age = interaction.options.getInteger("age")
+            let _height = interaction.options.getString("height")
+            let _hp = interaction.options.getInteger("hp")
+            let _strength = interaction.options.getInteger("strength") ?? 0
+            let _dexterity = interaction.options.getInteger("dexterity") ?? 0
+            let _defense = interaction.options.getInteger("defense") ?? 0
+            let _intelligence = interaction.options.getInteger("intelligence") ?? 0
+            let _magic = interaction.options.getInteger("magic") ?? 0
+            let _charisma = interaction.options.getInteger("charisma") ?? 0
+            let _boon = interaction.options.getString("boon") ?? "none"
+            let _isNPC = interaction.options.getString("isNPC") ?? false
+            
+            let newCharacter = {
+                name: _name,
+                race: _race,
+                class: _class,
+                rank: _rank,
+                alignment: _alignment,
+                pronouns: _pronouns,
+                gender: _gender,
+                age: _age,
+                height: _height,
+                stats: {
+                    hp: _hp,
+                    str: _strength,
+                    dex: _dexterity,
+                    def: _defense,
+                    int: _intelligence,
+                    mag: _magic,
+                    cha: _charisma
+                },
+                boon: _boon,
+                isNPC: _isNPC
+            }
+            
+            ensureUserExistence(user)
+            
+            characters.push(`/${user.id}/characters[]`, newCharacter)
+            
+            return await caller.Reply(interaction, "Done.")
+        }
+        else if (sub === "list-characters"){
+            let data
+            try { data = await characters.getData("/"+user.id) } catch (e){
+                return await caller.Reply(interaction, "There was an error: "+e+"\n There are probably just not any characters in the database at this moment.")
+            }
+            
+            let msg = "## List of characters:\n"
+            
+            const characters = Object.values(data).reduce((acc, userData) => {
+                userData.characters.forEach(char => {
+                    acc.push({player: userData.username, name: char.name});
+                });
+                return acc;
+            }, {});
+    
+            characters.forEach(character =>{
+                msg += `\`${character.name}\` (${character.player})\n`
+            })
+            
+            return await caller.Reply(interaction, msg)
         }
 	}
 };
