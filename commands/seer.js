@@ -485,174 +485,181 @@ export default {
             .setRequired(false)
         )
     )
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('add-character')
-        .setDescription('Add a character to the character pool.')
-        .addStringOption( option =>
-            option
-            .setName('name')
-            .setDescription('ex: Chad Thunderco-')
-            .setRequired(true)
-        )
-        .addStringOption(option =>
-            option
-            .setName("race")
-            .setDescription("ex: Human.")
-            .setRequired(true)
-        )
-        .addStringOption(option =>
-            option
-            .setName("class")
-            .setDescription("ex: Rogue.")
-            .setRequired(true)
-        )
-        .addStringOption(option =>
-            option
-            .setName("rank")
-            .setDescription("ex: Veteran.")
-            .setRequired(true)
-        )
-        .addStringOption(option =>
-            option
-            .setName("alignment")
-            .setDescription("ex: chaotic good.")
-            .setRequired(true)
-        )
-        .addIntegerOption(option =>
-            option
-            .setName("level")
-            .setDescription("ex: 3.")
-            .setRequired(true)
-        )
-        .addStringOption(option =>
-            option
-            .setName("pronouns")
-            .setDescription("ex: She/her.")
-            .setRequired(true)
-        )
-        .addStringOption(option =>
-            option
-            .setName("gender")
-            .setDescription("ex: Female.")
-            .setRequired(true)
-            .addChoices(
-                {name:"Male", value: "Male"},
-                {name:"Female", value: "Female"},
-                {name:"Non-binary", value: "Non-binary"},
-                {name:"Other", value: "Other"}
+    .addSubcommandGroup(group =>
+        group
+        .setName("character")
+        .setDescription("Character management")
+        .addSubcommand(subCommand =>
+            subCommand
+            .setName('create')
+            .setDescription('Add a character to the character pool.')
+            .addStringOption( option =>
+                option
+                .setName('name')
+                .setDescription('ex: Chad Thunderco-')
+                .setRequired(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("race")
+                .setDescription("ex: Human.")
+                .setRequired(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("class")
+                .setDescription("ex: Rogue.")
+                .setRequired(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("rank")
+                .setDescription("ex: Veteran.")
+                .setRequired(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("alignment")
+                .setDescription("ex: chaotic good.")
+                .setRequired(true)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("level")
+                .setDescription("ex: 3.")
+                .setRequired(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("pronouns")
+                .setDescription("ex: She/her.")
+                .setRequired(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("gender")
+                .setDescription("ex: Female.")
+                .setRequired(true)
+                .addChoices(
+                    {name:"Male", value: "Male"},
+                    {name:"Female", value: "Female"},
+                    {name:"Non-binary", value: "Non-binary"},
+                    {name:"Other", value: "Other"}
+                )
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("age")
+                .setDescription("ex: 150.")
+                .setRequired(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("height")
+                .setDescription("ex: 5'10.")
+                .setRequired(true)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("hp")
+                .setDescription("Other stats are optional!")
+                .setRequired(true)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("strength")
+                .setDescription("ex: 2.")
+                .setRequired(false)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("dexterity")
+                .setDescription("ex: 2.")
+                .setRequired(false)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("defense")
+                .setDescription("ex: 2.")
+                .setRequired(false)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("intelligence")
+                .setDescription("ex: 2.")
+                .setRequired(false)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("magic")
+                .setDescription("ex: 2.")
+                .setRequired(false)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("charisma")
+                .setDescription("ex: 2.")
+                .setRequired(false)
+            )
+            .addStringOption(option =>
+                option
+                .setName("boon")
+                .setDescription("Type a description of your boon.")
+                .setRequired(false)
+                .setMaxLength(100)
+            )
+            .addBooleanOption(option =>
+                option
+                .setName("is-npc")
+                .setDescription("Default: false.")
+                .setRequired(false)
             )
         )
-        .addIntegerOption(option =>
-            option
-            .setName("age")
-            .setDescription("ex: 150.")
-            .setRequired(true)
+        .addSubcommand(subCommand =>
+            subCommand
+            .setName('list')
+            .setDescription('Get a list of all the characters.')
+            .addStringOption(option =>
+                option
+                .setName("character-name")
+                .setDescription("Use this to show info about a specific character instead of a list.")
+                .setRequired(false)
+                .setAutocomplete(true)
+            )
         )
-        .addStringOption(option =>
-            option
-            .setName("height")
-            .setDescription("ex: 5'10.")
-            .setRequired(true)
-        )
-        .addIntegerOption(option =>
-            option
-            .setName("hp")
-            .setDescription("Other stats are optional!")
-            .setRequired(true)
-        )
-        .addIntegerOption(option =>
-            option
-            .setName("strength")
-            .setDescription("ex: 2.")
-            .setRequired(false)
-        )
-        .addIntegerOption(option =>
-            option
-            .setName("dexterity")
-            .setDescription("ex: 2.")
-            .setRequired(false)
-        )
-        .addIntegerOption(option =>
-            option
-            .setName("defense")
-            .setDescription("ex: 2.")
-            .setRequired(false)
-        )
-        .addIntegerOption(option =>
-            option
-            .setName("intelligence")
-            .setDescription("ex: 2.")
-            .setRequired(false)
-        )
-        .addIntegerOption(option =>
-            option
-            .setName("magic")
-            .setDescription("ex: 2.")
-            .setRequired(false)
-        )
-        .addIntegerOption(option =>
-            option
-            .setName("charisma")
-            .setDescription("ex: 2.")
-            .setRequired(false)
-        )
-        .addStringOption(option =>
-            option
-            .setName("boon")
-            .setDescription("Type a description of your boon.")
-            .setRequired(false)
-            .setMaxLength(100)
-        )
-        .addBooleanOption(option =>
-            option
-            .setName("is-npc")
-            .setDescription("Default: false.")
-            .setRequired(false)
-        )
-    )
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('list-characters')
-        .setDescription('Get a list of all the characters.')
-        .addStringOption(option =>
-            option
-            .setName("character-name")
-            .setDescription("Use this to show info about a specific character instead of a list.")
-            .setRequired(false)
-            .setAutocomplete(true)
-        )
-    )
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('update-character')
-        .setDescription('Change info on your character.')
-        .addStringOption(option =>
-            option
-            .setName("character-name")
-            .setDescription("The character to update.")
-            .setRequired(true)
-            .setAutocomplete(true)
-        )
-        .addStringOption(option =>
-            option
-            .setName("parameter-name")
-            .setDescription("NO SPECIAL CHARACTERS! CASE SENSITIVE!")
-            .setRequired(true)
-            .setAutocomplete(true)
-        )
-        .addStringOption(option =>
-            option
-            .setName("new-value")
-            .setDescription("Please enter a number if it is supposed to be one.")
-            .setRequired(true)
+        .addSubcommand(subCommand =>
+            subCommand
+            .setName('update')
+            .setDescription('Change info on your character.')
+            .addStringOption(option =>
+                option
+                .setName("character-name")
+                .setDescription("The character to update.")
+                .setRequired(true)
+                .setAutocomplete(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("parameter-name")
+                .setDescription("NO SPECIAL CHARACTERS! CASE SENSITIVE!")
+                .setRequired(true)
+                .setAutocomplete(true)
+            )
+            .addStringOption(option =>
+                option
+                .setName("new-value")
+                .setDescription("Please enter a number if it is supposed to be one.")
+                .setRequired(true)
+            )
         )
     ),
 	async execute (interaction) {
-		const user = interaction.member.user;
-		const sub = interaction.options.getSubcommand();
+		const user = interaction.member.user
+		const sub = interaction.options.getSubcommand()
 		const guild = interaction.guild
 		const channel = interaction.channel
+        const group = interaction.options.getSubcommandGroup()
+
 
 		if (sub === "passwd"){
 			return await caller.Reply(interaction, "Command not implemented yet.")
@@ -833,7 +840,7 @@ export default {
             
             return await caller.Reply(interaction, "Done.")
         }
-        else if (sub === "add-character"){
+        else if (group === "character" && sub === "create"){
             let _name = interaction.options.getString("name")
             let _race = interaction.options.getString("race")
             let _class = interaction.options.getString("class")
@@ -885,13 +892,13 @@ export default {
             
             let char = data.find(c => c.name === newCharacter.name)
             
-            if (char != null) return await caller.Reply(interaction, "That character already exists. Please use `/dnd update-character` to modify their info.")
+            if (char != null) return await caller.Reply(interaction, "That character already exists. Please use `/dnd character update` to modify their info.")
             
             characters.push(`/${user.id}/characters[]`, newCharacter)
             
             return await caller.Reply(interaction, "Done.")
         }
-        else if (sub === "list-characters"){
+        else if (group === "character" && sub === "list"){
             let query = interaction.options.getString("character-name")
             
             if (query == null){
@@ -956,7 +963,7 @@ export default {
                 return await caller.Reply(interaction, msg)
             }
         }
-        else if (sub == "update-character"){
+        else if (group === "character" && sub == "update"){
             let query = interaction.options.getString("character-name")
             let parameterName = interaction.options.getString("paraneter-name")
             let newValue = interaction.options.getString("new-value")
@@ -980,9 +987,11 @@ export default {
             
             if (char == null) return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
             
-            char[parameterName] = value
+            char[parameterName] = newValue
             
             data.push(char)
+            
+            characters.push("/"+user.id+"/characters", data)
             
             return await caller.Reply(interaction, "Done.")
         }
@@ -991,13 +1000,14 @@ export default {
         const focused = interaction.options.getFocused(true);
         const user = interaction.member.user;
         const sub = interaction.options.getSubcommand();
+        const group = interaction.options.getSubcommandGroup()
         
         let type
         
         //type attribution
-        if (sub === "list-characters" && focused.name == "character-name") type = "any-character"
-        if (sub === "update-character" && focused.name == "character-name") type = "owned-characters"
-        if (sub === "update-character" && focused.name == "parameter-name") type = "character-field"
+        if (group === "character" && sub === "list" && focused.name == "character-name") type = "any-character"
+        if (group === "character" && sub === "update" && focused.name == "character-name") type = "owned-characters"
+        if (group === "character" && sub === "update" && focused.name == "parameter-name") type = "character-field"
         
         
         if (type === "owned-characters"){
@@ -1040,7 +1050,7 @@ export default {
             return await interaction.respond(filtered)
         }
         else if (type === "character-field"){
-            return await interaction.repond([
+            return await interaction.respond([
                 {name:"name", value:"name"},
                 {name:"race", value:"race"},
                 {name:"class", value:"class"},
