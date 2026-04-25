@@ -622,6 +622,31 @@ export default {
             .setRequired(false)
             .setAutocomplete(true)
         )
+    )
+    .addSubcommand(subCommand =>
+        subCommand
+        .setName('update-character')
+        .setDescription('Change info on your character.')
+        .addStringOption(option =>
+            option
+            .setName("character-name")
+            .setDescription("The character to update.")
+            .setRequired(true)
+            .setAutocomplete(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("parameter-name")
+            .setDescription("NO SPECIAL CHARACTERS! CASE SENSITIVE!")
+            .setRequired(true)
+            .setAutocomplete(true)
+        )
+        .addStringOption(option =>
+            option
+            .setName("new-value")
+            .setDescription("Please enter a number if it is supposed to be one.")
+            .setRequired(true)
+        )
     ),
 	async execute (interaction) {
 		const user = interaction.member.user;
@@ -853,6 +878,15 @@ export default {
             
             await ensureUserExistence(user)
             
+            let data
+            try { data = await characters.getData("/"+user.id+"/characters") } catch (e){
+                return await caller.Reply(interaction, "You have no characters...? idk")
+            }
+            
+            let char = data.find(c => c.name === newCharacter.name)
+            
+            if (char != null) return await caller.Reply(interaction, "That character already exists. Please use `/dnd update-character` to modify their info.")
+            
             characters.push(`/${user.id}/characters[]`, newCharacter)
             
             return await caller.Reply(interaction, "Done.")
@@ -922,6 +956,36 @@ export default {
                 return await caller.Reply(interaction, msg)
             }
         }
+        else if (sub == "update-character"){
+            let query = interaction.options.getString("character-name")
+            let parameterName = interaction.options.getString("paraneter-name")
+            let newValue = interaction.options.getString("new-value")
+            
+            await ensureUserExistence(user)
+            
+            if (newValue.toLowerCase() === "true") newValue = true
+            else if (newValue.toLowerCase() === "false") newValue = false
+            let numValue = parseInt(newValue)
+            if (newValue == NaN) numValue = parseFloat(numValue)
+            if (newValue != NaN) newValue = numValue
+            
+            let data
+            try { data = await characters.getData("/"+user.id+"/characters") } catch (e){
+                return await caller.Reply(interaction, "You have no characters...? idk")
+            }
+            
+            let char = data.find(c => c.name === query)
+            data = data.filter(c => c.name !== query)
+            
+            
+            if (char == null) return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
+            
+            char[parameterName] = value
+            
+            data.push(char)
+            
+            return await caller.Reply(interaction, "Done.")
+        }
 	},
     async autocomplete(interaction) {
         const focused = interaction.options.getFocused(true);
@@ -930,10 +994,13 @@ export default {
         
         let type
         
-        if (sub === "list-characters" && focused.name == "character-name") type = "owned-characters"
+        //type attribution
+        if (sub === "list-characters" && focused.name == "character-name") type = "any-character"
+        if (sub === "update-character" && focused.name == "character-name") type = "owned-characters"
+        if (sub === "update-character" && focused.name == "parameter-name") type = "character-field"
         
         
-        if (type == "owned-characters"){
+        if (type === "owned-characters"){
             let data
             try { data = await characters.getData("/"+user.id) } catch (e){
                 return await interaction.respond([{ name: "No characters found", value: "none" }])
@@ -950,7 +1017,7 @@ export default {
     
             return await interaction.respond(filtered)
         }
-        if (type == "any-character"){ 
+        else if (type === "any-character"){ 
             let data
             try { data = await characters.getData("/") } catch (e){
                 return await interaction.respond([{ name: "No characters found", value: "none" }])
@@ -971,6 +1038,28 @@ export default {
             
     
             return await interaction.respond(filtered)
+        }
+        else if (type === "character-field"){
+            return await interaction.repond([
+                {name:"name", value:"name"},
+                {name:"race", value:"race"},
+                {name:"class", value:"class"},
+                {name:"rank", value:"rank"},
+                {name:"alignment", value:"alignment"},
+                {name:"pronouns", value:"pronouns"},
+                {name:"gender", value:"gender"},
+                {name:"age", value:"age"},
+                {name:"height", value:"height"},
+                {name:"hp", value:"hp"},
+                {name:"str", value:"str"},
+                {name:"dex", value:"dex"},
+                {name:"def", value:"def"},
+                {name:"int", value:"int"},
+                {name:"mag", value:"mag"},
+                {name:"cha", value:"cha"},
+                {name:"boon", value:"boon"},
+                {name:"isNPC", value:"isNPC"}
+            ])
         }
         
         
