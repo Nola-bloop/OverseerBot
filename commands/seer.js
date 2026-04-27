@@ -524,12 +524,6 @@ export default {
                 .setDescription("ex: chaotic good.")
                 .setRequired(true)
             )
-            .addIntegerOption(option =>
-                option
-                .setName("level")
-                .setDescription("ex: 3.")
-                .setRequired(false)
-            )
             .addStringOption(option =>
                 option
                 .setName("pronouns")
@@ -565,6 +559,12 @@ export default {
                 .setName("hp")
                 .setDescription("Other stats are optional!")
                 .setRequired(true)
+            )
+            .addIntegerOption(option =>
+                option
+                .setName("level")
+                .setDescription("ex: 3.")
+                .setRequired(false)
             )
             .addIntegerOption(option =>
                 option
@@ -1099,6 +1099,7 @@ export default {
                 {name:"class", value:"class"},
                 {name:"rank", value:"rank"},
                 {name:"alignment", value:"alignment"},
+                {name:"level", value:"level"},
                 {name:"pronouns", value:"pronouns"},
                 {name:"gender", value:"gender"},
                 {name:"age", value:"age"},
