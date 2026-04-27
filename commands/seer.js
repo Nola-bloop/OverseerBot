@@ -491,6 +491,50 @@ export default {
     )
     .addSubcommand(subCommand =>
         subCommand
+        .setName('roll-all')
+        .setDescription('Roll a stat for all your characters.')
+        .addStringOption( option =>
+            option
+            .setName('value')
+            .setDescription('ex: 1d20. if you add a +2, itll be on top of your stat mod. (so dont)')
+            .setRequired(true)
+        )
+        .addStringOption( option =>
+            option
+            .setName('stat')
+            .setDescription('Which stat to use. Ex: perception, investigation, history... CASE SENSITIVE')
+            .setRequired(true)
+            .addChoices(
+                {name:"None", value: "none"},
+                {name:"Strength", value: "str"},
+                {name:"Dexterity", value: "dex"},
+                {name:"Defense", value: "def"},
+                {name:"Intelligence", value: "int"},
+                {name:"Magic", value: "mag"},
+                {name:"Charisma", value: "cha"},
+            )
+        )
+        .addStringOption( option =>
+            option
+            .setName('proficiency')
+            .setDescription('Which proficiency to use. Ex: perception, investigation, history... CASE SENSITIVE')
+            .setRequired(false)
+            .setAutocomplete(true)
+        )
+        .addStringOption( option =>
+            option
+            .setName('special-roll')
+            .setDescription('Roll with advantage or disadvantage! default: none')
+            .setRequired(false)
+            .addChoices(
+                {name:"advantage", value: "adv"},
+                {name:"disadvantage", value: "dis"},
+                {name:"none", value: "none"}
+            )
+        )
+    )
+    .addSubcommand(subCommand =>
+        subCommand
         .setName('show-rolls')
         .setDescription('List roll results for a folder.')
         .addStringOption( option =>
@@ -534,7 +578,7 @@ export default {
             .addStringOption( option =>
                 option
                 .setName('name')
-                .setDescription('ex: Chad Thunderco-')
+                .setDescription(`ex: Laucian (no need for the full name.)`)
                 .setRequired(true)
             )
             .addStringOption(option =>
@@ -845,6 +889,47 @@ export default {
                 })
                 msg +=`\n\n-# *added to folder '${folder}'*`
             }
+            
+            return await caller.Reply(interaction, msg, false)
+        }
+        else if (sub === "roll-all"){
+            
+            let dicespecs = interaction.options.getString("value")
+            let stat = interaction.options.getString("stat")
+            let proficiency = interaction.options.getString("proficiency") ?? "none"
+            let special = interaction.options.getString("special-roll") ?? "none"
+            
+            //proficiency structure: proficiencies:{perception:{value:3,label:"bells"}}
+            
+            let opts = parseDice(dicespecs)
+            if (opts == null) {
+                return await caller.Reply(interaction, "Invalid format: "+dicespecs);
+            }
+            
+            let characterList
+            try { characterList = await characters.getData("/"+user.id+"/characters") } catch (e){}
+            
+            
+            let msg = "# Mass roll results:\n"
+            msg += "-# using "+dicespecs+"\n"
+            
+            
+            characterList.forEach(c =>{
+                let mod = c.stats[stat]
+                if (c.proficiencies?.[proficiency] != null){
+                    c.proficiencies[proficiency].forEach( p => {
+                        mod += p.value
+                    })
+                }
+                msg += `**${c.name} (+${mod})**\n`
+                let results = rollDice({
+                    dsize:opt.dsize,
+                    count:opt.count,
+                    mod: opt.mod + mod // add the stat buff
+                }, special)
+                msg += `Total: ${results.total}`
+                msg += `-# ${results.msg}\n\n`
+            })
             
             return await caller.Reply(interaction, msg, false)
         }
