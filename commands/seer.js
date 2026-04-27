@@ -996,23 +996,15 @@ export default {
                 return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
             }
             
+            
+            print(parameterName)
             let path = query.split("/")
+            print(path)
             let current = data
-            path.forEach((k,i)=>{
-                // if last key → set value
-                if (i === path.length - 1) {
-                    current[k] = newValue;
-                    return;
-                }
-                
-                // if path doesn't exist, create it
-                if (!(key in current)) {
-                    current[k] = {};
-                }
-                
-                // go deeper
-                current = current[k];
-            })
+            for (let i = 1; i < path.length; i++){
+                current = current[path[i]]    
+            }
+            current[k] = newValue;
             
             characters.push(`/${user.id}/characters/${query}`, data)
             
