@@ -902,7 +902,7 @@ export default {
                 return await caller.Reply(interaction, "You have no characters...? idk")
             }
             
-            let char = data.find(c => c.name === newCharacter.name)
+            let char = data[newCharacter.name]
             
             if (char != null) return await caller.Reply(interaction, "That character already exists. Please use `/dnd character update` to modify their info.")
             
