@@ -998,20 +998,20 @@ export default {
             
             let path = query.split("/")
             let current = data
-            path.forEach(i=>{
+            path.forEach((k,i)=>{
                 // if last key → set value
-                if (index === path.length - 1) {
-                    data[key] = newValue;
+                if (i === path.length - 1) {
+                    data[k] = newValue;
                     return;
                 }
                 
                 // if path doesn't exist, create it
                 if (!(key in current)) {
-                    current[key] = {};
+                    current[k] = {};
                 }
                 
                 // go deeper
-                current = current[key];
+                current = current[k];
             })
             
             data[parameterName] = newValue
