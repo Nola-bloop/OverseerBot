@@ -997,9 +997,9 @@ export default {
             }
             
             
-            print(parameterName)
+            console.log(parameterName)
             let path = query.split("/")
-            print(path)
+            console.log(path)
             let current = data
             for (let i = 1; i < path.length; i++){
                 current = current[path[i]]    
