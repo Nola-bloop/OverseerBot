@@ -516,6 +516,12 @@ export default {
         )
         .addStringOption( option =>
             option
+            .setName('folder')
+            .setDescription('Put wtv Sy tells you to roll for in here, ex: \'manor-perception\'')
+            .setRequired(true)
+        )
+        .addStringOption( option =>
+            option
             .setName('proficiency')
             .setDescription('Which proficiency to use. Ex: perception, investigation, history... CASE SENSITIVE')
             .setRequired(false)
@@ -898,6 +904,7 @@ export default {
             let stat = interaction.options.getString("stat")
             let proficiency = interaction.options.getString("proficiency") ?? "none"
             let special = interaction.options.getString("special-roll") ?? "none"
+            let folder = interaction.options.getString("folder") ?? null
             
             //proficiency structure: proficiencies:{perception:{value:3,label:"bells"}}
             
@@ -911,8 +918,9 @@ export default {
             
             
             let msg = "# Mass roll results:\n"
-            msg += "-# using "+dicespecs+"\n"
+            msg += "-# using "+dicespecs+"\n\n"
             
+            let rollData = {}
             
             Object.values(characterList).forEach(c =>{
                 let mod = c.stats[stat]
@@ -927,9 +935,30 @@ export default {
                     count:opts.count,
                     mod: opts.mod + mod // add the stat buff
                 }, special)
-                msg += `Total: ${results.total}`
+                msg += `Total: ${results.total}\n`
                 msg += `-# ${results.msg}\n\n`
+                
+                rollData[c.name] = results.total
             })
+    
+            if (folder != null){
+                Object.values(characterList).forEach(async c =>{
+                    try {
+                        let arr = await rolls.getData("/"+folder)
+                        const newArr = arr.filter(roll => roll.label === label)
+                        if (newArr.length > 0){
+                            return
+                        }
+                    } catch (e){}
+                    
+                    rolls.push(`/${folder}[]`, {
+                        label: c.name,
+                        value: results.total
+                    })
+                })
+            
+                msg +=`\n\n-# *added results to folder '${folder}'*`
+            }
             
             return await caller.Reply(interaction, msg, false)
         }
