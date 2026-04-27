@@ -334,6 +334,36 @@ function parseDice(input) {
   };
 }
 
+function rollDice(opts){
+    let msg = ""
+    let total = 0
+    for (let i = 0; i < opts.count; i++){
+        let result = Math.floor(Math.random() * opts.dsize) + 1
+        
+        //special rolls
+        if (special !== "none"){
+            let otherResult = Math.floor(Math.random() * opts.dsize) + 1
+            msg += `[${result} and ${otherResult}] `
+            if (special == "adv" && otherResult > result) {result = otherResult}
+            else if (special == "dis" && otherResult < result) {result = otherResult}
+        }else{
+            msg += `[${result}] `
+        }
+        total += result
+    }
+    
+    total += mod
+    
+    
+    return {
+        total: total,
+        msg: msg
+    }
+}
+
+total += opts.mod
+}
+
 async function ensureUserExistence(user){
     let userData
     try { userData = await characters.getData("/"+user.id) } catch (e){}
@@ -450,6 +480,17 @@ export default {
             .setName('folder')
             .setDescription('Put wtv Sy tells you to roll for in here, ex: \'manor-perception\'')
             .setRequired(true)
+        )
+        .addStringOption( option =>
+            option
+            .setName('special-roll')
+            .setDescription('Roll with advantage or disadvantage! default: none')
+            .setRequired(false)
+            .addChoices(
+                {name:"advantage", value: "adv"},
+                {name:"disadvantage", value: "dis"},
+                {name:"none", value: "none"}
+            )
         )
     )
     .addSubcommand(subCommand =>
@@ -776,6 +817,7 @@ export default {
             let dicespecs = interaction.options.getString("value")
             let label = interaction.options.getString("label")
             let folder = interaction.options.getString("folder") ?? null
+            let special = interaction.options.getString("special-roll") ?? "none"
             
             
             let opts = parseDice(dicespecs)
@@ -787,17 +829,11 @@ export default {
             let msg = `||<@${user.id}>||\n## [${label}] Results :\n-# using "${dicespecs}"`
             let total = 0
             
-            msg += `\n-# individual results: `
+            let results = rollDice(opts)
             
-            for (let i = 0; i < opts.count; i++){
-                let result = Math.floor(Math.random() * opts.dsize) + 1
-                msg += `[${result}] `
-                total += result
-            }
+            msg += `\n-# individual results: ${results.msg}`
             
-            total += opts.mod
-            
-            msg += `\n# total: ${total}`
+            msg += `\n# total: ${results.total}`
             
             if (folder != null){
                 try {
