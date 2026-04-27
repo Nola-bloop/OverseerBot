@@ -823,7 +823,6 @@ export default {
             }
             
             let msg = `||<@${user.id}>||\n## [${label}] Results :\n-# using "${dicespecs}"`
-            let total = 0
             
             let results = rollDice(opts, special)
             
@@ -842,7 +841,7 @@ export default {
                 
                 rolls.push(`/${folder}[]`, {
                     label: label,
-                    value: total
+                    value: results.total
                 })
                 msg +=`\n\n-# *added to folder '${folder}'*`
             }
