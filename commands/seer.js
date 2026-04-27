@@ -1004,7 +1004,7 @@ export default {
             for (let i = 1; i < path.length; i++){
                 current = current[path[i]]    
             }
-            current[k] = newValue;
+            current[path[path.length-1]] = newValue;
             
             characters.push(`/${user.id}/characters/${query}`, data)
             
