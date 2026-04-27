@@ -977,7 +977,7 @@ export default {
         }
         else if (group === "character" && sub == "edit"){
             let query = interaction.options.getString("character-name")
-            let parameterName = interaction.options.getString("paraneter-name")
+            let parameterName = interaction.options.getString("parameter-name")
             let newValue = interaction.options.getString("new-value")
             
             await ensureUserExistence(user)
@@ -985,8 +985,8 @@ export default {
             if (newValue.toLowerCase() === "true") newValue = true
             else if (newValue.toLowerCase() === "false") newValue = false
             let numValue = parseInt(newValue)
-            if (newValue == NaN) numValue = parseFloat(numValue)
-            if (newValue != NaN) newValue = numValue
+            if (numValue.isNaN()) numValue = parseFloat(numValue)
+            if (!newValue.isNaN()) newValue = numValue
             
             let data
             try { data = await characters.getData(`/${user.id}/characters/${query}`) } catch (e){
