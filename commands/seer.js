@@ -354,14 +354,10 @@ function rollDice(opts){
     
     total += mod
     
-    
     return {
         total: total,
         msg: msg
     }
-}
-
-total += opts.mod
 }
 
 async function ensureUserExistence(user){
