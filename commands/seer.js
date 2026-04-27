@@ -342,7 +342,7 @@ async function ensureUserExistence(user){
         userData = {
             id: user.id,
             username: user.globalName,
-            characters:[]
+            characters:{}
         }
         characters.push("/"+user.id, userData)
     }
@@ -906,7 +906,7 @@ export default {
             
             if (char != null) return await caller.Reply(interaction, "That character already exists. Please use `/dnd character update` to modify their info.")
             
-            characters.push(`/${user.id}/characters[]`, newCharacter)
+            characters.push(`/${user.id}/characters/${newCharacter.name}`, newCharacter)
             
             return await caller.Reply(interaction, "Done.")
         }
@@ -923,7 +923,7 @@ export default {
                 
                 let characterList = []
                 Object.values(data).forEach(userData => {
-                    userData.characters.forEach(char => {
+                    Object.values(userData.characters).forEach(char => {
                         characterList.push({player: userData.username, name: char.name});
                     });
                 });
@@ -947,7 +947,7 @@ export default {
                 let matches = []
                 
                 for (const userData of Object.values(data)){
-                    let match = userData.characters.find(c => c.name === query)
+                    let match = userData[query]
                     if (match != undefined) {
                         match.player = userData.username
                         matches.push(match)
@@ -989,21 +989,13 @@ export default {
             if (newValue != NaN) newValue = numValue
             
             let data
-            try { data = await characters.getData("/"+user.id+"/characters") } catch (e){
-                return await caller.Reply(interaction, "You have no characters...? idk")
+            try { data = await characters.getData(`/${user.id}/characters/${query}`) } catch (e){
+                return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
             }
             
-            let char = data.find(c => c.name === query)
-            data = data.filter(c => c.name !== query)
+            data[parameterName] = newValue
             
-            
-            if (char == null) return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
-            
-            char[parameterName] = newValue
-            
-            data.push(char)
-            
-            characters.push("/"+user.id+"/characters", data)
+            characters.push(`/${user.id}/characters/${query}`, data)
             
             return await caller.Reply(interaction, "Done.")
         }
@@ -1013,14 +1005,11 @@ export default {
             await ensureUserExistence(user)
             
             let data
-            try { data = await characters.getData("/"+user.id+"/characters") } catch (e){
-                return await caller.Reply(interaction, "You have no characters...? idk")
+            try { data = await characters.getData(`/${user.id}/characters/${query}`) } catch (e){
+                return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
             }
             
-            let char = data.find(c => c.name === query)
-            data = data.filter(c => c.name !== query)
-            
-            characters.push("/"+user.id+"/characters", data)
+            characters.delete(`/${user.id}/characters/${query}`)
             
             return await caller.Reply(interaction, "Done.")
         }
@@ -1047,7 +1036,7 @@ export default {
             }
             
             let suggestions = []
-            data.characters.forEach(character =>{
+            Object.values(data.characters).forEach(character =>{
                 suggestions.push({name:character.name, value:character.name})
             })
     
