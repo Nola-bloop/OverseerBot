@@ -1001,7 +1001,7 @@ export default {
             let path = parameterName.split("/")
             console.log(path)
             let current = data
-            for (let i = 1; i < path.length; i++){
+            for (let i = 0; i < path.length-1; i++){
                 console.log("going in "+path[i])
                 current = current[path[i]]
             }
