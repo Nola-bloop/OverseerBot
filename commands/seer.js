@@ -1001,7 +1001,7 @@ export default {
             path.forEach((k,i)=>{
                 // if last key → set value
                 if (i === path.length - 1) {
-                    data[k] = newValue;
+                    current[k] = newValue;
                     return;
                 }
                 
