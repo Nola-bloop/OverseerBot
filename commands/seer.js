@@ -941,7 +941,7 @@ export default {
                 rollData.push({
                     label:c.name,
                     total:results.total
-                )}
+                })
             })
     
             if (folder != null){
