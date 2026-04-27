@@ -985,8 +985,8 @@ export default {
             if (newValue.toLowerCase() === "true") newValue = true
             else if (newValue.toLowerCase() === "false") newValue = false
             let numValue = parseInt(newValue)
-            if (numValue.isNaN()) numValue = parseFloat(numValue)
-            if (!newValue.isNaN()) newValue = numValue
+            if (Number.isNaN(numValue)) numValue = parseFloat(numValue)
+            if (!Number.isNaN(numValue)) newValue = numValue
             
             let data
             try { data = await characters.getData(`/${user.id}/characters/${query}`) } catch (e){
