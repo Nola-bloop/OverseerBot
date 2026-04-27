@@ -918,7 +918,7 @@ export default {
             
             
             let msg = "# Mass roll results:\n"
-            msg += "-# using "+dicespecs+"\n\n"
+            msg += `-# using ${dicespecs} with ${stat === "none" ? stat : "no"} modifier\n\n`
             
             let rollData = {}
             
