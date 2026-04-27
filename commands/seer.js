@@ -914,7 +914,7 @@ export default {
             msg += "-# using "+dicespecs+"\n"
             
             
-            characterList.forEach(c =>{
+            Object.values(characterList).forEach(c =>{
                 let mod = c.stats[stat]
                 if (c.proficiencies?.[proficiency] != null){
                     c.proficiencies[proficiency].forEach( p => {
