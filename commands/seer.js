@@ -1002,7 +1002,8 @@ export default {
             console.log(path)
             let current = data
             for (let i = 1; i < path.length; i++){
-                current = current[path[i]]    
+                console.log("going in "+path[i])
+                current = current[path[i]]
             }
             current[path[path.length-1]] = newValue;
             
