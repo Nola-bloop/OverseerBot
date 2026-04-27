@@ -923,9 +923,9 @@ export default {
                 }
                 msg += `**${c.name} (+${mod})**\n`
                 let results = rollDice({
-                    dsize:opt.dsize,
-                    count:opt.count,
-                    mod: opt.mod + mod // add the stat buff
+                    dsize:opts.dsize,
+                    count:opts.count,
+                    mod: opts.mod + mod // add the stat buff
                 }, special)
                 msg += `Total: ${results.total}`
                 msg += `-# ${results.msg}\n\n`
