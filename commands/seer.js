@@ -443,6 +443,7 @@ export default {
             .setName('label')
             .setDescription('This can be the character name.')
             .setRequired(true)
+            .setAutocomplete(true)
         )
         .addStringOption( option =>
             option
@@ -527,7 +528,7 @@ export default {
                 option
                 .setName("level")
                 .setDescription("ex: 3.")
-                .setRequired(true)
+                .setRequired(false)
             )
             .addStringOption(option =>
                 option
@@ -858,6 +859,7 @@ export default {
             let _class = interaction.options.getString("class")
             let _rank = interaction.options.getString("rank")
             let _alignment = interaction.options.getString("alignment")
+            let _level = interaction.options.getInteger("level") ?? NaN
             let _pronouns = interaction.options.getString("pronouns")
             let _gender = interaction.options.getString("gender")
             let _age = interaction.options.getInteger("age")
@@ -878,6 +880,7 @@ export default {
                 class: _class,
                 rank: _rank,
                 alignment: _alignment,
+                level: _level,
                 pronouns: _pronouns,
                 gender: _gender,
                 age: _age,
@@ -993,6 +996,24 @@ export default {
                 return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
             }
             
+            let path = query.split("/")
+            let current = data
+            path.forEach(i=>{
+                // if last key → set value
+                if (index === path.length - 1) {
+                    data[key] = newValue;
+                    return;
+                }
+                
+                // if path doesn't exist, create it
+                if (!(key in current)) {
+                    current[key] = {};
+                }
+                
+                // go deeper
+                current = current[key];
+            })
+            
             data[parameterName] = newValue
             
             characters.push(`/${user.id}/characters/${query}`, data)
@@ -1024,9 +1045,10 @@ export default {
         
         //type attribution
         if (group === "character" && sub === "list" && focused.name == "character-name") type = "any-character"
-        if (group === "character" && sub === "edit" && focused.name == "character-name") type = "owned-characters"
-        if (group === "character" && sub === "edit" && focused.name == "parameter-name") type = "character-field"
-        if (group === "character" && sub === "delete" && focused.name == "character-name") type = "owned-characters"
+        else if (group === "character" && sub === "edit" && focused.name == "character-name") type = "owned-characters"
+        else if (group === "character" && sub === "edit" && focused.name == "parameter-name") type = "character-field"
+        else if (group === "character" && sub === "delete" && focused.name == "character-name") type = "owned-characters"
+        else if (sub === "roll" && focused.name == "label") type = "owned-characters"
         
         
         if (type === "owned-characters"){
@@ -1081,14 +1103,14 @@ export default {
                 {name:"gender", value:"gender"},
                 {name:"age", value:"age"},
                 {name:"height", value:"height"},
-                {name:"hp", value:"hp"},
-                {name:"str", value:"str"},
-                {name:"dex", value:"dex"},
-                {name:"def", value:"def"},
-                {name:"int", value:"int"},
-                {name:"mag", value:"mag"},
-                {name:"cha", value:"cha"},
-                {name:"boon", value:"boon"},
+                {name:"hp", value:"stats/hp"},
+                {name:"str", value:"stats/str"},
+                {name:"dex", value:"stats/dex"},
+                {name:"def", value:"stats/def"},
+                {name:"int", value:"stats/int"},
+                {name:"mag", value:"stats/mag"},
+                {name:"cha", value:"stats/cha"},
+                {name:"boon", value:"stats/boon"},
                 {name:"isNPC", value:"isNPC"}
             ])
         }
