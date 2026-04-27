@@ -1014,8 +1014,6 @@ export default {
                 current = current[k];
             })
             
-            data[parameterName] = newValue
-            
             characters.push(`/${user.id}/characters/${query}`, data)
             
             return await caller.Reply(interaction, "Done.")
