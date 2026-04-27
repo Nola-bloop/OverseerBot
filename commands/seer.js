@@ -942,7 +942,7 @@ export default {
             })
     
             if (folder != null){
-                Object.values(characterList).forEach(async c =>{
+                rollData.forEach(async (k, v) =>{
                     try {
                         let arr = await rolls.getData("/"+folder)
                         const newArr = arr.filter(roll => roll.label === label)
@@ -952,8 +952,8 @@ export default {
                     } catch (e){}
                     
                     rolls.push(`/${folder}[]`, {
-                        label: c.name,
-                        value: results.total
+                        label: k,
+                        value: v
                     })
                 })
             
