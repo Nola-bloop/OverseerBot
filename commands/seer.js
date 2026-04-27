@@ -352,7 +352,7 @@ function rollDice(opts, special = "none"){
         total += result
     }
     
-    total += mod
+    total += opts.mod
     
     return {
         total: total,
