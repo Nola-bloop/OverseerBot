@@ -334,7 +334,7 @@ function parseDice(input) {
   };
 }
 
-function rollDice(opts){
+function rollDice(opts, special = "none"){
     let msg = ""
     let total = 0
     for (let i = 0; i < opts.count; i++){
@@ -825,7 +825,7 @@ export default {
             let msg = `||<@${user.id}>||\n## [${label}] Results :\n-# using "${dicespecs}"`
             let total = 0
             
-            let results = rollDice(opts)
+            let results = rollDice(opts, special)
             
             msg += `\n-# individual results: ${results.msg}`
             
