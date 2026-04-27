@@ -920,7 +920,7 @@ export default {
             let msg = "# Mass roll results:\n"
             msg += `-# using ${dicespecs} with ${stat === "none" ? stat : "no"} modifier\n\n`
             
-            let rollData = {}
+            let rollData = []
             
             Object.values(characterList).forEach(c =>{
                 let mod = c.stats[stat]
@@ -938,11 +938,14 @@ export default {
                 msg += `Total: ${results.total}\n`
                 msg += `-# ${results.msg}\n\n`
                 
-                rollData[c.name] = results.total
+                rollData.push({
+                    label:c.name,
+                    total:results.total
+                )}
             })
     
             if (folder != null){
-                rollData.forEach(async (k, v) =>{
+                Object.values(rollData).forEach(async r =>{
                     try {
                         let arr = await rolls.getData("/"+folder)
                         const newArr = arr.filter(roll => roll.label === label)
@@ -952,8 +955,8 @@ export default {
                     } catch (e){}
                     
                     rolls.push(`/${folder}[]`, {
-                        label: k,
-                        value: v
+                        label: r.label,
+                        value: r.total
                     })
                 })
             
