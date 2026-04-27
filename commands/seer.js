@@ -960,7 +960,7 @@ export default {
                     })
                 })
             
-                msg +=`\n\n-# *added results to folder '${folder}'*`
+                msg +=`\n-# *added results to folder '${folder}'*`
             }
             
             return await caller.Reply(interaction, msg, false)
