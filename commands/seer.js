@@ -1235,7 +1235,7 @@ export default {
 
         return await caller.Reply(interaction, msg);
       }
-    } else if (group === "character" && sub == "edit") {
+    } else if (group === "character" && sub === "edit") {
       let query = interaction.options.getString("character-name");
       let parameterName = interaction.options.getString("parameter-name");
       let newValue = interaction.options.getString("new-value");
@@ -1258,9 +1258,7 @@ export default {
         );
       }
 
-      console.log(parameterName);
       let path = parameterName.split("/");
-      console.log(path);
       let current = data;
       for (let i = 0; i < path.length - 1; i++) {
         console.log("going in " + path[i]);
@@ -1287,6 +1285,54 @@ export default {
       }
 
       characters.delete(`/${user.id}/characters/${query}`);
+
+      return await caller.Reply(interaction, "Done.");
+    } else if (group === "character" && sub === "set-relationship") {
+      let character = interaction.options.getString("character");
+      let relationship = interaction.options.getString("relationship");
+      let target = interaction.options.getString("target");
+
+      let charData;
+      try {
+        charData = await characters.getData(
+          `/${user.id}/characters/${character}`,
+        );
+      } catch (e) {
+        return await caller.Reply(
+          interaction,
+          "That character either isn't yours or doesn't exist. Make sure to check your spelling as well.",
+        );
+      }
+
+      let fullData;
+      try {
+        fullData = await characters.getData(`/`);
+      } catch (e) {
+        return await caller.Reply(
+          interaction,
+          "Error on the server's side. Please tell Nola!!",
+        );
+      }
+
+      let foundTarget = false;
+      Object.values(fullData).forEach((u) => {
+        Object.values(u.characters).forEach((c) => {
+          if (c.name === target) {
+            foundTarget = true;
+          }
+        });
+      });
+      if (!foundTarget)
+        return await caller.Reply(
+          interaction,
+          "The target character does not exist. Check your spelling. (the lookup is case-sensitive!) Use `/dnd character list` for a list of all the characters.",
+        );
+
+      charData.relationships = data.relationships ?? [];
+      charData.relationship.push({
+        target: target,
+        context: relationship,
+      });
 
       return await caller.Reply(interaction, "Done.");
     }
