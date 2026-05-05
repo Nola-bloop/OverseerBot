@@ -1,326 +1,310 @@
 import {
-    SlashCommandBuilder,
-    ActionRowBuilder,
-    StringSelectMenuBuilder,
-    StringSelectMenuOptionBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    EmbedBuilder,
-    MessageFlags
-} from 'discord.js';
-import caller from '../API-calls.js';
-import { entries, buildPage } from '../entries.js'
-import { JsonDB, Config } from 'node-json-db';
+  SlashCommandBuilder,
+  ActionRowBuilder,
+  StringSelectMenuBuilder,
+  StringSelectMenuOptionBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  MessageFlags,
+} from "discord.js";
+import caller from "../API-calls.js";
+import { entries, buildPage } from "../entries.js";
+import { JsonDB, Config } from "node-json-db";
 
-const rolls = new JsonDB(new Config(
-  "rolls.db.json", // file name (myDatabase.json)
-  true,         // save after each push
-  false,         // human-readable (pretty JSON)
-  '/'           // path separator
-));
+const rolls = new JsonDB(
+  new Config(
+    "rolls.db.json", // file name (myDatabase.json)
+    true, // save after each push
+    false, // human-readable (pretty JSON)
+    "/", // path separator
+  ),
+);
 
-const characters = new JsonDB(new Config(
-  "characters.db.json", // file name (myDatabase.json)
-  true,         // save after each push
-  false,         // human-readable (pretty JSON)
-  '/'           // path separator
-));
+const characters = new JsonDB(
+  new Config(
+    "characters.db.json", // file name (myDatabase.json)
+    true, // save after each push
+    false, // human-readable (pretty JSON)
+    "/", // path separator
+  ),
+);
 
-const prompts = new JsonDB(new Config(
-  "prompts.db.json", // file name (myDatabase.json)
-  true,         // save after each push
-  false,         // human-readable (pretty JSON)
-  '/'           // path separator
-));
+const prompts = new JsonDB(
+  new Config(
+    "prompts.db.json", // file name (myDatabase.json)
+    true, // save after each push
+    false, // human-readable (pretty JSON)
+    "/", // path separator
+  ),
+);
 
 const PC_POOL = [
-    "Arya",
-    "Onyx",
-    "Éponine",
-    "Gabrielle",
-    "Guinevere",
-    "Pragma",
-    "Atrel",
-    "Winnie",
-    "Ranona",
-]
+  "Arya",
+  "Onyx",
+  "Éponine",
+  "Gabrielle",
+  "Guinevere",
+  "Pragma",
+  "Atrel",
+  "Winnie",
+  "Ranona",
+];
 
 const NPC_POOL = [
-    "Laucian",
-    "Kazmir",
-    "Samira",
-    "Valen",
-    "Vesper",
-    "Emeril",
-    "Kaelus"
+  "Laucian",
+  "Kazmir",
+  "Samira",
+  "Valen",
+  "Vesper",
+  "Emeril",
+  "Kaelus",
 
-    //the ones below will be added later once we know more about them
-    //"Terathi'in",
-    //"The foreteller",
-    //"Leonidas",
-    //"Stellan",
-    //"Evander",
-
-]
+  //the ones below will be added later once we know more about them
+  //"Terathi'in",
+  //"The foreteller",
+  //"Leonidas",
+  //"Stellan",
+  //"Evander",
+];
 
 const CHARACTER_RELATIONS = {
-    //Sy
-    "1290040130622591038": [
-        "Arya",
-        "Laucian",
-        "Kazmir",
-        "Samira",
-        "Valen"
-    ],
+  //Sy
+  "1290040130622591038": ["Arya", "Laucian", "Kazmir", "Samira", "Valen"],
 
-    //Cat
-    "337426564121755649":[
-        "Onyx",
-        "Emeril",
-        "Kaelus",
-        "Leonidas",
-        "Stellan",
-    ],
+  //Cat
+  "337426564121755649": ["Onyx", "Emeril", "Kaelus", "Leonidas", "Stellan"],
 
-    //Cam
-    "323516007023116289":[
-        "Éponine"
-    ],
+  //Cam
+  "323516007023116289": ["Éponine"],
 
-    //Nola
-    "300012833016512514":[
-        "Gabrielle",
-        "Evander",
-    ],
+  //Nola
+  "300012833016512514": ["Gabrielle", "Evander"],
 
-    //Jill
-    "107285545180270592":[
-        "Guinevere",
-        "Pragma",
-    ],
+  //Jill
+  "107285545180270592": ["Guinevere", "Pragma"],
 
-    //Jaz
-    "422206294158475284":[
-        "Atrel",
-        "Ranona",
-        "Vesper",
-        "Terathi'in",
-        "The foreteller",
-    ],
-}
+  //Jaz
+  "422206294158475284": [
+    "Atrel",
+    "Ranona",
+    "Vesper",
+    "Terathi'in",
+    "The foreteller",
+  ],
+};
 
 const PROMPT_POOL = [
-    //prompts written by Sy
-    `That wasn't supposed to happen`,
-    `I didn't think it would hurt this much`,
-    `Say it again. slowly`,
-    `That's not what you told me last time.`,
-    `You promised.`,
-    `Stay. Just for a minute.`,
-    `I made this for you.`,
-    `Do you hate me for it?`,
-    `I can't fix this`,
-    `I thought of you`,
-    `I'll stay up with you.`,
-    `You're terrible at this.`,
+  //prompts written by Sy
+  `That wasn't supposed to happen`,
+  `I didn't think it would hurt this much`,
+  `Say it again. slowly`,
+  `That's not what you told me last time.`,
+  `You promised.`,
+  `Stay. Just for a minute.`,
+  `I made this for you.`,
+  `Do you hate me for it?`,
+  `I can't fix this`,
+  `I thought of you`,
+  `I'll stay up with you.`,
+  `You're terrible at this.`,
 
-    //prompts written by Nola
-    `That wasn't me...`,
+  //prompts written by Nola
+  `That wasn't me...`,
 
-    //Prompts generated by AI
-    `Don't look at me like that.`,
-    `I never meant for you to find out.`,
-    `You can let go now.`,
-    `Tell me the truth.`,
-    `I didn't know where else to go.`,
-    `Please don't leave me here.`,
-    `I thought you were dead.`,
-    `I knew you'd come back.`,
-    `You remembered.`,
-    `You don't have to say anything.`,
-    `Why didn't you tell me?`,
-    `I tried to warn you.`,
-    `I was so scared.`,
-    `You look exhausted.`,
-    `I can explain.`,
-    `You shouldn't have come.`,
-    `You came anyway.`,
-    `I didn't want you to see this.`,
-    `You were right.`,
-    `I wish you were wrong.`,
-    `Just this once.`,
-    `I missed you.`,
-    `I don't forgive you.`,
-    `I forgive you.`,
-    `Then why are you crying?`,
-    `You don't get to do this.`,
-    `I needed you.`,
-    `You don't have to be afraid.`,
-    `You make it sound so easy.`,
-    `I've been waiting for you.`,
-    `You weren't supposed to hear that.`,
-    `I didn't mean it.`,
-    `You know that's a lie.`,
-    `Don't look at me like that.`,
-    `Don't touch me.`,
-    `I'm not going anywhere.`,
-    `I thought this would make you happy.`,
-    `I can't lose you too.`,
-    `You don't owe me anything.`,
-    `I shouldn't be here.`,
-    `Then why did you come?`,
-    `This is all I have left of you.`,
-    `I don't want to fight anymore.`,
-    `You're bleeding.`,
-    `That's not my blood.`,
-    `I know what you did.`,
-    `No one else came.`,
-    `I never asked you to save me.`,
-    `You don't have to carry this alone.`,
-    `You said you'd wait.`,
-    `What happened to us?`,
-    `I don't recognize this place anymore.`,
-    `You remembered my favorite!`,
-    `I wish things had been different.`,
-    `I was trying to protect you.`,
-    `You should really get some sleep.`,
-    `You look like you're about to disappear.`,
-    `You were never meant to see this side of me.`,
-    `You don't have to pretend with me.`,
-    `Don't say that.`,
-    `I wish I had met you sooner.`,
-    `I've never told anyone that before.`,
+  //Prompts generated by AI
+  `Don't look at me like that.`,
+  `I never meant for you to find out.`,
+  `You can let go now.`,
+  `Tell me the truth.`,
+  `I didn't know where else to go.`,
+  `Please don't leave me here.`,
+  `I thought you were dead.`,
+  `I knew you'd come back.`,
+  `You remembered.`,
+  `You don't have to say anything.`,
+  `Why didn't you tell me?`,
+  `I tried to warn you.`,
+  `I was so scared.`,
+  `You look exhausted.`,
+  `I can explain.`,
+  `You shouldn't have come.`,
+  `You came anyway.`,
+  `I didn't want you to see this.`,
+  `You were right.`,
+  `I wish you were wrong.`,
+  `Just this once.`,
+  `I missed you.`,
+  `I don't forgive you.`,
+  `I forgive you.`,
+  `Then why are you crying?`,
+  `You don't get to do this.`,
+  `I needed you.`,
+  `You don't have to be afraid.`,
+  `You make it sound so easy.`,
+  `I've been waiting for you.`,
+  `You weren't supposed to hear that.`,
+  `I didn't mean it.`,
+  `You know that's a lie.`,
+  `Don't look at me like that.`,
+  `Don't touch me.`,
+  `I'm not going anywhere.`,
+  `I thought this would make you happy.`,
+  `I can't lose you too.`,
+  `You don't owe me anything.`,
+  `I shouldn't be here.`,
+  `Then why did you come?`,
+  `This is all I have left of you.`,
+  `I don't want to fight anymore.`,
+  `You're bleeding.`,
+  `That's not my blood.`,
+  `I know what you did.`,
+  `No one else came.`,
+  `I never asked you to save me.`,
+  `You don't have to carry this alone.`,
+  `You said you'd wait.`,
+  `What happened to us?`,
+  `I don't recognize this place anymore.`,
+  `You remembered my favorite!`,
+  `I wish things had been different.`,
+  `I was trying to protect you.`,
+  `You should really get some sleep.`,
+  `You look like you're about to disappear.`,
+  `You were never meant to see this side of me.`,
+  `You don't have to pretend with me.`,
+  `Don't say that.`,
+  `I wish I had met you sooner.`,
+  `I've never told anyone that before.`,
 
-    //prompts written by Jaz
-    "why does it matter to you?"
-    ,"then prove it."
-    ,"twice in one day? isn't that a bit much?"
-    ,"don't they make some kind of medication for that?"
-    ,"you're much tougher than you look."
-    ,"please don't tell anyone i said that."
-    ,"what's done is done, right?"
-    ,"i'd appreciate a break."
-    ,"where have you been all night?"
-    ,"i wish you believed me."
-    ,"i feel much safer with you here."
-    ,"can we please forget about that?"
-    ,"none of that matters to me."
-    ,"i'd prefer if we spoke. . .in private."
-    ,"i wasn't holding out for an apology."
-    ,"i've made peace with not knowing."
-    ,"do you hear yourself?"
-    ,"how did you get that?"
-    ,"what you're doing. . . it's wrong."
-    ,"please pretend."
-    ,"no. no. no. i can't be around that."
-    ,"it was more than a white lie."
-    ,"your smile is contagious to me."
-    ,"don't you ever want to disappear?"
-    ,"i've been waiting to hear from you."
-    ,"so what?"
-    ,"and if it's true?"
-    ,"that doesn't concern you."
-    ,"let's wrap this up."
-    ,"the water's so cold."
-    ,"you hide it well."
-    ,"i can't look at you like this."
-    ,"how could you destroy all the evidence of us?"
-    ,"you have no idea, do you?"
-    ,"i thought worse of you. i'm sorry."
-    ,"i thought better of you. i'm sorry."
-    ,"i need a moment to collect myself."
-    ,"who do you think you are?"
-    ,"who do you think i am?"
-    ,"i don't deserve this."
-    ,"i want you to think this through."
-    ,"you stress me out."
-    ,"(s)he doesn't look at anyone like that."
-    ,"(s)he'd do anything for you."
-    ,"i was worried you assumed that."
-    ,"can i please?"
-    ,"look me in the eye and say it."
-    ,"what happened to the person i knew?"
-    ,"can we stay here?"
-    ,"don't talk. i'll show you."
-    ,"you're not finished, are you?"
-    ,"your touch is. . . softer than anticipated."
-    ,"i'm starved."
-    ,"please. be gentle."
-    ,"it doesn't matter what i say, does it?"
-    ,"why did it have to be you?"
-    ,"silvertongued as usual, i see."
-    ,"if it means that much to you. . ."
-    ,"i'm rather particular."
-    ,"it's not a good idea to look at me like that."
-    ,"am i supposed to act grateful?"
-    ,"i can't stand to lose you again."
-    ,"do you think that matters to me?"
-    ,"when have i ever told you no?"
-    ,"you're quite a troublemaker."
-    ,"i didn't expect this from you."
-    ,"by god, how much have you had to drink?"
-    ,"i had a dream about you."
-    ,"you have too much control over me."
-    ,"i didn't know you were capable of that."
-    ,"we'll talk later."
-    ,"i'm not accepting criticism, thank you."
-    ,"don't waste your time on me."
-    ,"can we try again?"
-    ,"how did you know it's my favorite?"
-    ,"okay, now i'm begging."
-    ,"you're the only one whose opinion i trust."
-    ,"i don't care what you think of me right now."
-    ,"lie down for me."
-    ,"you're the best thing about this place."
-    ,"i've been waiting years for those words."
-    ,"no. if i hated you, you'd know."
-    ,"you weren't supposed to give up on me."
-    ,"believe me. it was a mistake."
-    ,"i'd love nothing more than to cook dinner with you."
-    ,"i would never let that happen."
-    ,"you have to relax for this to work."
-    ,"how do i make you trust me?"
-    ,"are you taking notes yet?"
-    ,"i was up all night thinking about this moment."
-    ,"the sun suits you.", "the moon suits you."
-    ,"i need your help."
-    ,"just eat it."
-    ,"in other circumstances, i would have more patience."
-    ,"you're soaking wet."
-    ,"you're braver than me."
-    ,"ask me if i care. i do."
-    ,"i need to hear you say that again."
-    ,"i didn't expect you to be anything other than difficult."
-    ,"i'll never recover from you, you know.",
-]
+  //prompts written by Jaz
+  "why does it matter to you?",
+  "then prove it.",
+  "twice in one day? isn't that a bit much?",
+  "don't they make some kind of medication for that?",
+  "you're much tougher than you look.",
+  "please don't tell anyone i said that.",
+  "what's done is done, right?",
+  "i'd appreciate a break.",
+  "where have you been all night?",
+  "i wish you believed me.",
+  "i feel much safer with you here.",
+  "can we please forget about that?",
+  "none of that matters to me.",
+  "i'd prefer if we spoke. . .in private.",
+  "i wasn't holding out for an apology.",
+  "i've made peace with not knowing.",
+  "do you hear yourself?",
+  "how did you get that?",
+  "what you're doing. . . it's wrong.",
+  "please pretend.",
+  "no. no. no. i can't be around that.",
+  "it was more than a white lie.",
+  "your smile is contagious to me.",
+  "don't you ever want to disappear?",
+  "i've been waiting to hear from you.",
+  "so what?",
+  "and if it's true?",
+  "that doesn't concern you.",
+  "let's wrap this up.",
+  "the water's so cold.",
+  "you hide it well.",
+  "i can't look at you like this.",
+  "how could you destroy all the evidence of us?",
+  "you have no idea, do you?",
+  "i thought worse of you. i'm sorry.",
+  "i thought better of you. i'm sorry.",
+  "i need a moment to collect myself.",
+  "who do you think you are?",
+  "who do you think i am?",
+  "i don't deserve this.",
+  "i want you to think this through.",
+  "you stress me out.",
+  "(s)he doesn't look at anyone like that.",
+  "(s)he'd do anything for you.",
+  "i was worried you assumed that.",
+  "can i please?",
+  "look me in the eye and say it.",
+  "what happened to the person i knew?",
+  "can we stay here?",
+  "don't talk. i'll show you.",
+  "you're not finished, are you?",
+  "your touch is. . . softer than anticipated.",
+  "i'm starved.",
+  "please. be gentle.",
+  "it doesn't matter what i say, does it?",
+  "why did it have to be you?",
+  "silvertongued as usual, i see.",
+  "if it means that much to you. . .",
+  "i'm rather particular.",
+  "it's not a good idea to look at me like that.",
+  "am i supposed to act grateful?",
+  "i can't stand to lose you again.",
+  "do you think that matters to me?",
+  "when have i ever told you no?",
+  "you're quite a troublemaker.",
+  "i didn't expect this from you.",
+  "by god, how much have you had to drink?",
+  "i had a dream about you.",
+  "you have too much control over me.",
+  "i didn't know you were capable of that.",
+  "we'll talk later.",
+  "i'm not accepting criticism, thank you.",
+  "don't waste your time on me.",
+  "can we try again?",
+  "how did you know it's my favorite?",
+  "okay, now i'm begging.",
+  "you're the only one whose opinion i trust.",
+  "i don't care what you think of me right now.",
+  "lie down for me.",
+  "you're the best thing about this place.",
+  "i've been waiting years for those words.",
+  "no. if i hated you, you'd know.",
+  "you weren't supposed to give up on me.",
+  "believe me. it was a mistake.",
+  "i'd love nothing more than to cook dinner with you.",
+  "i would never let that happen.",
+  "you have to relax for this to work.",
+  "how do i make you trust me?",
+  "are you taking notes yet?",
+  "i was up all night thinking about this moment.",
+  "the sun suits you.",
+  "the moon suits you.",
+  "i need your help.",
+  "just eat it.",
+  "in other circumstances, i would have more patience.",
+  "you're soaking wet.",
+  "you're braver than me.",
+  "ask me if i care. i do.",
+  "i need to hear you say that again.",
+  "i didn't expect you to be anything other than difficult.",
+  "i'll never recover from you, you know.",
+];
 
 const AUTHORIZED_USERS = [
-	"300012833016512514", //Nola
-	"1290040130622591038",
-]
+  "300012833016512514", //Nola
+  "1290040130622591038",
+];
 
+function getRandomElement(array, pullCount = 1, omit = []) {
+  let selection = [];
 
+  for (let i = 0; i < omit.length; i++) {
+    array = array.filter((item) => item !== omit[i]);
+  }
 
-function getRandomElement(array, pullCount = 1, omit = []){
-    let selection = []
+  for (let i = 0; i < pullCount; i++) {
+    let element = array[Math.floor(Math.random() * array.length)];
+    if (element === undefined) continue;
+    selection.push(element);
+    array = array.filter((item) => item !== element);
+  }
 
-    for (let i = 0; i < omit.length; i++){
-        array = array.filter(item => item !== omit[i])
-    }
-
-    for (let i = 0; i < pullCount; i++){
-        let element = array[Math.floor(Math.random() * array.length)]
-        if (element === undefined) continue
-        selection.push(element)
-        array = array.filter(item => item !== element)
-    }
-
-    return selection;
+  return selection;
 }
 
 function formatName(string) {
-    string = string.toLowerCase()
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  string = string.toLowerCase();
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 function parseDice(input) {
   const match = input.match(/^(\d+)d(\d+)([+-]\d+)?$/i);
@@ -330,933 +314,1111 @@ function parseDice(input) {
   return {
     count: match[1] ? parseInt(match[1], 10) : 1,
     dsize: parseInt(match[2], 10),
-    mod: match[3] ? parseInt(match[3], 10) : 0
+    mod: match[3] ? parseInt(match[3], 10) : 0,
   };
 }
 
-function rollDice(opts, special = "none"){
-    let msg = ""
-    let total = 0
-    for (let i = 0; i < opts.count; i++){
-        let result = Math.floor(Math.random() * opts.dsize) + 1
-        
-        //special rolls
-        if (special !== "none"){
-            let otherResult = Math.floor(Math.random() * opts.dsize) + 1
-            msg += `[${result} and ${otherResult}] `
-            if (special == "adv" && otherResult > result) {result = otherResult}
-            else if (special == "dis" && otherResult < result) {result = otherResult}
-        }else{
-            msg += `[${result}] `
-        }
-        total += result
+function rollDice(opts, special = "none") {
+  let msg = "";
+  let total = 0;
+  for (let i = 0; i < opts.count; i++) {
+    let result = Math.floor(Math.random() * opts.dsize) + 1;
+
+    //special rolls
+    if (special !== "none") {
+      let otherResult = Math.floor(Math.random() * opts.dsize) + 1;
+      msg += `[${result} and ${otherResult}] `;
+      if (special == "adv" && otherResult > result) {
+        result = otherResult;
+      } else if (special == "dis" && otherResult < result) {
+        result = otherResult;
+      }
+    } else {
+      msg += `[${result}] `;
     }
-    
-    total += opts.mod
-    
-    return {
-        total: total,
-        msg: msg
-    }
+    total += result;
+  }
+
+  total += opts.mod;
+
+  return {
+    total: total,
+    msg: msg,
+  };
 }
 
-async function ensureUserExistence(user){
-    let userData
-    try { userData = await characters.getData("/"+user.id) } catch (e){}
-    
-    if (userData == null){
-        userData = {
-            id: user.id,
-            username: user.globalName,
-            characters:{}
-        }
-        characters.push("/"+user.id, userData)
-    }
+async function ensureUserExistence(user) {
+  let userData;
+  try {
+    userData = await characters.getData("/" + user.id);
+  } catch (e) {}
+
+  if (userData == null) {
+    userData = {
+      id: user.id,
+      username: user.globalName,
+      characters: {},
+    };
+    characters.push("/" + user.id, userData);
+  }
 }
 
 export default {
-	data: new SlashCommandBuilder()
-	.setName('dnd')
-	.setDescription('Manage overseer bot.')
-	.addSubcommand(subCommand =>
-		subCommand
-			.setName('passwd')
-			.setDescription('Set account password for Overseer Bot.')
-			.addStringOption(option =>
-	        	option
-	        		.setName('p')
-	        		.setDescription('The new password.')
-	        		.setRequired(true)
-	        )
-	).addSubcommand(subCommand =>
-		subCommand
-		.setName('set-group')
-		.setDescription('Set the group of the channel the command is executed in.')
-		.addStringOption(option =>
-        	option
-        		.setName('n')
-        		.setDescription('The name of the chapter group.')
-        		.setRequired(true)
+  data: new SlashCommandBuilder()
+    .setName("dnd")
+    .setDescription("Manage overseer bot.")
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("passwd")
+        .setDescription("Set account password for Overseer Bot.")
+        .addStringOption((option) =>
+          option
+            .setName("p")
+            .setDescription("The new password.")
+            .setRequired(true),
+        ),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("set-group")
+        .setDescription(
+          "Set the group of the channel the command is executed in.",
         )
-	)
-	.addSubcommand(subCommand =>
-		subCommand
-		.setName('track-channel')
-		.setDescription('Add this channel to the tracked channel list.')
-	)
-	.addSubcommand(subCommand =>
-		subCommand
-		.setName('forced-refresh')
-		.setDescription('Make the bot scan the channels ahead of schedule.')
-	)
-	.addSubcommand(subCommand =>
-		subCommand
-		.setName('url')
-		.setDescription("Get a link to the guild's campaign.")
-	)
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('get-prompt')
+        .addStringOption((option) =>
+          option
+            .setName("n")
+            .setDescription("The name of the chapter group.")
+            .setRequired(true),
+        ),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("track-channel")
+        .setDescription("Add this channel to the tracked channel list."),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("forced-refresh")
+        .setDescription("Make the bot scan the channels ahead of schedule."),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("url")
+        .setDescription("Get a link to the guild's campaign."),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("get-prompt")
         .setDescription("Get a prompt, along with characters to use.")
-        .addBooleanOption(option =>
-            option
+        .addBooleanOption((option) =>
+          option
             .setName("add-npcs")
-            .setDescription("True: Add characters like Samira, Kaz, etc to the selection pool.")
-            .setRequired(false)
+            .setDescription(
+              "True: Add characters like Samira, Kaz, etc to the selection pool.",
+            )
+            .setRequired(false),
         )
-        .addBooleanOption(option =>
-            option
+        .addBooleanOption((option) =>
+          option
             .setName("include-own-pc")
-            .setDescription("True: additionally draw one of your own characters. (not in character count)")
-            .setRequired(false)
+            .setDescription(
+              "True: additionally draw one of your own characters. (not in character count)",
+            )
+            .setRequired(false),
         )
-        .addIntegerOption(option =>
-            option
-            .setName('character-count')
+        .addIntegerOption((option) =>
+          option
+            .setName("character-count")
             .setDescription("Select <this many> characters for the cast.")
-            .setRequired(false)
+            .setRequired(false),
         )
-        .addBooleanOption(option =>
-            option
+        .addBooleanOption((option) =>
+          option
             .setName("disable-ephemeral")
-            .setDescription("True: Send the message for everyone, so that anyone can see the prompt.")
-            .setRequired(false)
-        )
-    )
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('bestiary')
-        .setDescription('Browse Valmora\'s bestiary.')
-        .addStringOption( option =>
-            option
-            .setName('query')
-            .setDescription('Search for a specific beast. leave empty to show a list of all the beasts.')
-            .setRequired(false)
-        )
-    )
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('roll')
-        .setDescription('Use Nola\'s rolling system.')
-        .addStringOption( option =>
-            option
-            .setName('value')
-            .setDescription('ex: 1d20+2')
-            .setRequired(true)
-        )
-        .addStringOption( option =>
-            option
-            .setName('label')
-            .setDescription('This can be the character name.')
-            .setRequired(true)
-            .setAutocomplete(true)
-        )
-        .addStringOption( option =>
-            option
-            .setName('folder')
-            .setDescription('Put wtv Sy tells you to roll for in here, ex: \'manor-perception\'')
-            .setRequired(true)
-        )
-        .addStringOption( option =>
-            option
-            .setName('special-roll')
-            .setDescription('Roll with advantage or disadvantage! default: none')
-            .setRequired(false)
-            .addChoices(
-                {name:"advantage", value: "adv"},
-                {name:"disadvantage", value: "dis"},
-                {name:"none", value: "none"}
+            .setDescription(
+              "True: Send the message for everyone, so that anyone can see the prompt.",
             )
-        )
+            .setRequired(false),
+        ),
     )
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('roll-all')
-        .setDescription('Roll a stat for all your characters.')
-        .addStringOption( option =>
-            option
-            .setName('value')
-            .setDescription('ex: 1d20. if you add a +2, itll be on top of your stat mod. (so dont)')
-            .setRequired(true)
-        )
-        .addStringOption( option =>
-            option
-            .setName('stat')
-            .setDescription('Which stat to use. Ex: perception, investigation, history... CASE SENSITIVE')
-            .setRequired(true)
-            .addChoices(
-                {name:"None", value: "none"},
-                {name:"Strength", value: "str"},
-                {name:"Dexterity", value: "dex"},
-                {name:"Defense", value: "def"},
-                {name:"Intelligence", value: "int"},
-                {name:"Magic", value: "mag"},
-                {name:"Charisma", value: "cha"},
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("bestiary")
+        .setDescription("Browse Valmora's bestiary.")
+        .addStringOption((option) =>
+          option
+            .setName("query")
+            .setDescription(
+              "Search for a specific beast. leave empty to show a list of all the beasts.",
             )
-        )
-        .addStringOption( option =>
-            option
-            .setName('folder')
-            .setDescription('Put wtv Sy tells you to roll for in here, ex: \'manor-perception\'')
-            .setRequired(true)
-        )
-        .addStringOption( option =>
-            option
-            .setName('proficiency')
-            .setDescription('Which proficiency to use. Ex: perception, investigation, history... CASE SENSITIVE')
-            .setRequired(false)
-            .setAutocomplete(true)
-        )
-        .addStringOption( option =>
-            option
-            .setName('special-roll')
-            .setDescription('Roll with advantage or disadvantage! default: none')
-            .setRequired(false)
-            .addChoices(
-                {name:"advantage", value: "adv"},
-                {name:"disadvantage", value: "dis"},
-                {name:"none", value: "none"}
-            )
-        )
+            .setRequired(false),
+        ),
     )
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('show-rolls')
-        .setDescription('List roll results for a folder.')
-        .addStringOption( option =>
-            option
-            .setName('folder')
-            .setDescription('The folder to show.')
-            .setRequired(true)
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("roll")
+        .setDescription("Use Nola's rolling system.")
+        .addStringOption((option) =>
+          option
+            .setName("value")
+            .setDescription("ex: 1d20+2")
+            .setRequired(true),
         )
-        .addBooleanOption(option =>
-            option
-            .setName("enable-ephemeral")
-            .setDescription("False: Send the message for everyone, so that anyone can see the prompt.")
-            .setRequired(false)
-        )
-    )
-    .addSubcommand(subCommand =>
-        subCommand
-        .setName('clear-rolls')
-        .setDescription('Remove the rolls of a folder.')
-        .addStringOption( option =>
-            option
-            .setName('folder')
-            .setDescription('The folder to destroy.')
-            .setRequired(true)
-        )
-        .addStringOption(option =>
-            option
+        .addStringOption((option) =>
+          option
             .setName("label")
-            .setDescription("Use this to only remove one label from the folder.")
-            .setRequired(false)
+            .setDescription("This can be the character name.")
+            .setRequired(true)
+            .setAutocomplete(true),
         )
+        .addStringOption((option) =>
+          option
+            .setName("folder")
+            .setDescription(
+              "Put wtv Sy tells you to roll for in here, ex: 'manor-perception'",
+            )
+            .setRequired(true),
+        )
+        .addStringOption((option) =>
+          option
+            .setName("special-roll")
+            .setDescription(
+              "Roll with advantage or disadvantage! default: none",
+            )
+            .setRequired(false)
+            .addChoices(
+              { name: "advantage", value: "adv" },
+              { name: "disadvantage", value: "dis" },
+              { name: "none", value: "none" },
+            ),
+        ),
     )
-    .addSubcommandGroup(group =>
-        group
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("roll-all")
+        .setDescription("Roll a stat for all your characters.")
+        .addStringOption((option) =>
+          option
+            .setName("value")
+            .setDescription(
+              "ex: 1d20. if you add a +2, itll be on top of your stat mod. (so dont)",
+            )
+            .setRequired(true),
+        )
+        .addStringOption((option) =>
+          option
+            .setName("stat")
+            .setDescription(
+              "Which stat to use. Ex: perception, investigation, history... CASE SENSITIVE",
+            )
+            .setRequired(true)
+            .addChoices(
+              { name: "None", value: "none" },
+              { name: "Strength", value: "str" },
+              { name: "Dexterity", value: "dex" },
+              { name: "Defense", value: "def" },
+              { name: "Intelligence", value: "int" },
+              { name: "Magic", value: "mag" },
+              { name: "Charisma", value: "cha" },
+            ),
+        )
+        .addStringOption((option) =>
+          option
+            .setName("folder")
+            .setDescription(
+              "Put wtv Sy tells you to roll for in here, ex: 'manor-perception'",
+            )
+            .setRequired(true),
+        )
+        .addStringOption((option) =>
+          option
+            .setName("proficiency")
+            .setDescription(
+              "Which proficiency to use. Ex: perception, investigation, history... CASE SENSITIVE",
+            )
+            .setRequired(false)
+            .setAutocomplete(true),
+        )
+        .addStringOption((option) =>
+          option
+            .setName("special-roll")
+            .setDescription(
+              "Roll with advantage or disadvantage! default: none",
+            )
+            .setRequired(false)
+            .addChoices(
+              { name: "advantage", value: "adv" },
+              { name: "disadvantage", value: "dis" },
+              { name: "none", value: "none" },
+            ),
+        ),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("show-rolls")
+        .setDescription("List roll results for a folder.")
+        .addStringOption((option) =>
+          option
+            .setName("folder")
+            .setDescription("The folder to show.")
+            .setRequired(true),
+        )
+        .addBooleanOption((option) =>
+          option
+            .setName("enable-ephemeral")
+            .setDescription(
+              "False: Send the message for everyone, so that anyone can see the prompt.",
+            )
+            .setRequired(false),
+        ),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
+        .setName("clear-rolls")
+        .setDescription("Remove the rolls of a folder.")
+        .addStringOption((option) =>
+          option
+            .setName("folder")
+            .setDescription("The folder to destroy.")
+            .setRequired(true),
+        )
+        .addStringOption((option) =>
+          option
+            .setName("label")
+            .setDescription(
+              "Use this to only remove one label from the folder.",
+            )
+            .setRequired(false),
+        ),
+    )
+    .addSubcommandGroup((group) =>
+      group
         .setName("character")
         .setDescription("Character management")
-        .addSubcommand(subCommand =>
-            subCommand
-            .setName('create')
-            .setDescription('Add a character to the character pool.')
-            .addStringOption( option =>
-                option
-                .setName('name')
+        .addSubcommand((subCommand) =>
+          subCommand
+            .setName("create")
+            .setDescription("Add a character to the character pool.")
+            .addStringOption((option) =>
+              option
+                .setName("name")
                 .setDescription(`ex: Laucian (no need for the full name.)`)
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("race")
                 .setDescription("ex: Human.")
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("class")
                 .setDescription("ex: Rogue.")
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("rank")
                 .setDescription("ex: Veteran.")
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("alignment")
                 .setDescription("ex: chaotic good.")
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("pronouns")
                 .setDescription("ex: She/her.")
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("gender")
                 .setDescription("ex: Female.")
                 .setRequired(true)
                 .addChoices(
-                    {name:"Male", value: "Male"},
-                    {name:"Female", value: "Female"},
-                    {name:"Non-binary", value: "Non-binary"},
-                    {name:"Other", value: "Other"}
-                )
+                  { name: "Male", value: "Male" },
+                  { name: "Female", value: "Female" },
+                  { name: "Non-binary", value: "Non-binary" },
+                  { name: "Other", value: "Other" },
+                ),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("age")
                 .setDescription("ex: 150.")
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("height")
                 .setDescription("ex: 5'10.")
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("hp")
                 .setDescription("Other stats are optional!")
-                .setRequired(true)
+                .setRequired(true),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("level")
                 .setDescription("ex: 3.")
-                .setRequired(false)
+                .setRequired(false),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("strength")
                 .setDescription("ex: 2.")
-                .setRequired(false)
+                .setRequired(false),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("dexterity")
                 .setDescription("ex: 2.")
-                .setRequired(false)
+                .setRequired(false),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("defense")
                 .setDescription("ex: 2.")
-                .setRequired(false)
+                .setRequired(false),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("intelligence")
                 .setDescription("ex: 2.")
-                .setRequired(false)
+                .setRequired(false),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("magic")
                 .setDescription("ex: 2.")
-                .setRequired(false)
+                .setRequired(false),
             )
-            .addIntegerOption(option =>
-                option
+            .addIntegerOption((option) =>
+              option
                 .setName("charisma")
                 .setDescription("ex: 2.")
-                .setRequired(false)
+                .setRequired(false),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("boon")
                 .setDescription("Type a description of your boon.")
                 .setRequired(false)
-                .setMaxLength(500)
+                .setMaxLength(500),
             )
-            .addBooleanOption(option =>
-                option
+            .addBooleanOption((option) =>
+              option
                 .setName("is-npc")
                 .setDescription("Default: false.")
-                .setRequired(false)
-            )
+                .setRequired(false),
+            ),
         )
-        .addSubcommand(subCommand =>
-            subCommand
-            .setName('list')
-            .setDescription('Get a list of all the characters.')
-            .addStringOption(option =>
-                option
+        .addSubcommand((subCommand) =>
+          subCommand
+            .setName("list")
+            .setDescription("Get a list of all the characters.")
+            .addStringOption((option) =>
+              option
                 .setName("character-name")
-                .setDescription("Use this to show info about a specific character instead of a list.")
+                .setDescription(
+                  "Use this to show info about a specific character instead of a list.",
+                )
                 .setRequired(false)
-                .setAutocomplete(true)
-            )
+                .setAutocomplete(true),
+            ),
         )
-        .addSubcommand(subCommand =>
-            subCommand
-            .setName('edit')
-            .setDescription('Change info on your character.')
-            .addStringOption(option =>
-                option
+        .addSubcommand((subCommand) =>
+          subCommand
+            .setName("edit")
+            .setDescription("Change info on your character.")
+            .addStringOption((option) =>
+              option
                 .setName("character-name")
                 .setDescription("The character to update.")
                 .setRequired(true)
-                .setAutocomplete(true)
+                .setAutocomplete(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("parameter-name")
                 .setDescription("NO SPECIAL CHARACTERS! CASE SENSITIVE!")
                 .setRequired(true)
-                .setAutocomplete(true)
+                .setAutocomplete(true),
             )
-            .addStringOption(option =>
-                option
+            .addStringOption((option) =>
+              option
                 .setName("new-value")
-                .setDescription("Please enter a number if it is supposed to be one.")
-                .setRequired(true)
-            )
+                .setDescription(
+                  "Please enter a number if it is supposed to be one.",
+                )
+                .setRequired(true),
+            ),
         )
-        .addSubcommand(subCommand =>
-            subCommand
-            .setName('delete')
-            .setDescription('Delete a character.')
-            .addStringOption(option =>
-                option
+        .addSubcommand((subCommand) =>
+          subCommand
+            .setName("delete")
+            .setDescription("Delete a character.")
+            .addStringOption((option) =>
+              option
                 .setName("character-name")
                 .setDescription("The character to delete.")
                 .setRequired(true)
-                .setAutocomplete(true)
-            )
+                .setAutocomplete(true),
+            ),
         )
+        .addSubcommand((subCommand) =>
+          subCommand
+            .setName("set-relationship")
+            .setDescription("<character> --(relationship)-> <target>.")
+            .addStringOption((option) =>
+              option
+                .setName("character")
+                .setDescription("The character to add a thought for.")
+                .setRequired(true)
+                .setAutocomplete(true),
+            )
+            .addStringOption((option) =>
+              option
+                .setName("relationship")
+                .setDescription(
+                  "1 or 2 word long description of the relationship.",
+                )
+                .setRequired(true),
+            )
+            .addStringOption((option) =>
+              option
+                .setName("character-target")
+                .setDescription(
+                  "The character to change the relationship toward.",
+                )
+                .setRequired(true)
+                .setAutocomplete(true),
+            ),
+        ),
     ),
-	async execute (interaction) {
-		const user = interaction.member.user
-		const sub = interaction.options.getSubcommand()
-		const guild = interaction.guild
-		const channel = interaction.channel
-        const group = interaction.options.getSubcommandGroup()
+  async execute(interaction) {
+    const user = interaction.member.user;
+    const sub = interaction.options.getSubcommand();
+    const guild = interaction.guild;
+    const channel = interaction.channel;
+    const group = interaction.options.getSubcommandGroup();
 
+    if (sub === "passwd") {
+      return await caller.Reply(interaction, "Command not implemented yet.");
+      caller.UpdatePassword(
+        user.id,
+        user.username,
+        interaction.options.getString("p"),
+      );
+    } else if (sub === "set-group") {
+      return await caller.Reply(interaction, "Command not implemented yet.");
 
-		if (sub === "passwd"){
-			return await caller.Reply(interaction, "Command not implemented yet.")
-			caller.UpdatePassword(user.id, user.username, interaction.options.getString("p"))
-		}
-		else if (sub === "set-group") {
-			return await caller.Reply(interaction, "Command not implemented yet.")
+      let campaign = caller.GetGuildCampaign(guild.id);
+      if (campaign.response) {
+        console.log(campaign.response);
+        caller.Reply(
+          interaction,
+          "Could not create the chapter group: " + campaign.response,
+        );
+      }
+      let name = interaction.options.getString("n");
+      let chapter = await GetChapterFromChannelAndGuild(
+        campaign.id,
+        channel.id,
+      );
 
-			let campaign = caller.GetGuildCampaign(guild.id)
-			if (campaign.response){ console.log(campaign.response); caller.Reply(interaction, "Could not create the chapter group: "+campaign.response) }
-			let name = interaction.options.getString("n")
-			let chapter = await GetChapterFromChannelAndGuild(campaign.id, channel.id)
+      if (chapter.response) {
+        console.log(chapter.response);
+        caller.Reply(
+          interaction,
+          "Could not create the chapter group: " + chapter.response,
+        );
+      }
 
-			if (chapter.response) { console.log(chapter.response); caller.Reply(interaction, "Could not create the chapter group: "+chapter.response) }
+      await caller.CreateChapterGroup(name, campaign.id);
 
-			await caller.CreateChapterGroup(name, campaign.id)
+      let chapterGroup = await GetChapterGroupFromGuildAndName(
+        campaign.id,
+        name,
+      );
+      //chapter group should exist, provided the API works.
 
-			let chapterGroup = await GetChapterGroupFromGuildAndName(campaign.id, name)
-			//chapter group should exist, provided the API works.
+      await caller.UpdateChapterToGroupRelation(chapterGroup.id, chapter.id);
+    } else if (sub === "track-channel") {
+      if (!AUTHORIZED_USERS.includes(user.id)) {
+        return await caller.Reply(
+          interaction,
+          "You are not authorized to use this command.",
+        );
+      }
 
-			await caller.UpdateChapterToGroupRelation(chapterGroup.id, chapter.id)
-		}
-		else if (sub === "track-channel"){
-			if (!AUTHORIZED_USERS.includes(user.id)){
-				return await caller.Reply(interaction, "You are not authorized to use this command.")
-			}
+      let campaign = await caller.GetGuildCampaign(guild.id);
+      if (campaign.response) {
+        console.log(campaign.response);
+        return await caller.Reply(
+          interaction,
+          "Could not create the chapter: " + campaign.response,
+        );
+      }
+      if (!campaign) {
+        console.log("Could not fetch campaign");
+        return await caller.Reply(interaction, "Could not create the chapter.");
+      }
 
-			let campaign = await caller.GetGuildCampaign(guild.id)
-			if (campaign.response){ console.log(campaign.response); return await caller.Reply(interaction, "Could not create the chapter: "+campaign.response) }
-			if (!campaign){ console.log("Could not fetch campaign"); return await caller.Reply(interaction, "Could not create the chapter.") }
+      await caller.CreateChapter(channel.name, 1, channel.id, campaign.id, 0);
+      await caller.Reply(interaction, "Success.");
+    } else if (sub === "forced-refresh") {
+      if (!AUTHORIZED_USERS.includes(user.id)) {
+        return await caller.Reply(
+          interaction,
+          "You are not authorized to use this command.",
+        );
+      }
+      await caller.deferReply(interaction, "Logging...");
 
-			await caller.CreateChapter(channel.name, 1, channel.id, campaign.id, 0)
-			await caller.Reply(interaction, "Success.")
+      await caller.LogNewMessages(interaction.client);
+      return await caller.editDeferReply(interaction, "success");
+    } else if (sub === "url") {
+      return await caller.Reply(
+        interaction,
+        "[nolar-eclipse.ca](https://nolar-eclipse.ca/?guild=" + guild.id + ")",
+      );
+    } else if (sub === "get-prompt") {
+      const addNPCs = interaction.options.getBoolean("add-npcs") ?? false;
+      const includeOwnPc =
+        interaction.options.getBoolean("include-own-pc") ?? false;
+      const pickCount = interaction.options.getInteger("character-count") ?? 1;
+      const disableEphemeral =
+        interaction.options.getBoolean("disable-ephemeral") ?? false;
 
-		}
-		else if (sub === "forced-refresh"){
-			if (!AUTHORIZED_USERS.includes(user.id)){
-				return await caller.Reply(interaction, "You are not authorized to use this command.")
-			}
-			await caller.deferReply(interaction, "Logging...")
+      if (pickCount < 0) pickCount = 0;
 
-			await caller.LogNewMessages(interaction.client)
-			return await caller.editDeferReply(interaction, "success")
-		}
-		else if (sub === "url"){
-			return await caller.Reply(interaction, "[nolar-eclipse.ca](https://nolar-eclipse.ca/?guild="+guild.id+")")
-		}
-        else if (sub === "get-prompt"){
-            const addNPCs = interaction.options.getBoolean('add-npcs') ?? false
-            const includeOwnPc = interaction.options.getBoolean('include-own-pc') ?? false
-            const pickCount = interaction.options.getInteger('character-count') ?? 1
-            const disableEphemeral = interaction.options.getBoolean('disable-ephemeral') ?? false
+      let charaPool = [...PC_POOL];
 
+      if (addNPCs) charaPool.push(...NPC_POOL);
 
+      let characters = getRandomElement(
+        charaPool,
+        pickCount,
+        CHARACTER_RELATIONS[user.id] ?? [],
+      );
 
-            if (pickCount < 0) pickCount = 0
+      let prompt = getRandomElement(PROMPT_POOL, 1)[0];
 
-            let charaPool = [...PC_POOL]
+      let pcLine = "";
+      if (includeOwnPc) {
+        let pc = getRandomElement(CHARACTER_RELATIONS[user.id], 1)[0];
 
-            if (addNPCs) charaPool.push(...NPC_POOL)
+        pcLine += "\n Your character: `" + pc + "`";
+      }
 
-            let characters = getRandomElement(charaPool, pickCount, CHARACTER_RELATIONS[user.id] ?? [])
+      let msg = `## Your prompt:\n\n`;
 
+      msg += '> "' + prompt + '"\n\n';
 
-
-
-            let prompt = getRandomElement(PROMPT_POOL, 1)[0]
-
-
-            let pcLine = ""
-            if (includeOwnPc) {
-                let pc = getRandomElement(CHARACTER_RELATIONS[user.id], 1)[0]
-
-                pcLine += "\n Your character: `" + pc + "`"
-            }
-
-
-            let msg = `## Your prompt:\n\n`
-
-            msg += '> "'+prompt+'"\n\n'
-
-            if (characters.length == 1) msg += 'Selected character: `' + characters[0] + '`'
-            else if(characters.length < 1) {/* nothing */}
-            else{
-                msg += 'Selected characters:\n'
-                for (let i = 0; i < characters.length; i++){
-                    msg += '`'+characters[i]+'`\n'
-                }
-            }
-
-            msg += pcLine
-
-            return await caller.Reply(interaction, msg, !disableEphemeral)
+      if (characters.length == 1)
+        msg += "Selected character: `" + characters[0] + "`";
+      else if (characters.length < 1) {
+        /* nothing */
+      } else {
+        msg += "Selected characters:\n";
+        for (let i = 0; i < characters.length; i++) {
+          msg += "`" + characters[i] + "`\n";
         }
-        else if (sub === "bestiary"){
-            let query = interaction.options.getString("query") ?? ""
+      }
 
-            await interaction.reply(buildPage(entries.Bestiary, 0, "_Bestiary"));
-        }
-        else if (sub === "roll"){
-            let dicespecs = interaction.options.getString("value")
-            let label = interaction.options.getString("label")
-            let folder = interaction.options.getString("folder") ?? null
-            let special = interaction.options.getString("special-roll") ?? "none"
-            
-            
-            let opts = parseDice(dicespecs)
-            
-            if (opts == null) {
-                return await caller.Reply(interaction, "Invalid format: "+dicespecs);
-            }
-            
-            let msg = `||<@${user.id}>||\n## [${label}] Results :\n-# using "${dicespecs}"`
-            
-            let results = rollDice(opts, special)
-            
-            msg += `\n-# individual results: ${results.msg}`
-            
-            msg += `\n# total: ${results.total}`
-            
-            if (folder != null){
-                try {
-                    let arr = await rolls.getData("/"+folder)
-                    const newArr = arr.filter(roll => roll.label === label)
-                    if (newArr.length > 0){
-                        return await caller.Reply(interaction, "This label already exists in this folder. Please remove it before overwriting it.")
-                    }
-                } catch (e){}
-                
-                rolls.push(`/${folder}[]`, {
-                    label: label,
-                    value: results.total
-                })
-                msg +=`\n\n-# *added to folder '${folder}'*`
-            }
-            
-            return await caller.Reply(interaction, msg, false)
-        }
-        else if (sub === "roll-all"){
-            
-            let dicespecs = interaction.options.getString("value")
-            let stat = interaction.options.getString("stat")
-            let proficiency = interaction.options.getString("proficiency") ?? "none"
-            let special = interaction.options.getString("special-roll") ?? "none"
-            let folder = interaction.options.getString("folder") ?? null
-            
-            //proficiency structure: proficiencies:{perception:{value:3,label:"bells"}}
-            
-            let opts = parseDice(dicespecs)
-            if (opts == null) {
-                return await caller.Reply(interaction, "Invalid format: "+dicespecs);
-            }
-            
-            let characterList
-            try { characterList = await characters.getData("/"+user.id+"/characters") } catch (e){}
-            
-            
-            let msg = "# Mass roll results:\n"
-            msg += `-# using ${dicespecs} with ${stat === "none" ? "no" : stat} modifier\n\n`
-            
-            let rollData = []
-            
-            Object.values(characterList).forEach(c =>{
-                let mod = c.stats[stat]
-                if (c.proficiencies?.[proficiency] != null){
-                    c.proficiencies[proficiency].forEach( p => {
-                        mod += p.value
-                    })
-                }
-                msg += `**${c.name} (+${mod})**\n`
-                let results = rollDice({
-                    dsize:opts.dsize,
-                    count:opts.count,
-                    mod: opts.mod + mod // add the stat buff
-                }, special)
-                msg += `Total: ${results.total}\n`
-                msg += `-# ${results.msg}\n\n`
-                
-                rollData.push({
-                    label:c.name,
-                    total:results.total
-                })
-            })
-    
-            if (folder != null){
-                Object.values(rollData).forEach(async r =>{
-                    try {
-                        let arr = await rolls.getData("/"+folder)
-                        const newArr = arr.filter(roll => roll.label === label)
-                        if (newArr.length > 0){
-                            return
-                        }
-                    } catch (e){}
-                    
-                    rolls.push(`/${folder}[]`, {
-                        label: r.label,
-                        value: r.total
-                    })
-                })
-            
-                msg +=`\n-# *added results to folder '${folder}'*`
-            }
-            
-            return await caller.Reply(interaction, msg, false)
-        }
-        else if (sub === "show-rolls"){
-            let ephemeral = interaction.options.getBoolean("enable-ephemeral") ?? false
-            let folder = interaction.options.getString("folder")
-            
-            let values
-            try { values = await rolls.getData("/"+folder) } catch (e){}
-            
-            if (values == null || values.length < 1) return await caller.Reply(interaction, "No rolls found.", true);
-            
-            let msg = "## Rolls (`"+folder+"`)"
-            
-            values.sort((a, b) => b.value - a.value);
-            
-            for (let i = 0; i < values.length; i++){
-                msg += `\n${values[i].label} : ${values[i].value}`
-            }
-            
-            await caller.Reply(interaction, msg, false);
-        }
-        else if (sub === "clear-rolls"){
-            let label = interaction.options.getString("label")
-            let folder = interaction.options.getString("folder")
-            
-            if (label == null){
-                rolls.delete("/"+folder)
-                return await caller.Reply(interaction, "Done.")
-            }
-            
-            let arr = await rolls.getData("/"+folder)
-            
-            const newArr = arr.filter(roll => roll.label !== label)
-            
-            rolls.push("/"+folder, newArr)
-            
-            return await caller.Reply(interaction, "Done.")
-        }
-        else if (group === "character" && sub === "create"){
-            let _name = interaction.options.getString("name")
-            let _race = interaction.options.getString("race")
-            let _class = interaction.options.getString("class")
-            let _rank = interaction.options.getString("rank")
-            let _alignment = interaction.options.getString("alignment")
-            let _level = interaction.options.getInteger("level") ?? NaN
-            let _pronouns = interaction.options.getString("pronouns")
-            let _gender = interaction.options.getString("gender")
-            let _age = interaction.options.getInteger("age")
-            let _height = interaction.options.getString("height")
-            let _hp = interaction.options.getInteger("hp")
-            let _strength = interaction.options.getInteger("strength") ?? 0
-            let _dexterity = interaction.options.getInteger("dexterity") ?? 0
-            let _defense = interaction.options.getInteger("defense") ?? 0
-            let _intelligence = interaction.options.getInteger("intelligence") ?? 0
-            let _magic = interaction.options.getInteger("magic") ?? 0
-            let _charisma = interaction.options.getInteger("charisma") ?? 0
-            let _boon = interaction.options.getString("boon") ?? "none"
-            let _isNPC = interaction.options.getString("isNPC") ?? false
-            
-            let newCharacter = {
-                name: _name,
-                race: _race,
-                class: _class,
-                rank: _rank,
-                alignment: _alignment,
-                level: _level,
-                pronouns: _pronouns,
-                gender: _gender,
-                age: _age,
-                height: _height,
-                stats: {
-                    hp: _hp,
-                    str: _strength,
-                    dex: _dexterity,
-                    def: _defense,
-                    int: _intelligence,
-                    mag: _magic,
-                    cha: _charisma
-                },
-                boon: _boon,
-                isNPC: _isNPC
-            }
-            
-            await ensureUserExistence(user)
-            
-            let data
-            try { data = await characters.getData("/"+user.id+"/characters") } catch (e){
-                return await caller.Reply(interaction, "You have no characters...? idk")
-            }
-            
-            let char = data[newCharacter.name]
-            
-            if (char != null) return await caller.Reply(interaction, "That character already exists. Please use `/dnd character update` to modify their info.")
-            
-            characters.push(`/${user.id}/characters/${newCharacter.name}`, newCharacter)
-            
-            return await caller.Reply(interaction, "Done.")
-        }
-        else if (group === "character" && sub === "list"){
-            let query = interaction.options.getString("character-name")
-            
-            if (query == null){
-                let data
-                try { data = await characters.getData("/") } catch (e){
-                    return await caller.Reply(interaction, "There was an error: "+e+"\n There are probably just not any characters in the database at this moment.")
-                }
-                
-                let msg = "## List of characters:\n"
-                
-                let characterList = []
-                Object.values(data).forEach(userData => {
-                    Object.values(userData.characters).forEach(char => {
-                        characterList.push({player: userData.username, name: char.name});
-                    });
-                });
-        
-                characterList.sort((a, b) => b.player - a.player || b.name - a.name);
-        
-                characterList.forEach(character =>{
-                    msg += `\`${character.name}\` (${character.player})\n`
-                })
-                
-                
-                return await caller.Reply(interaction, msg)
-            }
-            else{
-                await ensureUserExistence(user)
-                let data
-                try { data = await characters.getData("/") } catch (e){
-                    return await caller.Reply(interaction, "There was an error: "+e+"\n There are probably just not any characters in the database at this moment.")
-                }
-                
-                let matches = []
-                
-                for (const userData of Object.values(data)){
-                    let match = userData.characters[query]
-                    if (match != undefined) {
-                        match.player = userData.username
-                        matches.push(match)
-                    }
-                }
-        
-                let msg = "Results:"
-                matches.sort((a, b) => b.player - a.player)
-                for (let i = 0; i < matches.length; i++){
-                    msg+="```\n"
-                    for (const k of Object.keys(matches[i])){
-                        if (k == "stats"){
-                            msg+= "stats:"
-                            for (const k2 of Object.keys(matches[i].stats)){
-                                let val = matches[i][k][k2]
-                                if (val > 0) msg+=`  ${k2}·${val}`
-                            }
-                            msg+="\n"
-                        }
-                        else msg += `${k} : ${matches[i][k]}\n`
-                    }
-                    msg+="```"
-                }
-                
-                return await caller.Reply(interaction, msg)
-            }
-        }
-        else if (group === "character" && sub == "edit"){
-            let query = interaction.options.getString("character-name")
-            let parameterName = interaction.options.getString("parameter-name")
-            let newValue = interaction.options.getString("new-value")
-            
-            await ensureUserExistence(user)
-            
-            if (newValue.toLowerCase() === "true") newValue = true
-            else if (newValue.toLowerCase() === "false") newValue = false
-            let numValue = parseInt(newValue)
-            if (Number.isNaN(numValue)) numValue = parseFloat(numValue)
-            if (!Number.isNaN(numValue)) newValue = numValue
-            
-            let data
-            try { data = await characters.getData(`/${user.id}/characters/${query}`) } catch (e){
-                return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
-            }
-            
-            
-            console.log(parameterName)
-            let path = parameterName.split("/")
-            console.log(path)
-            let current = data
-            for (let i = 0; i < path.length-1; i++){
-                console.log("going in "+path[i])
-                current = current[path[i]]
-            }
-            current[path[path.length-1]] = newValue;
-            
-            characters.push(`/${user.id}/characters/${query}`, data)
-            
-            return await caller.Reply(interaction, "Done.")
-        }
-        else if (group === "character" && sub == "delete"){
-            let query = interaction.options.getString("character-name")
-            
-            await ensureUserExistence(user)
-            
-            let data
-            try { data = await characters.getData(`/${user.id}/characters/${query}`) } catch (e){
-                return await caller.Reply(interaction, "That character either isn't yours or doesn't exist.")
-            }
-            
-            characters.delete(`/${user.id}/characters/${query}`)
-            
-            return await caller.Reply(interaction, "Done.")
-        }
-	},
-    async autocomplete(interaction) {
-        const focused = interaction.options.getFocused(true);
-        const user = interaction.member.user;
-        const sub = interaction.options.getSubcommand();
-        const group = interaction.options.getSubcommandGroup()
-        
-        let type
-        
-        //type attribution
-        if (group === "character" && sub === "list" && focused.name == "character-name") type = "any-character"
-        else if (group === "character" && sub === "edit" && focused.name == "character-name") type = "owned-characters"
-        else if (group === "character" && sub === "edit" && focused.name == "parameter-name") type = "character-field"
-        else if (group === "character" && sub === "delete" && focused.name == "character-name") type = "owned-characters"
-        else if (sub === "roll" && focused.name == "label") type = "owned-characters"
-        
-        
-        if (type === "owned-characters"){
-            let data
-            try { data = await characters.getData("/"+user.id) } catch (e){
-                return await interaction.respond([{ name: "No characters found", value: "none" }])
-            }
-            
-            let suggestions = []
-            Object.values(data.characters).forEach(character =>{
-                suggestions.push({name:character.name, value:character.name})
-            })
-    
-            const filtered = suggestions.filter(c =>
-                !focused.value || c.name.toLowerCase().includes(focused.value.toLowerCase())
+      msg += pcLine;
+
+      return await caller.Reply(interaction, msg, !disableEphemeral);
+    } else if (sub === "bestiary") {
+      let query = interaction.options.getString("query") ?? "";
+
+      await interaction.reply(buildPage(entries.Bestiary, 0, "_Bestiary"));
+    } else if (sub === "roll") {
+      let dicespecs = interaction.options.getString("value");
+      let label = interaction.options.getString("label");
+      let folder = interaction.options.getString("folder") ?? null;
+      let special = interaction.options.getString("special-roll") ?? "none";
+
+      let opts = parseDice(dicespecs);
+
+      if (opts == null) {
+        return await caller.Reply(interaction, "Invalid format: " + dicespecs);
+      }
+
+      let msg = `||<@${user.id}>||\n## [${label}] Results :\n-# using "${dicespecs}"`;
+
+      let results = rollDice(opts, special);
+
+      msg += `\n-# individual results: ${results.msg}`;
+
+      msg += `\n# total: ${results.total}`;
+
+      if (folder != null) {
+        try {
+          let arr = await rolls.getData("/" + folder);
+          const newArr = arr.filter((roll) => roll.label === label);
+          if (newArr.length > 0) {
+            return await caller.Reply(
+              interaction,
+              "This label already exists in this folder. Please remove it before overwriting it.",
             );
-    
-            return await interaction.respond(filtered)
+          }
+        } catch (e) {}
+
+        rolls.push(`/${folder}[]`, {
+          label: label,
+          value: results.total,
+        });
+        msg += `\n\n-# *added to folder '${folder}'*`;
+      }
+
+      return await caller.Reply(interaction, msg, false);
+    } else if (sub === "roll-all") {
+      let dicespecs = interaction.options.getString("value");
+      let stat = interaction.options.getString("stat");
+      let proficiency = interaction.options.getString("proficiency") ?? "none";
+      let special = interaction.options.getString("special-roll") ?? "none";
+      let folder = interaction.options.getString("folder") ?? null;
+
+      //proficiency structure: proficiencies:{perception:{value:3,label:"bells"}}
+
+      let opts = parseDice(dicespecs);
+      if (opts == null) {
+        return await caller.Reply(interaction, "Invalid format: " + dicespecs);
+      }
+
+      let characterList;
+      try {
+        characterList = await characters.getData("/" + user.id + "/characters");
+      } catch (e) {}
+
+      let msg = "# Mass roll results:\n";
+      msg += `-# using ${dicespecs} with ${stat === "none" ? "no" : stat} modifier\n\n`;
+
+      let rollData = [];
+
+      Object.values(characterList).forEach((c) => {
+        let mod = c.stats[stat];
+        if (c.proficiencies?.[proficiency] != null) {
+          c.proficiencies[proficiency].forEach((p) => {
+            mod += p.value;
+          });
         }
-        else if (type === "any-character"){ 
-            let data
-            try { data = await characters.getData("/") } catch (e){
-                return await interaction.respond([{ name: "No characters found", value: "none" }])
+        msg += `**${c.name} (+${mod})**\n`;
+        let results = rollDice(
+          {
+            dsize: opts.dsize,
+            count: opts.count,
+            mod: opts.mod + mod, // add the stat buff
+          },
+          special,
+        );
+        msg += `Total: ${results.total}\n`;
+        msg += `-# ${results.msg}\n\n`;
+
+        rollData.push({
+          label: c.name,
+          total: results.total,
+        });
+      });
+
+      if (folder != null) {
+        Object.values(rollData).forEach(async (r) => {
+          try {
+            let arr = await rolls.getData("/" + folder);
+            const newArr = arr.filter((roll) => roll.label === label);
+            if (newArr.length > 0) {
+              return;
             }
-            if (data == null) return await interaction.respond([{ name: "No characters found", value: "none" }])
-            console.log(data)
-            
-            let suggestions = []
-            Object.values(data).forEach(userData=>{
-                Object.values(userData.characters).forEach(character =>{
-                    suggestions.push({name:`${character.name} (${userData.username})`, value:character.name})
-                })
-            })
-    
-            const filtered = suggestions.filter(c =>
-                !focused.value || c.name.toLowerCase().includes(focused.value.toLowerCase())
-            );
-            
-            filtered.sort((a, b) => b.name - a.name)
-            
-    
-            return await interaction.respond(filtered)
+          } catch (e) {}
+
+          rolls.push(`/${folder}[]`, {
+            label: r.label,
+            value: r.total,
+          });
+        });
+
+        msg += `\n-# *added results to folder '${folder}'*`;
+      }
+
+      return await caller.Reply(interaction, msg, false);
+    } else if (sub === "show-rolls") {
+      let ephemeral =
+        interaction.options.getBoolean("enable-ephemeral") ?? false;
+      let folder = interaction.options.getString("folder");
+
+      let values;
+      try {
+        values = await rolls.getData("/" + folder);
+      } catch (e) {}
+
+      if (values == null || values.length < 1)
+        return await caller.Reply(interaction, "No rolls found.", true);
+
+      let msg = "## Rolls (`" + folder + "`)";
+
+      values.sort((a, b) => b.value - a.value);
+
+      for (let i = 0; i < values.length; i++) {
+        msg += `\n${values[i].label} : ${values[i].value}`;
+      }
+
+      await caller.Reply(interaction, msg, false);
+    } else if (sub === "clear-rolls") {
+      let label = interaction.options.getString("label");
+      let folder = interaction.options.getString("folder");
+
+      if (label == null) {
+        rolls.delete("/" + folder);
+        return await caller.Reply(interaction, "Done.");
+      }
+
+      let arr = await rolls.getData("/" + folder);
+
+      const newArr = arr.filter((roll) => roll.label !== label);
+
+      rolls.push("/" + folder, newArr);
+
+      return await caller.Reply(interaction, "Done.");
+    } else if (group === "character" && sub === "create") {
+      let _name = interaction.options.getString("name");
+      let _race = interaction.options.getString("race");
+      let _class = interaction.options.getString("class");
+      let _rank = interaction.options.getString("rank");
+      let _alignment = interaction.options.getString("alignment");
+      let _level = interaction.options.getInteger("level") ?? NaN;
+      let _pronouns = interaction.options.getString("pronouns");
+      let _gender = interaction.options.getString("gender");
+      let _age = interaction.options.getInteger("age");
+      let _height = interaction.options.getString("height");
+      let _hp = interaction.options.getInteger("hp");
+      let _strength = interaction.options.getInteger("strength") ?? 0;
+      let _dexterity = interaction.options.getInteger("dexterity") ?? 0;
+      let _defense = interaction.options.getInteger("defense") ?? 0;
+      let _intelligence = interaction.options.getInteger("intelligence") ?? 0;
+      let _magic = interaction.options.getInteger("magic") ?? 0;
+      let _charisma = interaction.options.getInteger("charisma") ?? 0;
+      let _boon = interaction.options.getString("boon") ?? "none";
+      let _isNPC = interaction.options.getString("isNPC") ?? false;
+
+      let newCharacter = {
+        name: _name,
+        race: _race,
+        class: _class,
+        rank: _rank,
+        alignment: _alignment,
+        level: _level,
+        pronouns: _pronouns,
+        gender: _gender,
+        age: _age,
+        height: _height,
+        stats: {
+          hp: _hp,
+          str: _strength,
+          dex: _dexterity,
+          def: _defense,
+          int: _intelligence,
+          mag: _magic,
+          cha: _charisma,
+        },
+        boon: _boon,
+        isNPC: _isNPC,
+      };
+
+      await ensureUserExistence(user);
+
+      let data;
+      try {
+        data = await characters.getData("/" + user.id + "/characters");
+      } catch (e) {
+        return await caller.Reply(
+          interaction,
+          "You have no characters...? idk",
+        );
+      }
+
+      let char = data[newCharacter.name];
+
+      if (char != null)
+        return await caller.Reply(
+          interaction,
+          "That character already exists. Please use `/dnd character update` to modify their info.",
+        );
+
+      characters.push(
+        `/${user.id}/characters/${newCharacter.name}`,
+        newCharacter,
+      );
+
+      return await caller.Reply(interaction, "Done.");
+    } else if (group === "character" && sub === "list") {
+      let query = interaction.options.getString("character-name");
+
+      if (query == null) {
+        let data;
+        try {
+          data = await characters.getData("/");
+        } catch (e) {
+          return await caller.Reply(
+            interaction,
+            "There was an error: " +
+              e +
+              "\n There are probably just not any characters in the database at this moment.",
+          );
         }
-        else if (type === "character-field"){
-            return await interaction.respond([
-                {name:"name", value:"name"},
-                {name:"race", value:"race"},
-                {name:"class", value:"class"},
-                {name:"rank", value:"rank"},
-                {name:"alignment", value:"alignment"},
-                {name:"level", value:"level"},
-                {name:"pronouns", value:"pronouns"},
-                {name:"gender", value:"gender"},
-                {name:"age", value:"age"},
-                {name:"height", value:"height"},
-                {name:"hp", value:"stats/hp"},
-                {name:"str", value:"stats/str"},
-                {name:"dex", value:"stats/dex"},
-                {name:"def", value:"stats/def"},
-                {name:"int", value:"stats/int"},
-                {name:"mag", value:"stats/mag"},
-                {name:"cha", value:"stats/cha"},
-                {name:"boon", value:"stats/boon"},
-                {name:"isNPC", value:"isNPC"}
-            ])
+
+        let msg = "## List of characters:\n";
+
+        let characterList = [];
+        Object.values(data).forEach((userData) => {
+          Object.values(userData.characters).forEach((char) => {
+            characterList.push({ player: userData.username, name: char.name });
+          });
+        });
+
+        characterList.sort((a, b) => b.player - a.player || b.name - a.name);
+
+        characterList.forEach((character) => {
+          msg += `\`${character.name}\` (${character.player})\n`;
+        });
+
+        return await caller.Reply(interaction, msg);
+      } else {
+        await ensureUserExistence(user);
+        let data;
+        try {
+          data = await characters.getData("/");
+        } catch (e) {
+          return await caller.Reply(
+            interaction,
+            "There was an error: " +
+              e +
+              "\n There are probably just not any characters in the database at this moment.",
+          );
         }
-        
-        
-        
-        return await interaction.respond([])
+
+        let matches = [];
+
+        for (const userData of Object.values(data)) {
+          let match = userData.characters[query];
+          if (match != undefined) {
+            match.player = userData.username;
+            matches.push(match);
+          }
+        }
+
+        let msg = "Results:";
+        matches.sort((a, b) => b.player - a.player);
+        for (let i = 0; i < matches.length; i++) {
+          msg += "```\n";
+          for (const k of Object.keys(matches[i])) {
+            if (k == "stats") {
+              msg += "stats:";
+              for (const k2 of Object.keys(matches[i].stats)) {
+                let val = matches[i][k][k2];
+                if (val > 0) msg += `  ${k2}·${val}`;
+              }
+              msg += "\n";
+            } else msg += `${k} : ${matches[i][k]}\n`;
+          }
+          msg += "```";
+        }
+
+        return await caller.Reply(interaction, msg);
+      }
+    } else if (group === "character" && sub == "edit") {
+      let query = interaction.options.getString("character-name");
+      let parameterName = interaction.options.getString("parameter-name");
+      let newValue = interaction.options.getString("new-value");
+
+      await ensureUserExistence(user);
+
+      if (newValue.toLowerCase() === "true") newValue = true;
+      else if (newValue.toLowerCase() === "false") newValue = false;
+      let numValue = parseInt(newValue);
+      if (Number.isNaN(numValue)) numValue = parseFloat(numValue);
+      if (!Number.isNaN(numValue)) newValue = numValue;
+
+      let data;
+      try {
+        data = await characters.getData(`/${user.id}/characters/${query}`);
+      } catch (e) {
+        return await caller.Reply(
+          interaction,
+          "That character either isn't yours or doesn't exist.",
+        );
+      }
+
+      console.log(parameterName);
+      let path = parameterName.split("/");
+      console.log(path);
+      let current = data;
+      for (let i = 0; i < path.length - 1; i++) {
+        console.log("going in " + path[i]);
+        current = current[path[i]];
+      }
+      current[path[path.length - 1]] = newValue;
+
+      characters.push(`/${user.id}/characters/${query}`, data);
+
+      return await caller.Reply(interaction, "Done.");
+    } else if (group === "character" && sub == "delete") {
+      let query = interaction.options.getString("character-name");
+
+      await ensureUserExistence(user);
+
+      let data;
+      try {
+        data = await characters.getData(`/${user.id}/characters/${query}`);
+      } catch (e) {
+        return await caller.Reply(
+          interaction,
+          "That character either isn't yours or doesn't exist.",
+        );
+      }
+
+      characters.delete(`/${user.id}/characters/${query}`);
+
+      return await caller.Reply(interaction, "Done.");
     }
+  },
+  async autocomplete(interaction) {
+    const focused = interaction.options.getFocused(true);
+    const user = interaction.member.user;
+    const sub = interaction.options.getSubcommand();
+    const group = interaction.options.getSubcommandGroup();
+
+    let type;
+
+    //type attribution
+    if (
+      group === "character" &&
+      sub === "list" &&
+      focused.name == "character-name"
+    )
+      type = "any-character";
+    else if (
+      group === "character" &&
+      sub === "edit" &&
+      focused.name == "character-name"
+    )
+      type = "owned-characters";
+    else if (
+      group === "character" &&
+      sub === "edit" &&
+      focused.name == "parameter-name"
+    )
+      type = "character-field";
+    else if (
+      group === "character" &&
+      sub === "delete" &&
+      focused.name == "character-name"
+    )
+      type = "owned-characters";
+    else if (
+      group === "character" &&
+      sub === "set-relationship" &&
+      focused.name == "character"
+    )
+      type = "owned-characters";
+    else if (
+      group === "character" &&
+      sub === "set-relationship" &&
+      focused.name == "target"
+    )
+      type = "any-character";
+    else if (sub === "roll" && focused.name == "label")
+      type = "owned-characters";
+
+    if (type === "owned-characters") {
+      let data;
+      try {
+        data = await characters.getData("/" + user.id);
+      } catch (e) {
+        return await interaction.respond([
+          { name: "No characters found", value: "none" },
+        ]);
+      }
+
+      let suggestions = [];
+      Object.values(data.characters).forEach((character) => {
+        suggestions.push({ name: character.name, value: character.name });
+      });
+
+      const filtered = suggestions.filter(
+        (c) =>
+          !focused.value ||
+          c.name.toLowerCase().includes(focused.value.toLowerCase()),
+      );
+
+      return await interaction.respond(filtered);
+    } else if (type === "any-character") {
+      let data;
+      try {
+        data = await characters.getData("/");
+      } catch (e) {
+        return await interaction.respond([
+          { name: "No characters found", value: "none" },
+        ]);
+      }
+      if (data == null)
+        return await interaction.respond([
+          { name: "No characters found", value: "none" },
+        ]);
+      console.log(data);
+
+      let suggestions = [];
+      Object.values(data).forEach((userData) => {
+        Object.values(userData.characters).forEach((character) => {
+          suggestions.push({
+            name: `${character.name} (${userData.username})`,
+            value: character.name,
+          });
+        });
+      });
+
+      const filtered = suggestions.filter(
+        (c) =>
+          !focused.value ||
+          c.name.toLowerCase().includes(focused.value.toLowerCase()),
+      );
+
+      filtered.sort((a, b) => b.name - a.name);
+
+      return await interaction.respond(filtered);
+    } else if (type === "character-field") {
+      return await interaction.respond([
+        { name: "name", value: "name" },
+        { name: "race", value: "race" },
+        { name: "class", value: "class" },
+        { name: "rank", value: "rank" },
+        { name: "alignment", value: "alignment" },
+        { name: "level", value: "level" },
+        { name: "pronouns", value: "pronouns" },
+        { name: "gender", value: "gender" },
+        { name: "age", value: "age" },
+        { name: "height", value: "height" },
+        { name: "hp", value: "stats/hp" },
+        { name: "str", value: "stats/str" },
+        { name: "dex", value: "stats/dex" },
+        { name: "def", value: "stats/def" },
+        { name: "int", value: "stats/int" },
+        { name: "mag", value: "stats/mag" },
+        { name: "cha", value: "stats/cha" },
+        { name: "boon", value: "stats/boon" },
+        { name: "isNPC", value: "isNPC" },
+      ]);
+    }
+
+    return await interaction.respond([]);
+  },
 };
