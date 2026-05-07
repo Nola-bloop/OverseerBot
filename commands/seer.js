@@ -94,9 +94,7 @@ const CHARACTER_RELATIONS = {
   ],
 
   //Sam
-  "398970197308080138": {
-    "Winnie"
-  }
+  "398970197308080138": ["Winnie"],
 };
 
 const PROMPT_POOL = [
