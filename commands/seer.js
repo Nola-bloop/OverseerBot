@@ -92,6 +92,11 @@ const CHARACTER_RELATIONS = {
     "Terathi'in",
     "The foreteller",
   ],
+
+  //Sam
+  "398970197308080138": {
+    "Winnie"
+  }
 };
 
 const PROMPT_POOL = [
