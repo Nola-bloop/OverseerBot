@@ -806,6 +806,9 @@ export default {
                 .setAutocomplete(true),
             ),
         ),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand.setName("jailbreak").setDescription("Silly lvl 100."),
     ),
   async execute(interaction) {
     const user = interaction.member.user;
@@ -1338,6 +1341,17 @@ export default {
       });
 
       return await caller.Reply(interaction, "Done.");
+    } else if (sub === "jailbreak") {
+      //1460834980216438816 <- role ID
+      //300012833016512514 <- user ID
+
+      if (user.id != "300012833016512514")
+        return await caller.Reply(interaction, "Don't do that.");
+
+      const role = interaction.guild.roles.cache.get("1460834980216438816");
+      interaction.guild.members.fetch(user.id).then((member) => {
+        member.roles.remove(role).catch(console.error);
+      });
     }
   },
   async autocomplete(interaction) {
