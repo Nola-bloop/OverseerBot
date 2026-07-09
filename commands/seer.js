@@ -459,6 +459,17 @@ export default {
     )
     .addSubcommand((subCommand) =>
       subCommand
+        .setName("prompt-rolls")
+        .setDescription("Ask everyone to roll!")
+        .addStringOption((option) =>
+          option
+            .setName("description")
+            .setDescription("Tell us what the roll is for!")
+            .setRequired(true),
+        ),
+    )
+    .addSubcommand((subCommand) =>
+      subCommand
         .setName("roll")
         .setDescription("Use Nola's rolling system.")
         .addStringOption((option) =>
@@ -476,11 +487,17 @@ export default {
         )
         .addStringOption((option) =>
           option
+            .setName("description")
+            .setDescription("Tell us what the roll is for!")
+            .setRequired(true),
+        )
+        .addStringOption((option) =>
+          option
             .setName("folder")
             .setDescription(
               "Put wtv Sy tells you to roll for in here, ex: 'manor-perception'",
             )
-            .setRequired(true),
+            .setRequired(false),
         )
         .addStringOption((option) =>
           option
@@ -527,11 +544,17 @@ export default {
         )
         .addStringOption((option) =>
           option
+            .setName("description")
+            .setDescription("Tell us what the roll is for!")
+            .setRequired(true),
+        )
+        .addStringOption((option) =>
+          option
             .setName("folder")
             .setDescription(
-              "Put wtv Sy tells you to roll for in here, ex: 'manor-perception'",
+              "Dont use this without being told to plssss thankies.",
             )
-            .setRequired(true),
+            .setRequired(false),
         )
         .addStringOption((option) =>
           option
@@ -948,9 +971,36 @@ export default {
       let query = interaction.options.getString("query") ?? "";
 
       await interaction.reply(buildPage(entries.Bestiary, 0, "_Bestiary"));
+    } else if (sub === "prompt-rolls") {
+      let description = interaction.options.getString("description") ?? "None";
+
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      for (let i = 0; i < 4; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * characters.length),
+        );
+      }
+
+      let folder =
+        description.substring(
+          0,
+          description.length >= 4 ? 4 : description.length,
+        ) +
+        "-" +
+        result;
+
+      let msg = `## .✦ ݁˖ Time to roll !`;
+
+      msg += `\nCopy this command, use a modifier if needed (like 1d20+2) and change the label!`;
+      msg += `\n\`\`\`/dnd roll value:1d20 label:CHARACTERNAME description:${description} folder:${folder}\`\`\``;
+
+      return await caller.Reply(interaction, msg, false);
     } else if (sub === "roll") {
       let dicespecs = interaction.options.getString("value");
       let label = interaction.options.getString("label");
+      let description = interaction.options.getString("description") ?? "";
       let folder = interaction.options.getString("folder") ?? null;
       let special = interaction.options.getString("special-roll") ?? "none";
 
@@ -960,13 +1010,18 @@ export default {
         return await caller.Reply(interaction, "Invalid format: " + dicespecs);
       }
 
-      let msg = `||<@${user.id}>||\n## [${label}] Results :\n-# using "${dicespecs}"`;
-
       let results = rollDice(opts, special);
+      let msg = ``;
+
+      msg += `||<@${user.id}>||\n# ✧ __${label}__ ✧`;
+
+      msg += `\n## total: ${results.total}`;
+
+      msg += `\n-# using "${dicespecs}"`;
 
       msg += `\n-# individual results: ${results.msg}`;
 
-      msg += `\n# total: ${results.total}`;
+      msg += `\n\n-# ${description}`;
 
       if (folder != null) {
         try {
@@ -993,6 +1048,7 @@ export default {
       let stat = interaction.options.getString("stat");
       let proficiency = interaction.options.getString("proficiency") ?? "none";
       let special = interaction.options.getString("special-roll") ?? "none";
+      let description = interaction.options.getString("description") ?? "";
       let folder = interaction.options.getString("folder") ?? null;
 
       //proficiency structure: proficiencies:{perception:{value:3,label:"bells"}}
@@ -1008,12 +1064,13 @@ export default {
       } catch (e) {}
 
       let msg = "# Mass roll results:\n";
-      msg += `-# using ${dicespecs} with ${stat === "none" ? "no" : stat} modifier\n\n`;
+      msg += `-# using ${dicespecs} with ${stat === "none" ? "no" : stat} modifier`;
+      msg += `\n\n-# ${description}\n\n`;
 
       let rollData = [];
 
       Object.values(characterList).forEach((c) => {
-        let mod = c.stats[stat];
+        let mod = c.stats[stat] ?? 0;
         if (c.proficiencies?.[proficiency] != null) {
           c.proficiencies[proficiency].forEach((p) => {
             mod += p.value;
