@@ -1021,7 +1021,7 @@ export default {
 
       msg += `\n-# individual results: ${results.msg}`;
 
-      msg += `\n\n-# ${description}`;
+      msg += `\n\n${description}`;
 
       if (folder != null) {
         try {
