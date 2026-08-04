@@ -30,6 +30,15 @@ const characters = new JsonDB(
   ),
 );
 
+const users = new JsonDB(
+  new Config(
+    "users.db.json", // file name (myDatabase.json)
+    true, // save after each push
+    false, // human-readable (pretty JSON)
+    "/", // path separator
+  ),
+);
+
 const prompts = new JsonDB(
   new Config(
     "prompts.db.json", // file name (myDatabase.json)
@@ -285,7 +294,7 @@ const PROMPT_POOL = [
 
 const AUTHORIZED_USERS = [
   "300012833016512514", //Nola
-  "1290040130622591038",
+  "1290040130622591038", //Sy
 ];
 
 function getRandomElement(array, pullCount = 1, omit = []) {
@@ -320,24 +329,54 @@ function parseDice(input) {
     mod: match[3] ? parseInt(match[3], 10) : 0,
   };
 }
+function average (arr) {
+  if (arr.length === 0) return 0;
+  let total = 0
+  for (let i = 0; i < arr.length; i++){
+    total += arr[i]
+  }
+  return total / arr.length;
+};
+function trim(arr, length = 5) {
+  return arr.slice(-5)
+}
+function rollDice(opts, special = "none", pity = []) {
+  let msg = ""
+  let total = 0
+  let nats = []
 
-function rollDice(opts, special = "none") {
-  let msg = "";
-  let total = 0;
+
   for (let i = 0; i < opts.count; i++) {
+    //pity makes it so if your last 5 roll's average is below or equal to 6, it will roll with advantage.
+    let pityVal = average(pity)
+    if (average(pity) != 0 && pityVal <= 5 && special == "none") { special = "advantage"; nats.push(20) }
     let result = Math.floor(Math.random() * opts.dsize) + 1;
 
     //special rolls
-    if (special !== "none") {
+    if (special != "none") {
       let otherResult = Math.floor(Math.random() * opts.dsize) + 1;
-      msg += `[${result} and ${otherResult}] `;
-      if (special == "adv" && otherResult > result) {
-        result = otherResult;
-      } else if (special == "dis" && otherResult < result) {
+      let txt = `[${result} and ${otherResult}] `
+      if (special == "advantage" && otherResult > result) {
         result = otherResult;
       }
+      else if (special == "disadvantage" && otherResult < result) {
+        result = otherResult;
+      }
+      else if (special == "blessed") {
+        if (result == 1) { i--; continue; }
+        if (result <= 8 && Math.random() >= result / opts.dsize) { i--; continue; }
+        txt = `[${result}] `
+      }
+
+      msg += txt;
     } else {
       msg += `[${result}] `;
+    }
+
+    if (opts.dsize == 20 && special == "none") {
+      pity.push(result)
+      pity = trim(pity)
+      nats.push(result)
     }
     total += result;
   }
@@ -347,6 +386,7 @@ function rollDice(opts, special = "none") {
   return {
     total: total,
     msg: msg,
+    nats: nats
   };
 }
 
@@ -507,10 +547,19 @@ export default {
             )
             .setRequired(false)
             .addChoices(
-              { name: "advantage", value: "adv" },
-              { name: "disadvantage", value: "dis" },
+              { name: "advantage", value: "advantage" },
+              { name: "disadvantage", value: "disadvantage" },
+              { name: "blessed", value: "blessed" },
               { name: "none", value: "none" },
             ),
+        )
+        .addIntegerOption((option) =>
+          option
+            .setName("inspiration")
+            .setDescription(
+              "The amount of inspirations to use. default: 0. put -1 to use all available.",
+            )
+            .setRequired(false)
         ),
     )
     .addSubcommand((subCommand) =>
@@ -573,8 +622,8 @@ export default {
             )
             .setRequired(false)
             .addChoices(
-              { name: "advantage", value: "adv" },
-              { name: "disadvantage", value: "dis" },
+              { name: "advantage", value: "advantage" },
+              { name: "disadvantage", value: "disadvantage" },
               { name: "none", value: "none" },
             ),
         ),
@@ -1003,6 +1052,27 @@ export default {
       let description = interaction.options.getString("description") ?? "";
       let folder = interaction.options.getString("folder") ?? null;
       let special = interaction.options.getString("special-roll") ?? "none";
+      let inspiration = interaction.options.getInteger("inspiration") ?? 0;
+
+      if (!await users.exists(`/${user.id}`)){
+        console.log("user does not exist. Creating.")
+        users.push(`/${user.id}`, { activated: true, inspiration: 0, rolls: [] });
+      }
+
+      let maxInspiration = 0
+      try {
+        maxInspiration = await users.getData(`/${user.id}/inspiration`) ?? 0;
+      } catch (e) { }
+
+      let pity = []
+      try {
+        pity = await users.getData(`/${user.id}/rolls`)
+      } catch (e) {
+        pity = []
+      }
+
+      inspiration = inspiration == -1 ? maxInspiration : 0; //if -1 chosen, get the max inspiration available for user.
+
 
       let opts = parseDice(dicespecs);
 
@@ -1010,14 +1080,20 @@ export default {
         return await caller.Reply(interaction, "Invalid format: " + dicespecs);
       }
 
-      let results = rollDice(opts, special);
+      let results = {total : -100};
+
+      for (let i = 0; i < inspiration + 1; i++){
+        let r = rollDice(opts, special, pity)
+        if (results.total < r.total) results = r;
+      }
+
       let msg = ``;
 
       msg += `||<@${user.id}>||\n# ✧ __${label}__ ✧`;
 
       msg += `\n## total: ${results.total}`;
 
-      msg += `\n-# using "${dicespecs}"`;
+      msg += `\n-# using "${dicespecs}" with ${inspiration} inspiration${special == "none" ? "" : " and "+special+"!"}`;
 
       msg += `\n-# individual results: ${results.msg}`;
 
@@ -1041,6 +1117,20 @@ export default {
         });
         msg += `\n\n-# *added to folder '${folder}'*`;
       }
+      users.push(`/${user.id}/inspiration`, maxInspiration - inspiration, true)
+      try {
+        console.log("big one")
+        let currentRolls = []
+        try {
+          currentRolls = await users.getData(`/${user.id}/rolls`)
+        } catch (e) {
+          currentRolls = []
+        }
+        console.log("current rolls:")
+        console.log(currentRolls)
+        let trimmedRolls = trim([...currentRolls, ...results.nats])
+        users.push(`/${user.id}/rolls`, trimmedRolls, true)
+      }catch(e){ msg += "\n-# Error fetching roll list for this user. TELL NOLA!!\n\n-#"+e}
 
       return await caller.Reply(interaction, msg, false);
     } else if (sub === "roll-all") {
