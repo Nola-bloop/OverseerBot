@@ -1121,15 +1121,12 @@ export default {
       }
       users.push(`/${user.id}/inspiration`, maxInspiration - inspiration, true)
       try {
-        console.log("big one")
         let currentRolls = []
         try {
           currentRolls = await users.getData(`/${user.id}/rolls`)
         } catch (e) {
           currentRolls = []
         }
-        console.log("current rolls:")
-        console.log(currentRolls)
         let trimmedRolls = trim([...currentRolls, ...results.nats])
         users.push(`/${user.id}/rolls`, trimmedRolls, true)
       }catch(e){ msg += "\n-# Error fetching roll list for this user. TELL NOLA!!\n\n-#"+e}
