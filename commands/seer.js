@@ -1097,7 +1097,7 @@ export default {
 
       msg += `\n-# individual results: ${results.msg}`;
 
-      if (rollDice(parseDice("1d20")).total == 20) msg += `\n-# Critical! (if this was a damage roll, tell Sy!)`;
+      //if (rollDice(parseDice("1d20")).total == 20) msg += `\n-# Critical! (if this was a damage roll, tell Sy!)`;
 
       msg += `\n\n${description}`;
 
